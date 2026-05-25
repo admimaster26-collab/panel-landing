@@ -8047,15 +8047,58 @@ html, body { height:100%; overflow:hidden!important; }
 
   async function consultarRetirosRecientes(usuario, horas=24){
     const token=getToken();
-    if(!token || !usuario) return [];
-    const {data,error}=await supabaseClient.rpc('panel_usuario_retiros_recientes',{
-      p_session_token:token,
-      p_pc_codigo:pcActual(),
-      p_usuario:usuario,
-      p_horas:horas
-    });
-    if(error) throw error;
-    return Array.isArray(data)?data:[];
+    if(!usuario) return [];
+    const rows=[];
+    if(token){
+      const {data,error}=await supabaseClient.rpc('panel_usuario_retiros_recientes',{
+        p_session_token:token,
+        p_pc_codigo:pcActual(),
+        p_usuario:usuario,
+        p_horas:horas
+      });
+      if(error) throw error;
+      rows.push(...(Array.isArray(data)?data:[]));
+    }
+    rows.push(...retirosLocalesRecientes(usuario, horas));
+    const seen=new Set();
+    return rows.filter(r=>{
+      const key=`${r.fuente||''}:${r.id||''}:${r.fecha||''}:${r.cantidad||''}`;
+      if(seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    }).sort((a,b)=>new Date(b.fecha||0)-new Date(a.fecha||0));
+  }
+
+  function normUsuarioRetiro(v){
+    return txt(v).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9_.-]+/g,'').trim();
+  }
+  function retirosLocalesRecientes(usuario, horas=24){
+    const alias=normUsuarioRetiro(usuario);
+    const pcNow=txt(pcActual()).toUpperCase();
+    const desde=Date.now()-(Number(horas||24)*60*60*1000);
+    const list=Array.isArray(window.workerJobs)?window.workerJobs:(typeof workerJobs!=='undefined'&&Array.isArray(workerJobs)?workerJobs:[]);
+    return list.filter(j=>{
+      const tipo=txt(j.tipo_accion||j.TIPO_ACCION).toUpperCase();
+      const estado=txt(j.estado||j.ESTADO).toUpperCase();
+      const u=normUsuarioRetiro(j.usuario||j.USUARIO);
+      const pcJob=txt(j.pc_codigo||j.PC_CODIGO).toUpperCase();
+      const fecha=new Date(j.finished_at||j.started_at||j.created_at||j.updated_at||Date.now()).getTime();
+      return tipo==='PROCESAR_RETIRO'
+        && u===alias
+        && (!pcNow || !pcJob || pcJob===pcNow)
+        && fecha>=desde
+        && !['CANCELADO','ERROR'].includes(estado);
+    }).map(j=>({
+      id:j.id||j.ID,
+      pc_codigo:j.pc_codigo||j.PC_CODIGO||pcNow,
+      fecha:j.finished_at||j.started_at||j.created_at||j.updated_at,
+      estado:j.estado||j.ESTADO,
+      cantidad:j.monto||j.MONTO,
+      tipo:j.tipo_accion||j.TIPO_ACCION,
+      alias:j.usuario||j.USUARIO,
+      balance:null,
+      fuente:'PANEL_LOCAL'
+    }));
   }
 
   function ensureRetiroAlertBox(){
@@ -8083,8 +8126,8 @@ html, body { height:100%; overflow:hidden!important; }
       box.innerHTML='<div class="alert-box">Consultando historial de retiros 24 hs...</div>';
       try{
         const rows=await consultarRetirosRecientes(usuario,24);
-        if(!rows.length){ box.innerHTML='<div class="ok-box">Sin retiros importados para este usuario en las ultimas 24 hs.</div>'; return; }
-        box.innerHTML=`<div class="err-box"><b>Atencion:</b> ${esc(usuario)} ya registra ${rows.length} retiro/s en ultimas 24 hs.<br>${rows.slice(0,3).map(r=>`${esc(new Date(r.fecha).toLocaleString('es-AR'))} · ${moneyFmt(r.cantidad)} · ${esc(r.tipo)}`).join('<br>')}</div>`;
+        if(!rows.length){ box.innerHTML='<div class="ok-box">Sin retiros registrados para este usuario en las ultimas 24 hs.</div>'; return; }
+        box.innerHTML=`<div class="err-box"><b>Atencion:</b> ${esc(usuario)} ya registra ${rows.length} retiro/s en ultimas 24 hs.<br>${rows.slice(0,3).map(r=>`${esc(new Date(r.fecha).toLocaleString('es-AR'))} · ${moneyFmt(r.cantidad)} · ${esc(r.tipo)} · ${esc(r.fuente||'')}`).join('<br>')}</div>`;
       }catch(e){
         box.innerHTML=`<div class="alert-box">No pude consultar historial de Agente: ${esc(e.message||e)}</div>`;
       }
@@ -8103,7 +8146,7 @@ html, body { height:100%; overflow:hidden!important; }
       try{
         const rows=await consultarRetirosRecientes(usuario,24);
         if(rows.length){
-          const msg=`${usuario} ya registra ${rows.length} retiro/s importado/s en las ultimas 24 hs. ¿Enviar retiro igual?`;
+          const msg=`${usuario} ya registra ${rows.length} retiro/s en las ultimas 24 hs. ¿Enviar retiro igual?`;
           if(!confirm(msg)) return;
         }
       }catch(e){
