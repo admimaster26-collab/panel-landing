@@ -7720,12 +7720,24 @@ html, body { height:100%; overflow:hidden!important; }
     const list = window.workerJobs || (typeof workerJobs !== 'undefined' ? workerJobs : []);
     return (Array.isArray(list) ? list : []).find(j => String(j.id) === String(jobId)) || null;
   }
+  function jobWalletIdFromAny(jobId){
+    const j = findJob(jobId);
+    let payload = j?.payload || {};
+    if(typeof payload === 'string'){
+      try{ payload = JSON.parse(payload); }catch(e){ payload = {}; }
+    }
+    return String(j?.billetera_id || j?.BILLETERA_ID || j?.ID_BILLETERA || payload?.billetera_id || payload?.BILLETERA_ID || window.__NODO_JOB_WALLET_MAP__?.[String(jobId)] || '');
+  }
+  function walletNameSafe(id){
+    const w = wallets().find(x => String(x.id || x.billetera_id || x.ID_BILLETERA || x.ID) === String(id));
+    return w ? walletLabel(w) : (id ? ('#' + id) : 'sin dato');
+  }
   function showJobHint(jobId){
     const box = $('corregirJobBilleteraResultado');
     if(!box || !jobId) return;
     const j = findJob(jobId);
     if(!j) return;
-    const actual = j.billetera_id || j.payload?.billetera_id || '';
+    const actual = jobWalletIdFromAny(jobId);
     box.innerHTML = `<div class="alert-box">Job #${esc(j.id)} · ${esc(j.usuario || '-')} · ${esc(j.tipo_accion || '-')} · billetera actual: ${esc(actual || 'sin dato')}</div>`;
   }
   window.abrirCorregirBilleteraJob = function(jobId, billeteraActual=''){
@@ -7812,6 +7824,100 @@ html, body { height:100%; overflow:hidden!important; }
 })();
 </script>
 
+<script>
+/* ---------- Ajustes finales para formulario de correccion de billetera ---------- */
+(function(){
+  if(window.__NODO_FIX_CORREGIR_BILLETERA_FORM__) return;
+  window.__NODO_FIX_CORREGIR_BILLETERA_FORM__ = true;
+
+  const $ = id => document.getElementById(id);
+  const txt = v => String(v ?? '');
+  const esc = v => txt(v).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+  function walletSources(){
+    const so = window.saldosOperativos || {};
+    const arr = [so.billeteras, window.billeteras, window.billeterasTodas];
+    const out = [];
+    const seen = new Set();
+    arr.forEach(src=>{
+      if(!Array.isArray(src)) return;
+      src.forEach(w=>{
+        const id = w?.id || w?.billetera_id || w?.ID_BILLETERA || w?.ID;
+        if(!id || seen.has(String(id))) return;
+        seen.add(String(id));
+        out.push(w);
+      });
+    });
+    if(out.length) return out;
+    const srcSel = $('manualWorkerBilleteraInicio') || $('ajusteBilleteraId') || $('transferBilleteraOrigen');
+    if(!srcSel) return [];
+    return Array.from(srcSel.options || []).filter(o=>o.value).map(o=>({id:o.value,nombre_visible:o.textContent}));
+  }
+
+  function walletId(w){ return txt(w?.id || w?.billetera_id || w?.ID_BILLETERA || w?.ID); }
+  function walletName(w){
+    const id = walletId(w);
+    return txt(w?.nombre_visible || w?.NOMBRE_VISIBLE || w?.BILLETERA_NOMBRE || w?.nombre || w?.NOMBRE || w?.alias || w?.ALIAS || ('#' + id));
+  }
+  function walletNameById(id){
+    const w = walletSources().find(x=>walletId(x) === txt(id));
+    return w ? walletName(w) : (id ? ('#' + id) : 'sin dato');
+  }
+  function jobWalletId(jobId){
+    const map = window.__NODO_JOB_WALLET_MAP__ || {};
+    const list = Array.isArray(window.workerJobs) ? window.workerJobs : [];
+    const j = list.find(x=>txt(x.id) === txt(jobId)) || {};
+    return txt(j.billetera_id || j.BILLETERA_ID || j.ID_BILLETERA || map[txt(jobId)] || '');
+  }
+  function fillCorrectionWalletSelect(selected){
+    const sel = $('corregirJobBilleteraNueva');
+    if(!sel) return;
+    const current = selected || sel.value;
+    const list = walletSources();
+    sel.innerHTML = '<option value="">Seleccionar billetera</option>' + list.map(w=>{
+      const id = walletId(w);
+      return id ? `<option value="${esc(id)}">${esc(walletName(w))}</option>` : '';
+    }).join('');
+    if(current) sel.value = current;
+  }
+  function hydrateCorrectionForm(){
+    const input = $('corregirJobBilleteraId');
+    if(!input || !input.value) return;
+    const jobId = input.value;
+    const wid = jobWalletId(jobId);
+    fillCorrectionWalletSelect(wid);
+    const box = $('corregirJobBilleteraResultado');
+    const j = (Array.isArray(window.workerJobs) ? window.workerJobs : []).find(x=>txt(x.id) === txt(jobId)) || {};
+    if(box && wid){
+      box.innerHTML = `<div class="alert-box">Job #${esc(jobId)} - ${esc(j.usuario || '-')} - ${esc(j.tipo_accion || '-')} - billetera actual: ${esc(walletNameById(wid))}</div>`;
+    }
+  }
+  function hideOldEmptyMovementNotices(){
+    document.querySelectorAll('.alert-box').forEach(el=>{
+      const t = el.textContent || '';
+      if(t.includes('Sin movimientos visibles')) el.style.display = 'none';
+    });
+  }
+
+  const oldOpen = window.abrirCorregirBilleteraJob;
+  window.abrirCorregirBilleteraJob = function(jobId, billeteraActual=''){
+    const r = typeof oldOpen === 'function' ? oldOpen.apply(this, arguments) : null;
+    const run = ()=>hydrateCorrectionForm();
+    setTimeout(run, 120);
+    setTimeout(run, 600);
+    setTimeout(run, 1400);
+    return r;
+  };
+
+  document.addEventListener('input', e=>{
+    if(e.target?.id === 'corregirJobBilleteraId') setTimeout(hydrateCorrectionForm, 80);
+  }, true);
+  setInterval(()=>{
+    hydrateCorrectionForm();
+    hideOldEmptyMovementNotices();
+  }, 1500);
+})();
+</script>
+
 </body>
 </html>
-
