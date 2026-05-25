@@ -9,7 +9,7 @@
 <meta http-equiv="X-Content-Type-Options" content="nosniff">
 <meta http-equiv="Cache-Control" content="no-store">
 <title>BET300 · Cargas/Retiros</title>
-<!-- Landing BET300. -->
+<!-- Landing pública blindada: solo RPC de landing, sin panel/admin/worker en frontend. -->
 <style>
 *{box-sizing:border-box;font-family:Arial,sans-serif}
 body{margin:0;min-height:100vh;background:radial-gradient(circle at top,#12352f 0%,#07131f 45%,#080a10 100%);color:#f4f7fb}
@@ -53,6 +53,7 @@ button:disabled{opacity:.45;cursor:not-allowed}
 @media(max-width:520px){.wrap{padding:18px 14px 120px}.logo-img{width:245px;margin-bottom:14px}h1{font-size:34px}.sub,.muted{font-size:17px}.card{padding:18px;border-radius:22px}.big-data{font-size:22px}.chat-lite-btn{right:14px;bottom:14px;min-width:0;width:calc(100vw - 28px)}.chat-lite{right:0;bottom:0;width:100vw;height:100vh;max-height:none;border-radius:0;border:none}}
 
 .transfer-data-box{background:rgba(255,255,255,.055);border:1px solid rgba(212,175,55,.24);border-radius:18px;padding:14px;margin:14px 0}.transfer-data-title{font-weight:900;color:#f7d774;margin-bottom:6px}.transfer-data-help{font-size:13px;color:#cbd5e1;line-height:1.35;margin-bottom:10px}.transfer-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.transfer-grid .full{grid-column:1/-1}@media(max-width:520px){.transfer-grid{grid-template-columns:1fr}}
+.landing-flow-box{background:rgba(18,24,35,.72);border:1px solid rgba(212,175,55,.24);border-radius:18px;padding:14px;margin:14px 0 18px}.landing-flow-title{font-weight:900;color:#f7d774;margin-bottom:10px}.landing-flow-item{display:grid;grid-template-columns:32px 1fr;gap:10px;align-items:start;margin:8px 0;color:#dbe5ef;line-height:1.35}.landing-flow-item b{width:28px;height:28px;border-radius:999px;background:#d4af37;color:#07131f;display:grid;place-items:center;font-size:14px}.landing-flow-note{color:#f9d36b;font-size:13px;line-height:1.35;margin-top:10px;font-weight:800}
 
 </style>
 </head>
@@ -85,8 +86,8 @@ button:disabled{opacity:.45;cursor:not-allowed}
   </div>
 
   <div class="card hidden" id="cargaCard">
-    <h1>Cargar transferencia</h1>
-    <p class="muted">Transferí al dato indicado y luego enviá tu solicitud.</p>
+    <h1 id="solicitudTitulo">Primero transferi</h1>
+    <p class="muted" id="solicitudSubtitulo">Copia el alias o CBU, transferi desde tu app y volve a esta pantalla para avisarnos.</p>
 
     <div class="card transfer-card">
       <div class="gold-title">💳 Datos para transferir</div>
@@ -97,6 +98,14 @@ button:disabled{opacity:.45;cursor:not-allowed}
       <div class="line"><b>Titular:</b> <span id="titularBox">Cargando...</span></div>
       <div class="line"><b>Banco:</b> <span id="bancoBox">Mercado Pago</span></div>
       <div class="warn" id="montoMinimoTxt">⚠️ Carga mínima: $2.000</div>
+    </div>
+
+    <div id="transferFlowBox" class="landing-flow-box">
+      <div class="landing-flow-title">Como continuar</div>
+      <div class="landing-flow-item"><b>1</b><span>Copia el alias o CBU que figura arriba.</span></div>
+      <div class="landing-flow-item"><b>2</b><span>Hace la transferencia desde tu app o banco.</span></div>
+      <div class="landing-flow-item"><b>3</b><span>Volve aca, completa el monto y toca el boton para avisarnos.</span></div>
+      <div class="landing-flow-note">Si ya transferiste, no vuelvas a enviar otra solicitud por el mismo pago.</div>
     </div>
 
     <div id="datosUsuarioBox" class="ok"></div>
@@ -149,12 +158,12 @@ button:disabled{opacity:.45;cursor:not-allowed}
       <input id="retiroTitular" placeholder="Nombre y apellido del titular">
     </div>
 
-    <button id="btnEnviar" onclick="crearSolicitud()">Enviar solicitud</button>
+    <button id="btnEnviar" onclick="crearSolicitud()">Ya transferi, enviar aviso</button>
     <div id="resultado" class="result"></div>
 
     <div id="estadoEspera" class="step-box hidden">
-      <div id="step1" class="step done"><div class="step-dot">✓</div><div><div class="step-title">Solicitud enviada</div><div class="step-text" id="step1Text">Recibimos tu solicitud.</div></div></div>
-      <div id="step2" class="step active"><div class="step-dot">2</div><div><div class="step-title"><span class="loader"></span>Esperando verificación</div><div class="step-text" id="step2Text">Un operador está revisando tu solicitud.</div></div></div>
+      <div id="step1" class="step done"><div class="step-dot">✓</div><div><div class="step-title" id="step1Title">Transferencia informada</div><div class="step-text" id="step1Text">Recibimos tu aviso.</div></div></div>
+      <div id="step2" class="step active"><div class="step-dot">2</div><div><div class="step-title" id="step2Title"><span class="loader"></span>Buscando tu pago</div><div class="step-text" id="step2Text">Si ya transferiste, puede tardar unos minutos.</div></div></div>
       <div id="step3" class="step"><div class="step-dot">3</div><div><div class="step-title" id="step3Title">Fichas acreditadas</div><div class="step-text" id="step3Text">Cuando se apruebe, te avisamos automáticamente.</div></div></div>
       <div class="mini">No cierres esta ventana. Si demora más de lo habitual, podés contactarnos por chat.</div>
     </div>
@@ -249,7 +258,7 @@ function iniciarCooldownBoton(msInicial){
     }
 
     btn.disabled = false;
-    btn.innerText = String(tipoSolicitudActual || "CARGA").toUpperCase() === "RETIRO" ? "Enviar solicitud de retiro" : "Enviar solicitud";
+    btn.innerText = String(tipoSolicitudActual || "CARGA").toUpperCase() === "RETIRO" ? "Enviar solicitud de retiro" : "Ya transferi, enviar aviso";
     if(cooldownBtnTimer){
       clearInterval(cooldownBtnTimer);
       cooldownBtnTimer = null;
@@ -505,8 +514,11 @@ function copiarAlias(){copiarTextoDato("aliasBox","Alias")} function copiarCbu()
 function seleccionarTipoSolicitud(tipo){
   tipoSolicitudActual=String(tipo||"CARGA").toUpperCase(); const esRetiro=tipoSolicitudActual==="RETIRO";
   $("tipoCargaBtn").classList.toggle("active",!esRetiro);$("tipoRetiroBtn").classList.toggle("active",esRetiro);
-  $("montoLabel").innerText=esRetiro?"Monto a retirar *":"Monto a cargar *";$("monto").placeholder=esRetiro?"mínimo: 5000":"ej: 5000";$("btnEnviar").innerText=esRetiro?"Enviar solicitud de retiro":"Enviar solicitud";
+  $("montoLabel").innerText=esRetiro?"Monto a retirar *":"Monto transferido *";$("monto").placeholder=esRetiro?"mínimo: 5000":"ej: 5000";$("btnEnviar").innerText=esRetiro?"Enviar solicitud de retiro":"Ya transferi, enviar aviso";
   $("retiroDatosBox").classList.toggle("hidden",!esRetiro);$("montoMinimoTxt").innerText=esRetiro?"⚠️ Retiro mínimo: $5.000":"⚠️ Carga mínima: $2.000";
+  $("solicitudTitulo").innerText=esRetiro?"Solicitar retiro":"Primero transferi";
+  $("solicitudSubtitulo").innerText=esRetiro?"Completa el monto y la cuenta de destino para pedir el retiro.":"Copia el alias o CBU, transferi desde tu app y volve a esta pantalla para avisarnos.";
+  $("transferFlowBox")?.classList.toggle("hidden", esRetiro);
   if(esRetiro)cargarCuentaRetiroVerificada();else{cuentaRetiroVerificada=null;actualizarVistaCuentaRetiro();actualizarCamposPorTipoSolicitud()}
 }
 
@@ -570,15 +582,15 @@ async function crearSolicitud(){
   }
   if(!esRetiro&&!billeteraActiva){mostrarResultado("No hay billetera disponible. Contactanos por chat.",false);return}
   if(bloquearSiSolicitudReciente()) return;
-  $("btnEnviar").disabled=true;$("btnEnviar").innerText="Enviando...";
+  $("btnEnviar").disabled=true;$("btnEnviar").innerText=esRetiro?"Enviando retiro...":"Enviando aviso...";
   const r=await crearSolicitudSupabase(monto,tipo);
-  $("btnEnviar").disabled=false;$("btnEnviar").innerText=esRetiro?"Enviar solicitud de retiro":"Enviar solicitud";
+  $("btnEnviar").disabled=false;$("btnEnviar").innerText=esRetiro?"Enviar solicitud de retiro":"Ya transferi, enviar aviso";
   if(!r.ok){mostrarResultado(r.error||"No se pudo crear la solicitud.",false);return}
   registrarCooldownSolicitud();
   guardarSolicitudLocal(r.solicitud.id,r.solicitud.chat_id,r.solicitud.chat_token,tipo);
   if(r.solicitud.chat_id&&r.solicitud.chat_token){chatSessionId=String(r.solicitud.chat_id);chatSessionToken=String(r.solicitud.chat_token);sessionStorage.setItem(LS_CHAT,chatSessionId);sessionStorage.setItem(LS_CHAT_TOKEN,chatSessionToken);iniciarRealtimeChatLanding()}
   referenciaPagoActual=r.solicitud.referencia_pago||"";mostrarReferenciaPago(r.solicitud);
-  mostrarResultado(`✅ Solicitud enviada correctamente.<br><br><b>Tipo:</b> ${escapeHtml(tipo)}<br>${(!esRetiro&&referenciaPagoActual)?`<b>Referencia:</b> ${escapeHtml(referenciaPagoActual)}<br>`:""}<b>Estado:</b> ${escapeHtml(r.solicitud.estado)}<br><br>${esRetiro?"Estamos revisando tu retiro.":"Estamos verificando tu transferencia."}`,true);
+  mostrarResultado(esRetiro?`✅ Solicitud de retiro recibida.<br><br>Estamos revisando tu pedido.`:`✅ Aviso recibido.<br><br>Estamos buscando tu pago. Si ya transferiste, no envies otra solicitud por el mismo movimiento.`,true);
   mostrarEstadoEspera(r.solicitud.estado||"PENDIENTE");iniciarEscuchaEstado();$("monto").value="";if(!esRetiro)limpiarDatosTransferencia();
 }
 async function crearSolicitudSupabase(monto,tipo="CARGA"){
@@ -643,7 +655,16 @@ function recuperarSolicitudPendiente(){
 function mostrarReferenciaPago(s){const box=$("referenciaPagoBox");if(!box)return;const tipo=String(s?.tipo||tipoSolicitudActual||"CARGA").toUpperCase(), ref=s?.referencia_pago||s?.referencia_pago_visible||"";if(tipo!=="CARGA"||!ref){box.classList.add("hidden");box.innerHTML="";return}box.classList.remove("hidden");box.innerHTML=`<b>Referencia de carga:</b> ${escapeHtml(ref)}<br><span class="mini">Si tu billetera permite agregar nota o motivo, escribí esta referencia. Esto ayuda a validar tu pago más rápido.</span><button class="copy-btn" type="button" onclick="navigator.clipboard.writeText('${escapeAttr(ref)}')">Copiar referencia</button>`}
 function mostrarResultado(texto,ok){const box=$("resultado");box.innerHTML=texto;box.className="result "+(ok?"ok":"err")}
 function mostrarEstadoEspera(e="PENDIENTE"){$("estadoEspera").classList.remove("hidden");renderProgresoSolicitud(e)}
-function renderProgresoSolicitud(estado){const e=String(estado||"PENDIENTE").toUpperCase(), esRetiro=String(tipoSolicitudActual||"CARGA").toUpperCase()==="RETIRO", ok=["ACREDITADA","PAGADA"].includes(e), bad=["RECHAZADA","ERROR"].includes(e);$("step1Text").innerText=esRetiro?"Recibimos tu solicitud de retiro.":"Recibimos tu pedido de carga.";$("step2Text").innerText=esRetiro?"Un operador está revisando tu retiro.":"Un operador está revisando la transferencia.";$("step3Title").innerText=esRetiro?"Retiro aprobado/pagado":"Fichas acreditadas";$("step1").className="step done";$("step2").className=ok?"step done":(bad?"step":"step active");$("step3").className=ok?"step done":"step"}
+function renderProgresoSolicitud(estado){
+  const e=String(estado||"PENDIENTE").toUpperCase(), esRetiro=String(tipoSolicitudActual||"CARGA").toUpperCase()==="RETIRO", ok=["ACREDITADA","PAGADA"].includes(e), bad=["RECHAZADA","ERROR"].includes(e);
+  $("step1Title").innerText=esRetiro?"Solicitud recibida":"Transferencia informada";
+  $("step1Text").innerText=esRetiro?"Recibimos tu solicitud de retiro.":"Recibimos tu aviso de transferencia.";
+  $("step2Title").innerHTML=esRetiro?'<span class="loader"></span>Revisando retiro':'<span class="loader"></span>Buscando tu pago';
+  $("step2Text").innerText=esRetiro?"Estamos revisando tu retiro.":"Si ya transferiste, puede tardar unos minutos. No envies otra solicitud por el mismo pago.";
+  $("step3Title").innerText=esRetiro?"Retiro aprobado/pagado":"Carga acreditada";
+  $("step3Text").innerText=esRetiro?"Cuando se apruebe, te avisamos automaticamente.":"Cuando encontremos el pago, acreditamos tus fichas.";
+  $("step1").className="step done";$("step2").className=ok?"step done":(bad?"step":"step active");$("step3").className=ok?"step done":"step"
+}
 function iniciarEscuchaEstado(){
   if(intervaloEstado) clearInterval(intervaloEstado);
 
