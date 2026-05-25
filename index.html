@@ -1682,6 +1682,8 @@ async function cargarBilleteras(render=true){
 
   billeterasTodas = (data || []).map(mapBilleteraSupabase);
   billeteras = billeterasTodas.filter(b => String(b.PC || "") === String(pcOperativa || ""));
+  window.billeterasTodas = billeterasTodas;
+  window.billeteras = billeteras;
 
   if(render)renderBilleteras();
   renderWalletSelectChat();
@@ -2898,6 +2900,7 @@ async function cargarWorkerJobs(showToast=false){
   }
 
   workerJobs = data || [];
+  window.workerJobs = workerJobs;
   renderWorkerJobs();
   if(typeof renderCentroOperativo==='function')renderCentroOperativo();
 
@@ -7255,8 +7258,26 @@ html, body { height:100%; overflow:hidden!important; }
   document.addEventListener('wheel',()=>{S.editingUntil = Math.max(S.editingUntil, Date.now()+700);},{passive:true});
 
   function wallets(){
-    const src = (window.saldosOperativos?.billeteras || (typeof saldosOperativos!=='undefined' && saldosOperativos?.billeteras) || window.billeteras || []);
-    return Array.isArray(src) ? src : [];
+    const sources = [
+      window.saldosOperativos?.billeteras,
+      (typeof saldosOperativos!=='undefined' && saldosOperativos?.billeteras),
+      window.billeteras,
+      (typeof billeteras!=='undefined' ? billeteras : null),
+      window.billeterasTodas,
+      (typeof billeterasTodas!=='undefined' ? billeterasTodas : null)
+    ];
+    const out = [];
+    const seen = new Set();
+    sources.forEach(src=>{
+      if(!Array.isArray(src)) return;
+      src.forEach(w=>{
+        const id = walletId(w);
+        if(!id || seen.has(id)) return;
+        seen.add(id);
+        out.push(w);
+      });
+    });
+    return out;
   }
   function walletId(w){return str(w?.id ?? w?.billetera_id ?? w?.ID_BILLETERA ?? w?.ID ?? '');}
   function walletNameById(id){
@@ -7611,7 +7632,32 @@ html, body { height:100%; overflow:hidden!important; }
   }
   function wallets(){
     const so = window.saldosOperativos || (typeof saldosOperativos !== 'undefined' ? saldosOperativos : null);
-    return Array.isArray(so?.billeteras) ? so.billeteras : [];
+    const sources = [
+      so?.billeteras,
+      window.billeteras,
+      (typeof billeteras !== 'undefined' ? billeteras : null),
+      window.billeterasTodas,
+      (typeof billeterasTodas !== 'undefined' ? billeterasTodas : null)
+    ];
+    const out = [];
+    const seen = new Set();
+    sources.forEach(src=>{
+      if(!Array.isArray(src)) return;
+      src.forEach(w=>{
+        const id = w?.id || w?.billetera_id || w?.ID_BILLETERA || w?.ID;
+        if(!id || seen.has(String(id))) return;
+        seen.add(String(id));
+        out.push(w);
+      });
+    });
+    if(out.length) return out;
+    const fromSelect = document.getElementById('manualWorkerBilleteraInicio') || document.getElementById('ajusteBilleteraId');
+    if(fromSelect){
+      return Array.from(fromSelect.options || [])
+        .filter(o=>o.value)
+        .map(o=>({id:o.value,nombre_visible:o.textContent || ('Billetera #'+o.value)}));
+    }
+    return [];
   }
   function walletLabel(b){
     const nombre = b.nombre_visible || b.nombre || b.alias || ('Billetera #' + b.id);
@@ -7653,6 +7699,12 @@ html, body { height:100%; overflow:hidden!important; }
       showJobHint(jobId);
       $('corregirJobBilleteraNueva')?.focus();
     },120);
+    try{
+      Promise.allSettled([
+        (typeof cargarBilleteras === 'function') ? cargarBilleteras(false) : null,
+        (typeof cargarSaldosOperativos === 'function') ? cargarSaldosOperativos(true) : null
+      ]).then(()=>fillSelect(billeteraActual || ''));
+    }catch(e){}
   };
   window.corregirBilleteraJobPanel = async function(){
     const jobId = Number($('corregirJobBilleteraId')?.value || 0);
