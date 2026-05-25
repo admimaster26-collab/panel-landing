@@ -7660,8 +7660,9 @@ html, body { height:100%; overflow:hidden!important; }
     return [];
   }
   function walletLabel(b){
-    const nombre = b.nombre_visible || b.nombre || b.alias || ('Billetera #' + b.id);
-    const saldo = Number(b.saldo ?? b.saldo_actual ?? 0);
+    const id = b.id || b.billetera_id || b.ID_BILLETERA || b.ID;
+    const nombre = b.nombre_visible || b.NOMBRE_VISIBLE || b.nombre || b.NOMBRE || b.billetera_nombre || b.BILLETERA_NOMBRE || b.alias || b.ALIAS || ('Billetera #' + id);
+    const saldo = Number(b.saldo ?? b.SALDO ?? b.saldo_actual ?? b.SALDO_ACTUAL ?? 0);
     const saldoTxt = Number.isFinite(saldo) ? saldo.toLocaleString('es-AR',{style:'currency',currency:'ARS',maximumFractionDigits:0}) : '';
     return `${nombre}${saldoTxt ? ' · ' + saldoTxt : ''}`;
   }
@@ -7671,7 +7672,8 @@ html, body { height:100%; overflow:hidden!important; }
     const old = selected || sel.value;
     const list = wallets();
     sel.innerHTML = '<option value="">Seleccionar billetera</option>' + list.map(b => {
-      const id = b.id || b.billetera_id;
+      const id = b.id || b.billetera_id || b.ID_BILLETERA || b.ID;
+      if(!id) return '';
       return `<option value="${attr(id)}">${esc(walletLabel({...b,id}))}</option>`;
     }).join('');
     if(old) sel.value = old;
