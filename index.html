@@ -564,6 +564,15 @@ table{width:100%;border-collapse:collapse}th,td{padding:11px;border-bottom:1px s
             <button class="btn btn-green" onclick="guardarTransferenciaBilletera()">Mover saldo</button>
             <div id="transferBilleteraResultado" style="margin-top:12px"></div>
           </div>
+          <div class="ops-panel">
+            <div class="ops-panel-title">Corregir billetera de job</div>
+            <div class="small" style="margin-bottom:10px">Reasigna la billetera asociada al job y a su propio movimiento contable. No reintenta ni modifica la operacion ya ejecutada por el worker.</div>
+            <label>Job ID</label><input id="corregirJobBilleteraId" type="number" min="1" placeholder="ej: 1820">
+            <label>Billetera correcta</label><select id="corregirJobBilleteraNueva"></select>
+            <label>Motivo</label><input id="corregirJobBilleteraMotivo" placeholder="obligatorio">
+            <button class="btn btn-primary" onclick="corregirBilleteraJobPanel()">Corregir billetera</button>
+            <div id="corregirJobBilleteraResultado" style="margin-top:12px"></div>
+          </div>
         </div>
       </section>
 
@@ -7526,234 +7535,136 @@ html, body { height:100%; overflow:hidden!important; }
 })();
 </script>
 
-
-
-<!-- =========================================================
-  NODO V19.3 · SOLO MEJORAS MÍNIMAS SOBRE V19 OPERATIVA
-  - NO toca resultado OK/logs/worker/chat/MP/realtime.
-  - Agrega botones Ajuste billetera + / -.
-  - Agrega edición de billetera SOLO para jobs MANUALES de carga/retiro.
-  - La edición NO mueve saldo; solo corrige imputación y audita vía RPC.
-========================================================= -->
-<style id="nodo-v19-3-minimo-ajustes-billetera">
-  .nodo-v19-ajustes-plusminus{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 12px}
-  .nodo-v19-ajustes-plusminus .mini-btn{width:auto}
-  .nodo-v19-edit-wallet-note{font-size:12px;color:#98a2b3;margin-top:6px;line-height:1.35}
-</style>
-<script id="nodo-v19-3-minimo-ajustes-billetera">
+<script>
+/* ---------- Correccion administrativa de billetera por job ---------- */
 (function(){
-  if(window.__NODO_V19_3_MINIMO__) return;
-  window.__NODO_V19_3_MINIMO__ = true;
-
-  const $ = (id)=>document.getElementById(id);
-  const str = (v)=>String(v ?? '').trim();
-  const norm = (v)=>str(v).toUpperCase();
-  const esc = (v)=>String(v ?? '').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&#039;');
-  const attr = esc;
-
-  function token(){ return (typeof requireSessionToken === 'function') ? requireSessionToken() : (window.panelSessionToken || panelSessionToken || ''); }
-  function pc(){ return str(window.pcOperativa || (typeof pcOperativa !== 'undefined' ? pcOperativa : '')); }
-  function operadorActual(){
-    try{return str(window.operador?.usuario || operador?.usuario || operador?.nombre || 'operador');}catch(e){return 'operador';}
+  function $(id){ return document.getElementById(id); }
+  function esc(v){
+    return String(v ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+  function attr(v){ return esc(v); }
+  function token(){
+    try{ if(typeof requireSessionToken === 'function') return requireSessionToken(); }catch(e){}
+    return window.panelSessionToken || '';
+  }
+  function currentPc(){
+    try{ return String(window.pcOperativa || pcOperativa || '').trim().toUpperCase(); }catch(e){ return ''; }
+  }
+  function currentUser(){
+    try{
+      if(typeof currentOperator === 'function') return currentOperator();
+      const op = window.operador || operador || {};
+      return op.usuario || op.nombre || localStorage.getItem('nodo_panel_operador') || 'panel';
+    }catch(e){ return localStorage.getItem('nodo_panel_operador') || 'panel'; }
   }
   function wallets(){
-    const s = window.saldosOperativos || (typeof saldosOperativos !== 'undefined' ? saldosOperativos : null);
-    const list = s?.billeteras || window.billeteras || [];
-    return Array.isArray(list) ? list : [];
+    const so = window.saldosOperativos || (typeof saldosOperativos !== 'undefined' ? saldosOperativos : null);
+    return Array.isArray(so?.billeteras) ? so.billeteras : [];
   }
-  function walletId(w){ return str(w?.id ?? w?.billetera_id ?? w?.ID ?? w?.ID_BILLETERA ?? ''); }
-  function walletName(w){ return str(w?.nombre_visible || w?.NOMBRE_VISIBLE || w?.nombre || w?.BILLETERA_NOMBRE || 'Billetera'); }
-  function walletOptionHtml(selected){
-    return wallets().map(w=>{
-      const id = walletId(w);
-      const saldo = Number(w?.saldo || w?.SALDO || 0);
-      const banco = str(w?.banco || w?.BANCO || w?.tipo || w?.TIPO || '');
-      const label = `${walletName(w)} · ${banco}${Number.isFinite(saldo) ? ' · ' + (typeof money === 'function' ? money(saldo) : ('$' + saldo)) : ''}`;
-      return `<option value="${attr(id)}" ${str(id)===str(selected)?'selected':''}>${esc(label)}</option>`;
+  function walletLabel(b){
+    const nombre = b.nombre_visible || b.nombre || b.alias || ('Billetera #' + b.id);
+    const saldo = Number(b.saldo ?? b.saldo_actual ?? 0);
+    const saldoTxt = Number.isFinite(saldo) ? saldo.toLocaleString('es-AR',{style:'currency',currency:'ARS',maximumFractionDigits:0}) : '';
+    return `${nombre}${saldoTxt ? ' · ' + saldoTxt : ''}`;
+  }
+  function fillSelect(selected=''){
+    const sel = $('corregirJobBilleteraNueva');
+    if(!sel) return;
+    const old = selected || sel.value;
+    const list = wallets();
+    sel.innerHTML = '<option value="">Seleccionar billetera</option>' + list.map(b => {
+      const id = b.id || b.billetera_id;
+      return `<option value="${attr(id)}">${esc(walletLabel({...b,id}))}</option>`;
     }).join('');
+    if(old) sel.value = old;
   }
-
-  function tipoEditable(tipo){
-    const t = norm(tipo);
-    return ['CARGAR_FICHAS','PROCESAR_CARGA','PROCESAR_RETIRO','RETIRO'].includes(t);
+  function findJob(jobId){
+    const list = window.workerJobs || (typeof workerJobs !== 'undefined' ? workerJobs : []);
+    return (Array.isArray(list) ? list : []).find(j => String(j.id) === String(jobId)) || null;
   }
-  function esManualJob(row){
-    return norm(row?.origen) === 'MANUAL' && !!row?.job && tipoEditable(row?.tipo);
+  function showJobHint(jobId){
+    const box = $('corregirJobBilleteraResultado');
+    if(!box || !jobId) return;
+    const j = findJob(jobId);
+    if(!j) return;
+    const actual = j.billetera_id || j.payload?.billetera_id || '';
+    box.innerHTML = `<div class="alert-box">Job #${esc(j.id)} · ${esc(j.usuario || '-')} · ${esc(j.tipo_accion || '-')} · billetera actual: ${esc(actual || 'sin dato')}</div>`;
   }
-  function getJobById(id){
-    const arr = window.workerJobs || (typeof workerJobs !== 'undefined' ? workerJobs : []) || [];
-    return arr.find(j=>str(j.id)===str(id)) || null;
-  }
-  function getWalletIdFromJob(j){
-    if(!j) return '';
-    let id = str(j.billetera_id || j.ID_BILLETERA || j.wallet_id || '');
-    if(id) return id;
-    try{
-      const p = typeof j.payload === 'string' ? JSON.parse(j.payload) : (j.payload || {});
-      id = str(p.billetera_id || p.ID_BILLETERA || p.wallet_id || '');
-      if(id) return id;
-      const obs = str(p.observacion || j.observacion || j.observaciones || '');
-      const m = obs.match(/billetera_id\s*[=:]\s*(\d+)/i);
-      if(m) return m[1];
-    }catch(e){}
-    const obs = str(j.observacion || j.observaciones || j.resultado || '');
-    const m = obs.match(/billetera_id\s*[=:]\s*(\d+)/i);
-    return m ? m[1] : '';
-  }
-
-  // 1) Botones visibles + y - sin cambiar la lógica original de guardarAjusteBilletera().
-  window.abrirAjusteBilleteraSignoV19 = function(signo, id=''){
+  window.abrirCorregirBilleteraJob = function(jobId, billeteraActual=''){
     try{ if(typeof mostrarVista === 'function') mostrarVista('ajustes'); }catch(e){}
     setTimeout(()=>{
-      const sel = $('ajusteBilleteraSigno');
-      const bid = $('ajusteBilleteraId');
-      const monto = $('ajusteBilleteraMonto');
-      if(sel) sel.value = String(signo);
-      if(id && bid) bid.value = String(id);
-      if(monto) monto.focus();
+      const input = $('corregirJobBilleteraId');
+      const motivo = $('corregirJobBilleteraMotivo');
+      if(input) input.value = jobId || '';
+      fillSelect(billeteraActual || '');
+      if(motivo && !motivo.value) motivo.value = 'Correccion de billetera asignada al job';
+      showJobHint(jobId);
+      $('corregirJobBilleteraNueva')?.focus();
     },120);
   };
-
-  function instalarBotonesAjuste(){
-    const paneles = Array.from(document.querySelectorAll('.ops-panel'));
-    const ajustePanel = paneles.find(p => /Ajuste de billetera/i.test(p.textContent || ''));
-    if(ajustePanel && !ajustePanel.querySelector('.nodo-v19-ajustes-plusminus')){
-      const title = ajustePanel.querySelector('.ops-panel-title');
-      const div = document.createElement('div');
-      div.className = 'nodo-v19-ajustes-plusminus';
-      div.innerHTML = `
-        <button class="mini-btn green" type="button" onclick="abrirAjusteBilleteraSignoV19(1)">➕ Ajuste billetera +</button>
-        <button class="mini-btn red" type="button" onclick="abrirAjusteBilleteraSignoV19(-1)">➖ Ajuste billetera -</button>
-      `;
-      if(title && title.parentNode) title.parentNode.insertBefore(div, title.nextSibling);
+  window.corregirBilleteraJobPanel = async function(){
+    const jobId = Number($('corregirJobBilleteraId')?.value || 0);
+    const billeteraId = Number($('corregirJobBilleteraNueva')?.value || 0);
+    const motivo = String($('corregirJobBilleteraMotivo')?.value || '').trim();
+    const box = $('corregirJobBilleteraResultado');
+    if(!jobId || !billeteraId || !motivo){
+      if(box) box.innerHTML = '<div class="err-box">Job, billetera correcta y motivo son obligatorios.</div>';
+      return;
     }
-
-    const quickPanel = paneles.find(p => /Ajustes rápidos/i.test(p.textContent || ''));
-    if(quickPanel && !quickPanel.querySelector('[data-v19-ajuste-plus]')){
-      const box = quickPanel.querySelector('.ops-compact-actions') || quickPanel;
-      box.insertAdjacentHTML('beforeend', `
-        <button data-v19-ajuste-plus class="mini-btn green" onclick="abrirAjusteBilleteraSignoV19(1)">Billetera +</button>
-        <button data-v19-ajuste-minus class="mini-btn red" onclick="abrirAjusteBilleteraSignoV19(-1)">Billetera -</button>
-      `);
-    }
-  }
-
-  // 2) Modal de edición de billetera SOLO para carga/retiro manual.
-  window.abrirEditarBilleteraJobV19 = function(jobId){
-    const j = getJobById(jobId);
-    if(!j){ try{toast('No encontré el job para editar.', 'red');}catch(e){} return; }
-    if(j.solicitud_id){ try{toast('Solo se corrigen acciones rápidas/manuales.', 'red');}catch(e){} return; }
-    if(!tipoEditable(j.tipo_accion)){ try{toast('Validaciones no llevan billetera para editar.', 'red');}catch(e){} return; }
-
-    const actual = getWalletIdFromJob(j);
-    const body = `
-      <div class="verify-box warn">
-        <div class="verify-title">Corregir billetera imputada</div>
-        <div class="small">Esto NO mueve saldo entre billeteras. Solo corrige qué billetera quedó asociada a esta carga/retiro.</div>
-      </div>
-      <label>Job</label><input value="#${attr(jobId)} · ${attr(j.tipo_accion || '')} · ${attr(j.usuario || '')}" disabled>
-      <label>Billetera correcta</label>
-      <select id="editarJobBilleteraNueva"><option value="">Seleccionar billetera</option>${walletOptionHtml(actual)}</select>
-      <label>Motivo obligatorio</label>
-      <input id="editarJobBilleteraMotivo" placeholder="Ej: operador seleccionó billetera incorrecta">
-      <div class="nodo-v19-edit-wallet-note">Usar solo cuando la carga/retiro ya quedó asociado a una billetera equivocada.</div>
-    `;
-
-    if(typeof abrirModal === 'function'){
-      abrirModal('Editar billetera de carga/retiro', body, async()=>{
-        await guardarEditarBilleteraJobV19(jobId);
-      }, 'Guardar corrección');
-    }else{
-      alert('No está disponible el modal del panel.');
-    }
-  };
-
-  window.guardarEditarBilleteraJobV19 = async function(jobId){
-    const nueva = str($('editarJobBilleteraNueva')?.value || '');
-    const motivo = str($('editarJobBilleteraMotivo')?.value || '');
-    if(!nueva){ try{toast('Seleccioná una billetera.', 'red');}catch(e){} return; }
-    if(!motivo){ try{toast('El motivo es obligatorio.', 'red');}catch(e){} return; }
+    if(box) box.innerHTML = '<div class="alert-box">Corrigiendo billetera del job...</div>';
     try{
-      const {data,error} = await supabaseClient.rpc('panel_operativo_editar_billetera_job_v19_min', {
+      const { data, error } = await supabaseClient.rpc('panel_operativo_corregir_billetera_job', {
         p_session_token: token(),
-        p_worker_job_id: Number(jobId),
-        p_billetera_id_nueva: Number(nueva),
-        p_motivo: motivo
+        p_worker_job_id: jobId,
+        p_billetera_nueva_id: billeteraId,
+        p_motivo: motivo,
+        p_operador: currentUser(),
+        p_pc_codigo: currentPc() || null
       });
       if(error) throw error;
-      const r = Array.isArray(data) ? data[0] : data;
-      if(r && r.ok === false) throw new Error(r.error || 'No se pudo editar la billetera.');
-      try{ cerrarModal(); }catch(e){}
-      try{ toast('Billetera corregida.', 'green'); }catch(e){}
-      try{ if(typeof cargarWorkerJobs === 'function') await cargarWorkerJobs(false); }catch(e){}
-      try{ if(typeof refrescarTodo === 'function') await refrescarTodo(false); }catch(e){}
+      const row = Array.isArray(data) ? data[0] : data;
+      if(box) box.innerHTML = `<div class="ok-box">${esc(row?.mensaje || 'Billetera corregida.')}</div>`;
+      try{ if(typeof cargarWorkerJobs === 'function') await cargarWorkerJobs(true); }catch(e){}
+      try{ if(typeof cargarSaldosOperativos === 'function') await cargarSaldosOperativos(true); }catch(e){}
+      try{ if(typeof renderCentroOperativo === 'function') renderCentroOperativo(); }catch(e){}
+      try{ if(typeof renderSelectsAjustes === 'function') renderSelectsAjustes(); }catch(e){}
     }catch(e){
-      try{ toast(e.message || String(e), 'red'); }catch(_){ alert(e.message || String(e)); }
+      if(box) box.innerHTML = `<div class="err-box">${esc(e.message || e)}</div>`;
     }
   };
-
-  // 3) Agregar botón en la cola sin reescribir resultado/logs ni cambiar vista.
-  function agregarBotonesEditarBilletera(){
-    const rows = document.querySelectorAll('#opsColaUnificada table tbody tr');
-    if(!rows.length) return;
-
-    // Lee los encabezados actuales para no depender de posiciones fijas si la tabla cambia.
-    const table = document.querySelector('#opsColaUnificada table');
-    const headers = Array.from(table?.querySelectorAll('thead th') || []).map(th=>norm(th.textContent));
-    const idxOrigen = headers.findIndex(h=>h.includes('ORIGEN'));
-    const idxTipo = headers.findIndex(h=>h.includes('TIPO'));
-    const idxWorker = headers.findIndex(h=>h.includes('WORKER'));
-    const idxAcciones = headers.findIndex(h=>h.includes('ACCIONES'));
-    if(idxTipo < 0 || idxWorker < 0 || idxAcciones < 0) return;
-
-    rows.forEach(tr=>{
-      if(tr.dataset.v19EditWalletChecked === '1') return;
-      tr.dataset.v19EditWalletChecked = '1';
-      const cells = tr.children;
-      const origenTxt = idxOrigen >= 0 ? norm(cells[idxOrigen]?.textContent || '') : '';
-      const tipoTxt = norm(cells[idxTipo]?.textContent || '');
-      const workerTxt = str(cells[idxWorker]?.textContent || '');
-      const m = workerTxt.match(/#\s*(\d+)/);
-      const jobId = m ? m[1] : '';
-      if(!jobId || !origenTxt.includes('MANUAL') || !tipoEditable(tipoTxt)) return;
-      const job = getJobById(jobId);
-      if(job?.solicitud_id) return;
-      const acc = cells[idxAcciones];
-      if(!acc || acc.querySelector(`[data-edit-wallet-job="${jobId}"]`)) return;
-      acc.querySelector('.ops-compact-actions')?.insertAdjacentHTML('beforeend', `<button data-edit-wallet-job="${attr(jobId)}" class="mini-btn yellow" onclick="abrirEditarBilleteraJobV19('${attr(jobId)}')">Editar billetera</button>`);
+  function decorateJobButtons(){
+    document.querySelectorAll('#opsColaUnificada .ops-main-table tbody tr').forEach(tr=>{
+      const actions = tr.querySelector('.ops-compact-actions');
+      if(!actions || actions.querySelector('.job-wallet-fix')) return;
+      const text = tr.innerText || '';
+      const m = text.match(/#\s*(\d+)/);
+      if(!m) return;
+      const btn = document.createElement('button');
+      btn.className = 'mini-btn yellow job-wallet-fix';
+      btn.type = 'button';
+      btn.textContent = 'Billetera';
+      btn.onclick = () => window.abrirCorregirBilleteraJob(m[1]);
+      actions.appendChild(btn);
     });
   }
-
-  const oldRenderCentro = window.renderCentroOperativo || (typeof renderCentroOperativo !== 'undefined' ? renderCentroOperativo : null);
+  const oldRenderSelects = window.renderSelectsAjustes;
+  window.renderSelectsAjustes = function(){
+    try{ if(typeof oldRenderSelects === 'function') oldRenderSelects.apply(this, arguments); }catch(e){}
+    fillSelect();
+  };
+  const oldRenderCentro = window.renderCentroOperativo;
   if(typeof oldRenderCentro === 'function'){
-    window.renderCentroOperativo = renderCentroOperativo = function(...args){
-      const r = oldRenderCentro.apply(this,args);
-      setTimeout(()=>{ instalarBotonesAjuste(); agregarBotonesEditarBilletera(); },80);
+    window.renderCentroOperativo = function(){
+      const r = oldRenderCentro.apply(this, arguments);
+      setTimeout(decorateJobButtons, 80);
       return r;
     };
   }
-
-  const oldVista = window.mostrarVista || (typeof mostrarVista !== 'undefined' ? mostrarVista : null);
-  if(typeof oldVista === 'function'){
-    window.mostrarVista = mostrarVista = function(vista){
-      const r = oldVista.apply(this,arguments);
-      setTimeout(()=>{ instalarBotonesAjuste(); agregarBotonesEditarBilletera(); },100);
-      return r;
-    };
-  }
-
-  const oldCargarWorker = window.cargarWorkerJobs || (typeof cargarWorkerJobs !== 'undefined' ? cargarWorkerJobs : null);
-  if(typeof oldCargarWorker === 'function'){
-    window.cargarWorkerJobs = cargarWorkerJobs = async function(...args){
-      const r = await oldCargarWorker.apply(this,args);
-      setTimeout(agregarBotonesEditarBilletera,120);
-      return r;
-    };
-  }
-
-  document.addEventListener('DOMContentLoaded',()=>setTimeout(()=>{instalarBotonesAjuste(); agregarBotonesEditarBilletera();},1200));
-  window.addEventListener('load',()=>setTimeout(()=>{instalarBotonesAjuste(); agregarBotonesEditarBilletera();},1600));
-  setInterval(()=>{ try{agregarBotonesEditarBilletera();}catch(e){} },2000);
+  document.addEventListener('input', e=>{
+    if(e.target && e.target.id === 'corregirJobBilleteraId') showJobHint(e.target.value);
+  });
+  document.addEventListener('DOMContentLoaded', ()=>setTimeout(()=>{ fillSelect(); decorateJobButtons(); }, 1200));
+  setInterval(decorateJobButtons, 2500);
 })();
 </script>
 
