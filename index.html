@@ -7979,5 +7979,246 @@ html, body { height:100%; overflow:hidden!important; }
 })();
 </script>
 
+<script>
+/* ---------- Historial de agente CSV + alerta de retiros 24 hs + movimientos ordenados ---------- */
+(function(){
+  if(window.__NODO_HISTORIAL_AGENTE_V1__) return;
+  window.__NODO_HISTORIAL_AGENTE_V1__ = true;
+
+  const $ = id => document.getElementById(id);
+  const txt = v => String(v ?? '');
+  const esc = v => txt(v).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const attr = esc;
+  const moneyFmt = n => Number(n || 0).toLocaleString('es-AR',{style:'currency',currency:'ARS',maximumFractionDigits:0});
+  const getToken = () => {
+    try{ if(typeof requireSessionToken === 'function') return requireSessionToken(); }catch(e){}
+    return window.panelSessionToken || localStorage.getItem('nodo_panel_session_token') || '';
+  };
+  const pcActual = () => {
+    try{ if(typeof pc === 'function') return pc(); }catch(e){}
+    return window.pcOperativa || '';
+  };
+  const valOf = id => ($(id)?.value || '').trim();
+  const parseMontoLocal = v => {
+    try{ if(typeof parseMonto === 'function') return parseMonto(v); }catch(e){}
+    const s=txt(v).replace(/\$/g,'').replace(/\s/g,'').replace(/\./g,'').replace(',', '.');
+    const n=Number(s);
+    return Number.isFinite(n)?n:NaN;
+  };
+  const notifyLocal = (msg, color='blue') => {
+    try{ if(typeof notify === 'function') return notify(msg,color); }catch(e){}
+    try{ if(typeof toast === 'function') return toast(msg,color); }catch(e){}
+    console.log(msg);
+  };
+
+  function splitCsvLine(line){
+    const out=[]; let cur='', q=false;
+    for(let i=0;i<line.length;i++){
+      const ch=line[i], next=line[i+1];
+      if(ch==='"' && q && next==='"'){cur+='"'; i++; continue;}
+      if(ch==='"'){q=!q; continue;}
+      if(ch===',' && !q){out.push(cur.trim()); cur=''; continue;}
+      cur+=ch;
+    }
+    out.push(cur.trim());
+    return out;
+  }
+
+  function parseCsvAgente(text){
+    const lines=txt(text).replace(/^\uFEFF/,'').split(/\r?\n/).map(l=>l.trim()).filter(Boolean);
+    const clean=lines.filter(l=>!/^sep\s*=/i.test(l));
+    if(!clean.length) return [];
+    const header=splitCsvLine(clean[0]).map(h=>h.toLowerCase());
+    const idx = name => header.findIndex(h=>h===name || h.normalize('NFD').replace(/[\u0300-\u036f]/g,'')===name);
+    const iFecha=idx('fecha'), iEstado=idx('estado'), iCantidad=idx('cantidad'), iTipo=idx('tipo'), iAlias=idx('alias'), iBalance=idx('balance');
+    if([iFecha,iCantidad,iTipo,iAlias].some(i=>i<0)) throw new Error('CSV invalido. Esperado: Fecha,Estado,Cantidad,Tipo,Alias,Balance');
+    return clean.slice(1).map(line=>{
+      const c=splitCsvLine(line);
+      return {
+        fecha:c[iFecha],
+        estado:iEstado>=0?c[iEstado]:'',
+        cantidad:iCantidad>=0?c[iCantidad]:'',
+        tipo:iTipo>=0?c[iTipo]:'',
+        alias:iAlias>=0?c[iAlias]:'',
+        balance:iBalance>=0?c[iBalance]:''
+      };
+    }).filter(r=>r.fecha && r.alias);
+  }
+
+  async function consultarRetirosRecientes(usuario, horas=24){
+    const token=getToken();
+    if(!token || !usuario) return [];
+    const {data,error}=await supabaseClient.rpc('panel_usuario_retiros_recientes',{
+      p_session_token:token,
+      p_pc_codigo:pcActual(),
+      p_usuario:usuario,
+      p_horas:horas
+    });
+    if(error) throw error;
+    return Array.isArray(data)?data:[];
+  }
+
+  function ensureRetiroAlertBox(){
+    let box=$('nodoRetiro24Alert');
+    if(box) return box;
+    const quick=$('manualWorkerResultadoInicio') || $('opsQuickTop');
+    if(!quick) return null;
+    box=document.createElement('div');
+    box.id='nodoRetiro24Alert';
+    box.style.marginTop='8px';
+    if(quick.id==='manualWorkerResultadoInicio') quick.parentNode.insertBefore(box, quick);
+    else quick.appendChild(box);
+    return box;
+  }
+
+  let checkTimer=null;
+  async function previewRetiro24(){
+    clearTimeout(checkTimer);
+    checkTimer=setTimeout(async()=>{
+      const usuario=valOf('manualWorkerUsuarioInicio');
+      const monto=parseMontoLocal(valOf('manualWorkerMontoInicio'));
+      const box=ensureRetiroAlertBox();
+      if(!box) return;
+      if(!usuario || !(monto<0)){ box.innerHTML=''; return; }
+      box.innerHTML='<div class="alert-box">Consultando historial de retiros 24 hs...</div>';
+      try{
+        const rows=await consultarRetirosRecientes(usuario,24);
+        if(!rows.length){ box.innerHTML='<div class="ok-box">Sin retiros importados para este usuario en las ultimas 24 hs.</div>'; return; }
+        box.innerHTML=`<div class="err-box"><b>Atencion:</b> ${esc(usuario)} ya registra ${rows.length} retiro/s en ultimas 24 hs.<br>${rows.slice(0,3).map(r=>`${esc(new Date(r.fecha).toLocaleString('es-AR'))} · ${moneyFmt(r.cantidad)} · ${esc(r.tipo)}`).join('<br>')}</div>`;
+      }catch(e){
+        box.innerHTML=`<div class="alert-box">No pude consultar historial de Agente: ${esc(e.message||e)}</div>`;
+      }
+    },450);
+  }
+
+  document.addEventListener('input', e=>{
+    if(e.target && ['manualWorkerUsuarioInicio','manualWorkerMontoInicio'].includes(e.target.id)) previewRetiro24();
+  });
+
+  const oldCrearRapida = window.crearWorkerJobManualInicio;
+  window.crearWorkerJobManualInicio = async function(){
+    const usuario=valOf('manualWorkerUsuarioInicio');
+    const monto=parseMontoLocal(valOf('manualWorkerMontoInicio'));
+    if(usuario && monto<0){
+      try{
+        const rows=await consultarRetirosRecientes(usuario,24);
+        if(rows.length){
+          const msg=`${usuario} ya registra ${rows.length} retiro/s importado/s en las ultimas 24 hs. ¿Enviar retiro igual?`;
+          if(!confirm(msg)) return;
+        }
+      }catch(e){
+        if(!confirm('No pude consultar historial de retiros. ¿Enviar igual?')) return;
+      }
+    }
+    return oldCrearRapida.apply(this, arguments);
+  };
+
+  function walletOptionsHtml(){
+    const src = window.saldosOperativos?.billeteras || window.billeteras || window.billeterasTodas || [];
+    return '<option value="">Todas las billeteras</option>' + (Array.isArray(src)?src:[]).map(b=>{
+      const id=b.id||b.billetera_id||b.ID_BILLETERA||b.ID;
+      const name=b.nombre_visible||b.NOMBRE_VISIBLE||b.BILLETERA_NOMBRE||b.nombre||('Billetera #'+id);
+      return id?`<option value="${attr(id)}">${esc(name)}</option>`:'';
+    }).join('');
+  }
+
+  function ensureAjustesExtras(){
+    const grid=document.querySelector('#viewAjustes .ops-grid');
+    if(!grid || $('nodoHistorialAgentePanel')) return;
+    const wrap=document.createElement('div');
+    wrap.className='ops-panel';
+    wrap.id='nodoHistorialAgentePanel';
+    wrap.innerHTML=`
+      <div class="ops-panel-title">Historial Agente CSV</div>
+      <div class="small" style="margin-bottom:10px">Importa operaciones del Agente para alertar retiros repetidos. No modifica saldos ni jobs.</div>
+      <label>Archivo CSV</label><input id="agenteCsvFile" type="file" accept=".csv,text/csv">
+      <label>Fuente / mes</label><input id="agenteCsvFuente" placeholder="ej: agente_octubre_2025">
+      <button class="btn btn-primary" onclick="nodoImportarCsvAgente()">Importar CSV</button>
+      <div id="agenteCsvResultado" style="margin-top:12px"></div>`;
+    grid.prepend(wrap);
+
+    const mov=document.createElement('div');
+    mov.className='ops-panel';
+    mov.id='nodoMovimientosOrdenadosPanel';
+    mov.innerHTML=`
+      <div class="ops-panel-title">Movimientos de billetera ordenados</div>
+      <div class="small" style="margin-bottom:10px">Vista auditada por fecha: jobs, ajustes, transferencias y correcciones.</div>
+      <label>Billetera</label><select id="movOrdenadosBilletera"></select>
+      <button class="btn btn-blue" onclick="nodoCargarMovimientosOrdenados()">Ver movimientos</button>
+      <div id="movOrdenadosResultado" style="margin-top:12px"></div>`;
+    grid.prepend(mov);
+    setTimeout(()=>{ const s=$('movOrdenadosBilletera'); if(s) s.innerHTML=walletOptionsHtml(); },200);
+  }
+
+  window.nodoImportarCsvAgente = async function(){
+    const file=$('agenteCsvFile')?.files?.[0];
+    const out='agenteCsvResultado';
+    if(!file){ if($(out)) $(out).innerHTML='<div class="err-box">Selecciona un CSV.</div>'; return; }
+    try{
+      const text=await file.text();
+      const rows=parseCsvAgente(text);
+      if(!rows.length) throw new Error('No encontre filas validas en el CSV.');
+      if($(out)) $(out).innerHTML=`<div class="alert-box">Importando ${rows.length} operaciones...</div>`;
+      const {data,error}=await supabaseClient.rpc('admin_importar_operaciones_agente',{
+        p_session_token:getToken(),
+        p_pc_codigo:pcActual(),
+        p_operaciones:rows,
+        p_fuente:valOf('agenteCsvFuente') || file.name
+      });
+      if(error) throw error;
+      if($(out)) $(out).innerHTML=`<div class="ok-box">Importadas: <b>${esc(data?.importados ?? 0)}</b>. Duplicadas omitidas: <b>${esc(data?.omitidos_duplicados ?? 0)}</b>.</div>`;
+      notifyLocal('CSV de Agente importado','green');
+    }catch(e){
+      if($(out)) $(out).innerHTML=`<div class="err-box">${esc(e.message||e)}</div>`;
+    }
+  };
+
+  window.nodoCargarMovimientosOrdenados = async function(){
+    const out=$('movOrdenadosResultado');
+    if(out) out.innerHTML='<div class="alert-box">Cargando movimientos...</div>';
+    try{
+      const raw=valOf('movOrdenadosBilletera');
+      const {data,error}=await supabaseClient.rpc('panel_operativo_get_billetera_movimientos_ordenados',{
+        p_session_token:getToken(),
+        p_pc_codigo:pcActual(),
+        p_billetera_id:raw?Number(raw):null,
+        p_limit:300
+      });
+      if(error) throw error;
+      const rows=Array.isArray(data)?data:[];
+      if(!rows.length){ if(out) out.innerHTML='<div class="alert-box">Sin movimientos para mostrar.</div>'; return; }
+      const html=`<div class="table-wrap"><table><thead><tr><th>Fecha</th><th>Billetera</th><th>Tipo</th><th>Usuario</th><th>Monto</th><th>Origen</th><th>Ref</th><th>Motivo</th></tr></thead><tbody>${rows.map(r=>`<tr>
+        <td>${esc(new Date(r.created_at).toLocaleString('es-AR'))}</td>
+        <td>${esc(r.billetera_nombre||'#'+r.billetera_id)}</td>
+        <td>${esc(r.tipo_movimiento||'-')}</td>
+        <td>${esc(r.usuario||'-')}</td>
+        <td>${r.signo<0?'-':'+'} ${moneyFmt(r.monto)}</td>
+        <td>${esc(r.origen||'-')}</td>
+        <td>${r.worker_job_id?'Job #'+esc(r.worker_job_id):r.solicitud_id?'Sol #'+esc(r.solicitud_id):'-'}</td>
+        <td>${esc(r.motivo||'-')}</td>
+      </tr>`).join('')}</tbody></table></div>`;
+      if(out) out.innerHTML=html;
+    }catch(e){
+      if(out) out.innerHTML=`<div class="err-box">${esc(e.message||e)}</div>`;
+    }
+  };
+
+  const oldMostrarVista = window.mostrarVista;
+  if(typeof oldMostrarVista === 'function'){
+    window.mostrarVista = function(v){
+      const r=oldMostrarVista.apply(this, arguments);
+      if(v==='ajustes') setTimeout(ensureAjustesExtras,100);
+      return r;
+    };
+  }
+  const oldRenderSelectsAjustes = window.renderSelectsAjustes;
+  window.renderSelectsAjustes = function(){
+    try{ if(typeof oldRenderSelectsAjustes === 'function') oldRenderSelectsAjustes.apply(this, arguments); }catch(e){}
+    ensureAjustesExtras();
+    const s=$('movOrdenadosBilletera'); if(s) s.innerHTML=walletOptionsHtml();
+  };
+  document.addEventListener('DOMContentLoaded',()=>setTimeout(()=>{ ensureAjustesExtras(); previewRetiro24(); },1200));
+})();
+</script>
 </body>
 </html>
