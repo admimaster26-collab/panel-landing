@@ -8296,5 +8296,76 @@ html, body { height:100%; overflow:hidden!important; }
   document.addEventListener('DOMContentLoaded',()=>setTimeout(hideSensitiveAjustes,1200));
 })();
 </script>
+<script>
+/* ---------- Acciones Agentes: crear usuario / cambiar clave ---------- */
+(function(){
+  if(window.__NODO_AGENT_USER_ACTIONS_V1__) return;
+  window.__NODO_AGENT_USER_ACTIONS_V1__ = true;
+
+  const $ = id => document.getElementById(id);
+  const esc = v => String(v ?? '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+  const val = id => String($(id)?.value ?? '').trim();
+  const set = (id, html) => { const el=$(id); if(el) el.innerHTML=html; };
+  const pc = () => (typeof pcOperativa !== 'undefined' && pcOperativa) ? pcOperativa : 'P1';
+  const token = () => {
+    if(typeof requireSessionToken === 'function') return requireSessionToken();
+    return window.panelSessionToken || '';
+  };
+
+  function ensureAgentUserActions(){
+    if($('agentUserActionsBox')) return;
+    const result = $('manualWorkerResultadoInicio');
+    const panel = result?.closest('.ops-panel');
+    if(!panel) return;
+    result.insertAdjacentHTML('beforebegin', `
+      <div id="agentUserActionsBox" style="margin-top:12px;border-top:1px solid #273142;padding-top:12px">
+        <div class="ops-panel-title" style="font-size:15px;margin-bottom:8px">Usuario Agentes</div>
+        <div class="ops-manual-grid">
+          <div><label>Clave</label><input id="agentUserClaveInicio" type="password" autocomplete="new-password" placeholder="clave nueva"></div>
+          <div><label>Accion</label><select id="agentUserTipoInicio"><option value="CREAR_USUARIO">Crear usuario</option><option value="CAMBIAR_CLAVE">Cambiar clave</option></select></div>
+          <div><label>&nbsp;</label><button class="btn btn-primary" type="button" style="height:38px;margin:0;padding:0 12px" onclick="crearJobUsuarioAgentesInicio()">Enviar accion</button></div>
+        </div>
+        <div class="small">Usa el usuario escrito en Accion rapida. La clave no se muestra en la cola ni en el resultado.</div>
+      </div>
+    `);
+  }
+
+  window.crearJobUsuarioAgentesInicio = async function(){
+    const out = 'manualWorkerResultadoInicio';
+    const usuario = val('manualWorkerUsuarioInicio');
+    const clave = val('agentUserClaveInicio');
+    const tipo = val('agentUserTipoInicio') || 'CREAR_USUARIO';
+    const obs = val('manualWorkerObsInicio');
+
+    if(!usuario){ set(out, '<div class="err-box">Ingresa el usuario en Accion rapida.</div>'); return; }
+    if(!clave || clave.length < 4){ set(out, '<div class="err-box">Ingresa una clave valida.</div>'); return; }
+    if(tipo === 'CREAR_USUARIO' && clave.length < 6){ set(out, '<div class="err-box">Para crear usuario, la clave debe tener al menos 6 caracteres.</div>'); return; }
+    if(!/^[A-Za-z0-9]+$/.test(clave)){ set(out, '<div class="err-box">La clave solo puede tener letras y numeros.</div>'); return; }
+
+    set(out, `<div class="alert-box">Enviando ${tipo === 'CREAR_USUARIO' ? 'creacion de usuario' : 'cambio de clave'} al worker...</div>`);
+    const {data,error} = await supabaseClient.rpc('operativo_crear_worker_job_usuario_clave_v1', {
+      p_session_token: token(),
+      p_pc_codigo: pc(),
+      p_usuario: usuario,
+      p_tipo_accion: tipo,
+      p_clave: clave,
+      p_observacion: obs || ''
+    });
+    $('agentUserClaveInicio').value = '';
+    if(error){ set(out, `<div class="err-box">${esc(error.message || error)}</div>`); return; }
+    const row = Array.isArray(data) ? data[0] : data;
+    if(row?.ok === false){ set(out, `<div class="err-box">${esc(row.mensaje || row.error || 'No se pudo crear el job.')}</div>`); return; }
+    set(out, `<div class="ok-box">${tipo === 'CREAR_USUARIO' ? 'Crear usuario' : 'Cambiar clave'} enviado al worker. Job: <b>${esc(row?.job_id || '-')}</b></div>`);
+    try{ await refrescarTodo(false); }catch(e){}
+  };
+
+  document.addEventListener('DOMContentLoaded',()=>setTimeout(ensureAgentUserActions,1000));
+  const oldRenderCentro = window.renderCentroOperativo;
+  if(typeof oldRenderCentro === 'function'){
+    window.renderCentroOperativo = function(){ const r=oldRenderCentro.apply(this, arguments); setTimeout(ensureAgentUserActions,50); return r; };
+  }
+})();
+</script>
 </body>
 </html>
+
