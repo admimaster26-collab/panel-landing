@@ -7304,6 +7304,27 @@ html, body { height:100%; overflow:hidden!important; }
     if(!force && window.__NODO_JOB_WALLET_MAP_AT__ && now - window.__NODO_JOB_WALLET_MAP_AT__ < 5000) return window.__NODO_JOB_WALLET_MAP__ || {};
     if(!window.supabaseClient || !pc()) return window.__NODO_JOB_WALLET_MAP__ || {};
     try{
+      const rpc = await supabaseClient.rpc('panel_operativo_get_worker_job_billeteras', {
+        p_session_token: token(),
+        p_pc_codigo: pc(),
+        p_limit: 1000
+      });
+      if(!rpc.error && Array.isArray(rpc.data)){
+        const map = {};
+        rpc.data.forEach(m=>{
+          const jid = str(m.worker_job_id);
+          if(jid && m.billetera_id && !map[jid]) map[jid] = str(m.billetera_id);
+        });
+        window.__NODO_JOB_WALLET_MAP__ = map;
+        window.__NODO_JOB_WALLET_MAP_AT__ = now;
+        try{ Object.entries(map).forEach(([jobId,billeteraId])=>rememberJobWallet(jobId,billeteraId)); }catch(e){}
+        return map;
+      }
+      if(rpc.error) console.warn('RPC job/billetera no disponible:', rpc.error.message || rpc.error);
+    }catch(e){
+      console.warn('RPC job/billetera no disponible:', e.message || e);
+    }
+    try{
       const {data,error}=await supabaseClient
         .from('billetera_movimientos')
         .select('worker_job_id,billetera_id,created_at')
