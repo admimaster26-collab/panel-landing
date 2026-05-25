@@ -8404,8 +8404,8 @@ html, body { height:100%; overflow:hidden!important; }
 </style>
 <script id="nodo-quick-polish-js">
 (function(){
-  if(window.__NODO_QUICK_POLISH_V2__) return;
-  window.__NODO_QUICK_POLISH_V2__ = true;
+  if(window.__NODO_QUICK_POLISH_V3__) return;
+  window.__NODO_QUICK_POLISH_V3__ = true;
 
   const $ = id => document.getElementById(id);
   const html = v => String(v ?? '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
@@ -8416,164 +8416,172 @@ html, body { height:100%; overflow:hidden!important; }
   const PLATFORM_LINK = window.NODO_PLATAFORMA_LINK || 'https://bet300.club';
   let quickInputAt = 0;
   let queuedRefresh = false;
-  let lastSeenJobNotice = null;
-
-  function quickElementActive(){
-    const el = document.activeElement;
-    return !!(el && QUICK_IDS.has(el.id));
-  }
-  function quickHasDraft(){
-    for(const id of QUICK_IDS){
-      const el=$(id);
-      if(el && !el.disabled && txt(el.value)) return true;
+  let visibleNoticeKey = '';
+  try{
+    if(sessionStorage.getItem('nodo_quick_polish_v3_cleaned') !== '1'){
+      localStorage.removeItem('nodo_last_agent_user_request');
+      sessionStorage.setItem('nodo_quick_polish_v3_cleaned', '1');
     }
-    return false;
-  }
-  function quickLocked(){
-    return quickElementActive() || (Date.now() - quickInputAt < 4500);
-  }
-  function rememberQuickTouch(ev){
-    if(ev?.target && QUICK_IDS.has(ev.target.id)) quickInputAt = Date.now();
-  }
+  }catch(e){}
+
+  function now(){ return Date.now(); }
+  function quickElementActive(){ const el = document.activeElement; return !!(el && QUICK_IDS.has(el.id)); }
+  function quickHasDraft(){ for(const id of QUICK_IDS){ const el=$(id); if(el && !el.disabled && txt(el.value)) return true; } return false; }
+  function quickLocked(){ return quickElementActive() || (now() - quickInputAt < 4500); }
+  function rememberQuickTouch(ev){ if(ev?.target && QUICK_IDS.has(ev.target.id)) quickInputAt = now(); }
   document.addEventListener('input', rememberQuickTouch, true);
   document.addEventListener('keydown', rememberQuickTouch, true);
   document.addEventListener('focusin', rememberQuickTouch, true);
   document.addEventListener('focusout', ev=>{
-    if(ev?.target && QUICK_IDS.has(ev.target.id)){
-      setTimeout(()=>{
-        if(!quickLocked() && queuedRefresh){ queuedRefresh=false; try{ window.refrescarTodo?.(false); }catch(e){} }
-      }, 1200);
-    }
+    if(ev?.target && QUICK_IDS.has(ev.target.id)) setTimeout(()=>{ if(!quickLocked() && queuedRefresh){ queuedRefresh=false; try{ window.refrescarTodo?.(false); }catch(e){} } }, 1200);
   }, true);
+
+  function pendingGet(){ try{ return JSON.parse(localStorage.getItem('nodo_last_agent_user_request') || 'null'); }catch(e){ return null; } }
+  function pendingSet(obj){ try{ localStorage.setItem('nodo_last_agent_user_request', JSON.stringify(obj)); }catch(e){} }
+  function pendingClear(){ try{ localStorage.removeItem('nodo_last_agent_user_request'); }catch(e){} }
+  function doneKey(id){ return 'nodo_agent_user_notice_done_' + id; }
+  function wasDone(id){ try{ return !!sessionStorage.getItem(doneKey(id)); }catch(e){ return false; } }
+  function markDone(id){ try{ sessionStorage.setItem(doneKey(id),'1'); }catch(e){} }
 
   function ensureBubbles(){
     const result = $('manualWorkerResultadoInicio');
     if(!result) return null;
     let box = $('quickActionBubbles');
-    if(!box){
-      box = document.createElement('div');
-      box.id = 'quickActionBubbles';
-      box.className = 'quick-bubbles';
-      result.parentNode.insertBefore(box, result);
-    }
+    if(!box){ box = document.createElement('div'); box.id = 'quickActionBubbles'; box.className = 'quick-bubbles'; result.parentNode.insertBefore(box, result); }
     return box;
   }
   function bubble(kind, body, key, ttl){
-    const box = ensureBubbles();
-    if(!box) return;
-    const id = key ? 'qb_' + String(key).replace(/[^a-zA-Z0-9_-]/g,'_') : 'qb_' + Date.now();
-    let el = $(id);
-    if(!el){ el = document.createElement('div'); el.id=id; el.className='quick-bubble ' + (kind||'info'); box.prepend(el); }
+    const box = ensureBubbles(); if(!box) return;
+    key = key || ('msg_' + now());
+    if(key !== visibleNoticeKey){ box.innerHTML = ''; visibleNoticeKey = key; }
+    let el = $('qb_current');
+    if(!el){ el = document.createElement('div'); el.id='qb_current'; box.appendChild(el); }
+    el.className='quick-bubble ' + (kind||'info');
     el.innerHTML = body;
-    if(ttl){ setTimeout(()=>{ try{ el.remove(); }catch(e){} }, ttl); }
+    if(ttl){ setTimeout(()=>{ if(visibleNoticeKey===key){ box.innerHTML=''; visibleNoticeKey=''; } }, ttl); }
   }
+  function clearBubbles(){ const box=$('quickActionBubbles'); if(box) box.innerHTML=''; visibleNoticeKey=''; }
   window.nodoQuickBubble = bubble;
 
   function copyText(text, label){
     if(typeof window.copiarTextoOperativo === 'function') return window.copiarTextoOperativo(text, label || 'mensaje');
     return navigator.clipboard?.writeText(text).catch(()=>{});
   }
-  window.nodoCopiarUsuarioCreado = function(usuario, clave){
-    const msg = mensajeUsuario(usuario, clave || DEFAULT_AGENT_PASS);
-    copyText(msg, 'datos de usuario');
-    bubble('ok', 'Mensaje de usuario copiado para WhatsApp.', 'copied_user', 3500);
-  };
-
   function mensajeUsuario(usuario, clave){
-    return [
-      'Datos de acceso a la plataforma:',
-      'Usuario: ' + usuario,
-      'Clave: ' + clave,
-      'Link: ' + PLATFORM_LINK,
-      '',
-      'Podés cambiar la clave desde la plataforma si querés.'
-    ].join('\n');
+    return ['Datos de acceso a la plataforma:', 'Usuario: ' + usuario, 'Clave: ' + clave, 'Link: ' + PLATFORM_LINK, '', 'Podés cambiar la clave desde la plataforma si querés.'].join('\n');
   }
-  function mostrarMensajeUsuarioCreado(usuario, clave){
-    const result = $('manualWorkerResultadoInicio');
-    if(!result || !usuario) return;
+  window.nodoCopiarUsuarioCreado = function(usuario, clave){ copyText(mensajeUsuario(usuario, clave || DEFAULT_AGENT_PASS), 'datos de usuario'); bubble('ok', 'Mensaje de usuario copiado para WhatsApp.', 'copied_user', 2500); };
+  function mostrarMensajeUsuarioCreado(usuario, clave, jobId){
+    if(!usuario || !jobId || wasDone(jobId)) return;
+    markDone(jobId);
+    const result = $('manualWorkerResultadoInicio'); if(!result) return;
     const msg = mensajeUsuario(usuario, clave || DEFAULT_AGENT_PASS);
-    result.innerHTML = '<div class="quick-success-card"><b>Usuario creado correctamente</b><textarea readonly>'+html(msg)+'</textarea><button class="quick-copy-btn" type="button" onclick="nodoCopiarUsuarioCreado(\''+attr(usuario)+'\',\''+attr(clave || DEFAULT_AGENT_PASS)+'\')">Copiar mensaje</button></div>';
-    bubble('ok', 'Usuario <b>'+html(usuario)+'</b> creado. Dejé el mensaje listo para copiar.', 'created_'+usuario, 12000);
+    result.innerHTML = '<div class="quick-success-card" id="usuarioCreadoCard"><b>Usuario creado correctamente</b><textarea readonly>'+html(msg)+'</textarea><button class="quick-copy-btn" type="button" onclick="nodoCopiarUsuarioCreado(\''+attr(usuario)+'\',\''+attr(clave || DEFAULT_AGENT_PASS)+'\')">Copiar mensaje</button></div>';
+    bubble('ok', 'Usuario <b>'+html(usuario)+'</b> creado. Dejé el mensaje listo para copiar.', 'created_'+jobId, 8000);
+    setTimeout(()=>{ const card=$('usuarioCreadoCard'); if(card) card.remove(); clearBubbles(); }, 30000);
   }
 
   function looksDuplicate(text){ return /duplicad|duplicate|already|existe|existente|usado/i.test(String(text||'')); }
   function suggestAliases(alias){
     const raw = txt(alias).replace(/[^a-zA-Z0-9]/g,'') || 'usuario';
     const base = raw.slice(0, 18);
-    const stamp = String(Date.now()).slice(-4);
+    const stamp = String(now()).slice(-4);
     const stem = (base.replace(/[0-9]+$/,'') || base).slice(0, 14);
     const nums = base.match(/[0-9]+$/)?.[0] || stamp.slice(-2);
     const mid = Math.max(1, Math.ceil(stem.length / 2));
     const ins = (s,p)=>s.slice(0,p)+'x'+s.slice(p);
-    return Array.from(new Set([
-      ins(stem, mid) + nums,
-      ins(stem, Math.max(1, stem.length - 1)) + stamp.slice(-2),
-      stem + 'x' + (Number(nums.slice(-2) || 10) + 1),
-      ins(base, Math.max(1, Math.floor(base.length / 2))) + stamp.slice(-3)
-    ])).filter(v => v.toLowerCase() !== base.toLowerCase()).slice(0,4);
+    return Array.from(new Set([ins(stem, mid)+nums, ins(stem, Math.max(1, stem.length-1))+stamp.slice(-2), stem+'x'+(Number(nums.slice(-2)||10)+1), ins(base, Math.max(1, Math.floor(base.length/2)))+stamp.slice(-3)])).filter(v => v.toLowerCase() !== base.toLowerCase()).slice(0,4);
   }
+  function suggestionsFromText(error, alias){
+    const m = String(error||'').match(/Sugerencias:\s*([^\.]+)/i);
+    const list = m ? m[1].split(',').map(x=>x.trim()).filter(Boolean).slice(0,4) : [];
+    return list.length ? list : suggestAliases(alias);
+  }
+
   window.nodoTomarAliasSugerido = function(alias){
-    const clean = txt(alias);
-    if(!clean) return;
+    const clean = txt(alias); if(!clean) return;
     const userInput = $('manualWorkerUsuarioInicio') || $('manualWorkerUsuario');
     if(userInput){ userInput.value = clean; userInput.dispatchEvent(new Event('input', {bubbles:true})); userInput.focus(); }
     const tipo = $('agentUserTipoInicio'); if(tipo) tipo.value = 'CREAR_USUARIO';
     const clave = $('agentUserClaveInicio'); if(clave && !txt(clave.value)) clave.value = DEFAULT_AGENT_PASS;
-    bubble('info', 'Alias sugerido cargado: <b>'+html(clean)+'</b>. Revisá y enviá Crear usuario.', 'alias_loaded', 6000);
+    bubble('info', 'Alias sugerido cargado: <b>'+html(clean)+'</b>. Revisá y enviá Crear usuario.', 'alias_loaded', 5000);
   };
+
+  window.nodoReintentarAliasMismoJob = async function(jobId, alias){
+    const id = Number(jobId); const clean = txt(alias);
+    if(!id || !clean) return;
+    if(!confirm('Reintentar el mismo job #' + id + ' usando el alias ' + clean + '?')) return;
+    const pending = pendingGet() || {};
+    const clave = txt($('agentUserClaveInicio')?.value) || pending.clave || DEFAULT_AGENT_PASS;
+    let ok = false;
+    try{
+      const rpc = await supabaseClient.rpc('operativo_reintentar_worker_job_usuario_v1', {
+        p_session_token: requireSessionToken(),
+        p_worker_job_id: id,
+        p_usuario: clean,
+        p_clave: clave
+      });
+      if(rpc.error) throw rpc.error;
+      ok = true;
+    }catch(e){
+      bubble('err', 'No pude reintentar el mismo job. Ejecutá el SQL <b>sql_worker_usuario_reintento_alias_v1.sql</b> y probamos de nuevo. Detalle: '+html(e.message||e), 'retry_sql_'+id, 16000);
+      return;
+    }
+    if(ok){
+      pendingSet({usuario: clean, clave, tipo:'CREAR_USUARIO', jobId:id, ts:now()});
+      const userInput = $('manualWorkerUsuarioInicio'); if(userInput) userInput.value = clean;
+      bubble('info', 'Job #'+id+' reintentado con alias <b>'+html(clean)+'</b>. No se creó una solicitud nueva.', 'retry_'+id, 9000);
+      try{ cerrarModal?.(); }catch(e){}
+      try{ await cargarWorkerJobs?.(true); await refrescarTodo?.(false); }catch(e){}
+    }
+  };
+
+  function duplicateButtons(job, mode){
+    const id = job?.id || job?.job_id; if(!id) return '';
+    const suggestions = suggestionsFromText(job.error_mensaje || job.resultado || '', job.usuario);
+    return '<div class="ops-compact-actions" style="margin-top:8px">'+suggestions.map(a=>'<button class="mini-btn green" type="button" onclick="nodoReintentarAliasMismoJob(\''+attr(id)+'\',\''+attr(a)+'\')">Usar '+html(a)+'</button>').join('')+'</div>';
+  }
   function showDuplicateHelp(job){
-    const alias = job?.usuario || txt($('manualWorkerUsuarioInicio')?.value);
-    const suggestions = Array.isArray(job?.payload?.sugerencias) && job.payload.sugerencias.length ? job.payload.sugerencias : suggestAliases(alias);
-    const buttons = suggestions.map(a=>'<button type="button" class="alias-chip" onclick="nodoTomarAliasSugerido(\''+attr(a)+'\')">Usar '+html(a)+'</button>').join('');
-    bubble('warn', '<b>Alias duplicado:</b> '+html(alias)+'. Probá una variante: '+buttons, 'dup_'+(job?.id||alias), 0);
+    if(!job?.id || wasDone('dup_'+job.id)) return;
+    const buttons = suggestionsFromText(job.error_mensaje || job.resultado || '', job.usuario).map(a=>'<button type="button" class="alias-chip" onclick="nodoReintentarAliasMismoJob(\''+attr(job.id)+'\',\''+attr(a)+'\')">Usar '+html(a)+'</button>').join('');
+    bubble('warn', '<b>Alias duplicado:</b> '+html(job.usuario)+'. Reintentá el mismo job con una variante: '+buttons, 'dup_'+job.id, 0);
   }
 
   const oldCreateAgent = window.crearJobUsuarioAgentesInicio;
   if(typeof oldCreateAgent === 'function'){
     window.crearJobUsuarioAgentesInicio = async function(){
+      clearBubbles();
       const tipo = txt($('agentUserTipoInicio')?.value) || 'CREAR_USUARIO';
       const user = txt($('manualWorkerUsuarioInicio')?.value);
       const passEl = $('agentUserClaveInicio');
       if(tipo === 'CREAR_USUARIO' && passEl && !txt(passEl.value)) passEl.value = DEFAULT_AGENT_PASS;
       const clave = txt(passEl?.value) || DEFAULT_AGENT_PASS;
-      try{ localStorage.setItem('nodo_last_agent_user_request', JSON.stringify({usuario:user, clave, tipo, ts:Date.now()})); }catch(e){}
+      pendingSet({usuario:user, clave, tipo, ts:now()});
       const res = await oldCreateAgent.apply(this, arguments);
       const outText = $('manualWorkerResultadoInicio')?.innerText || '';
       const jobId = outText.match(/Job:\s*(\d+)/i)?.[1];
-      if(jobId){
-        try{ localStorage.setItem('nodo_last_agent_user_request', JSON.stringify({usuario:user, clave, tipo, jobId:Number(jobId), ts:Date.now()})); }catch(e){}
-        bubble('info', 'Job #'+jobId+' enviado para '+(tipo==='CREAR_USUARIO'?'crear usuario':'cambiar clave')+'.', 'sent_'+jobId, 5000);
-      }
+      if(jobId){ pendingSet({usuario:user, clave, tipo, jobId:Number(jobId), ts:now()}); bubble('info', 'Job #'+jobId+' enviado para '+(tipo==='CREAR_USUARIO'?'crear usuario':'cambiar clave')+'.', 'sent_'+jobId, 4500); }
       return res;
     };
   }
 
-  function scanAgentJobs(){
-    let pending=null;
-    try{ pending = JSON.parse(localStorage.getItem('nodo_last_agent_user_request') || 'null'); }catch(e){}
+  function scanPendingAgentJob(){
+    const pending = pendingGet();
+    if(!pending || !pending.jobId) return;
     const jobs = Array.isArray(window.workerJobs) ? window.workerJobs : [];
-    if(!jobs.length) return;
-    const interesting = jobs.filter(j => /CREAR_USUARIO|CAMBIAR_CLAVE/i.test(String(j.tipo_accion||'')));
-    for(const job of interesting.slice(0,8)){
-      const err = job.error_mensaje || job.resultado || '';
-      const state = String(job.estado || '').toUpperCase();
-      const id = job.id || job.job_id;
-      const noticeKey = id + ':' + state + ':' + err;
-      if(noticeKey === lastSeenJobNotice) continue;
-      if(state === 'COMPLETADO' && String(job.tipo_accion).toUpperCase()==='CREAR_USUARIO'){
-        if(pending && (!pending.jobId || Number(pending.jobId)===Number(id))){
-          mostrarMensajeUsuarioCreado(job.usuario || pending.usuario, pending.clave || DEFAULT_AGENT_PASS);
-          try{ localStorage.removeItem('nodo_last_agent_user_request'); }catch(e){}
-        } else {
-          bubble('ok', 'Usuario <b>'+html(job.usuario || '')+'</b> creado correctamente.', 'ok_'+id, 9000);
-        }
-        lastSeenJobNotice = noticeKey;
-      } else if(err && /REINTENTAR|ERROR/i.test(state + ' ' + (job.worker_estado||''))){
-        if(looksDuplicate(err) && String(job.tipo_accion).toUpperCase()==='CREAR_USUARIO') showDuplicateHelp(job);
-        else bubble('err', '<b>Error en '+html(job.tipo_accion||'job')+':</b> '+html(err), 'err_'+id, 12000);
-        lastSeenJobNotice = noticeKey;
-      }
+    const job = jobs.find(j => Number(j.id || j.job_id) === Number(pending.jobId));
+    if(!job) return;
+    const id = job.id || job.job_id;
+    const state = String(job.estado || '').toUpperCase();
+    const err = job.error_mensaje || job.resultado || '';
+    if(state === 'COMPLETADO'){
+      if(String(job.tipo_accion).toUpperCase()==='CREAR_USUARIO') mostrarMensajeUsuarioCreado(job.usuario || pending.usuario, pending.clave || DEFAULT_AGENT_PASS, id);
+      pendingClear();
+      return;
+    }
+    if(err && /REINTENTAR|ERROR|REQUIERE_MANUAL/i.test(state + ' ' + (job.worker_estado||''))){
+      if(looksDuplicate(err) && String(job.tipo_accion).toUpperCase()==='CREAR_USUARIO') showDuplicateHelp(job);
+      else bubble('err', '<b>Error en '+html(job.tipo_accion||'job')+':</b> '+html(err), 'err_'+id, 12000);
     }
   }
 
@@ -8597,22 +8605,27 @@ html, body { height:100%; overflow:hidden!important; }
       card.dataset.copyMsgReady = '1';
     });
   }
-  window.nodoCopiarWalletMensaje = function(i){
-    const msg = window.__walletCopyMessages?.[i];
-    if(msg) copyText(msg, 'datos de billetera');
-    bubble('ok', 'Datos de billetera copiados para WhatsApp.', 'wallet_copied', 3500);
-  };
+  window.nodoCopiarWalletMensaje = function(i){ const msg = window.__walletCopyMessages?.[i]; if(msg) copyText(msg, 'datos de billetera'); bubble('ok', 'Datos de billetera copiados para WhatsApp.', 'wallet_copied', 2500); };
+
+  const oldAbrirDetalle = window.abrirDetalleWorkerJob;
+  if(typeof oldAbrirDetalle === 'function'){
+    window.abrirDetalleWorkerJob = function(jobId){
+      const j = (window.workerJobs || []).find(x => String(x.id) === String(jobId));
+      if(!j || !looksDuplicate(j.error_mensaje || j.resultado || '')) return oldAbrirDetalle.apply(this, arguments);
+      abrirModal('Detalle worker #' + jobId, `
+        <div class="verify-box"><div class="verify-title">Job #${html(j.id)}</div>
+          ${verifyRow('PC', j.pc_codigo || '-')}${verifyRow('Usuario', j.usuario || '-')}${verifyRow('Tipo', j.tipo_accion || '-')}${verifyRow('Monto', money(j.monto || 0))}${verifyRow('Estado', j.estado || '-')}${verifyRow('Intentos', `${j.intentos || 0} / ${j.max_intentos || 3}`)}
+          <div class="worker-error-card modal">${html(j.error_mensaje || j.resultado || '')}${duplicateButtons(j, 'modal')}</div>
+        </div>`, async()=>cerrarModal(), 'Cerrar');
+    };
+  }
 
   const oldRefresh = window.refrescarTodo;
   if(typeof oldRefresh === 'function'){
     window.refrescarTodo = async function(showToast=true){
-      if(showToast !== true && quickLocked() && quickHasDraft()){
-        queuedRefresh = true;
-        scanAgentJobs();
-        return;
-      }
+      if(showToast !== true && quickLocked() && quickHasDraft()){ queuedRefresh = true; scanPendingAgentJob(); return; }
       const res = await oldRefresh.apply(this, arguments);
-      setTimeout(()=>{ ensureBubbles(); scanAgentJobs(); enhanceWalletCards(); }, 80);
+      setTimeout(()=>{ ensureBubbles(); scanPendingAgentJob(); enhanceWalletCards(); }, 80);
       return res;
     };
     try{ refrescarTodo = window.refrescarTodo; }catch(e){}
@@ -8620,9 +8633,9 @@ html, body { height:100%; overflow:hidden!important; }
   const oldRenderQuick = window.renderQuickV18;
   if(typeof oldRenderQuick === 'function'){
     window.renderQuickV18 = function(force=false){
-      if(!force && quickLocked() && quickHasDraft()){ queuedRefresh = true; ensureBubbles(); scanAgentJobs(); return; }
+      if(!force && quickLocked() && quickHasDraft()){ queuedRefresh = true; ensureBubbles(); scanPendingAgentJob(); return; }
       const res = oldRenderQuick.apply(this, arguments);
-      setTimeout(()=>{ ensureBubbles(); scanAgentJobs(); enhanceWalletCards(); }, 50);
+      setTimeout(()=>{ ensureBubbles(); scanPendingAgentJob(); enhanceWalletCards(); }, 50);
       return res;
     };
     try{ renderQuickV18 = window.renderQuickV18; }catch(e){}
@@ -8633,8 +8646,8 @@ html, body { height:100%; overflow:hidden!important; }
     try{ renderOpsWallets = window.renderOpsWallets; }catch(e){}
   }
 
-  document.addEventListener('DOMContentLoaded',()=>setTimeout(()=>{ ensureBubbles(); scanAgentJobs(); enhanceWalletCards(); }, 1200));
-  setInterval(()=>{ scanAgentJobs(); enhanceWalletCards(); }, 2500);
+  document.addEventListener('DOMContentLoaded',()=>setTimeout(()=>{ clearBubbles(); ensureBubbles(); scanPendingAgentJob(); enhanceWalletCards(); }, 1200));
+  setInterval(()=>{ scanPendingAgentJob(); enhanceWalletCards(); }, 2500);
 })();
 </script>
 </body>
