@@ -7348,6 +7348,22 @@ html, body { height:100%; overflow:hidden!important; }
       return window.__NODO_JOB_WALLET_MAP__ || {};
     }
   }
+  function applyJobWalletMapToWorkers(map){
+    map = map || window.__NODO_JOB_WALLET_MAP__ || readJobWalletMap();
+    const applyOne = j => {
+      if(!j || !j.id) return j;
+      const wid = map[str(j.id)];
+      if(wid && !j.billetera_id && !j.BILLETERA_ID && !j.ID_BILLETERA){
+        j.billetera_id = wid;
+        j.BILLETERA_ID = wid;
+      }
+      return j;
+    };
+    try{
+      if(Array.isArray(window.workerJobs)) window.workerJobs.forEach(applyOne);
+      if(typeof workerJobs !== 'undefined' && Array.isArray(workerJobs)) workerJobs.forEach(applyOne);
+    }catch(e){}
+  }
   function extractWalletIdFromText(txt){
     const m = str(txt||'').match(/billetera_id\s*[=:]\s*(\d+)/i);
     return m ? m[1] : '';
@@ -7418,7 +7434,7 @@ html, body { height:100%; overflow:hidden!important; }
   async function refreshSaldosPostWorker(){
     await conciliarMovimientosWorker();
     try{ await (window.cargarSaldosOperativos || cargarSaldosOperativos)?.(true); }catch(e){}
-    try{ await loadJobWalletMapFromDb(true); }catch(e){}
+    try{ applyJobWalletMapToWorkers(await loadJobWalletMapFromDb(true)); }catch(e){}
     try{ await (window.cargarSaldoAgenteRealtime || cargarSaldoAgenteRealtime)?.(false); }catch(e){}
     try{ renderCentroOperativo(); }catch(e){}
   }
@@ -7588,6 +7604,7 @@ html, body { height:100%; overflow:hidden!important; }
   if(typeof oldCargarWorker==='function'){
     window.cargarWorkerJobs = cargarWorkerJobs = async function(...args){
       const r=await oldCargarWorker.apply(this,args);
+      try{ applyJobWalletMapToWorkers(await loadJobWalletMapFromDb(false)); }catch(e){}
       setTimeout(refreshSaldosPostWorker,300);
       return r;
     };
@@ -7617,7 +7634,7 @@ html, body { height:100%; overflow:hidden!important; }
       try{ if(typeof window.queueHeavy==='function') window.queueHeavy('startup'); }catch(e){}
     }
     renderQuickV18(true);
-    try{ loadJobWalletMapFromDb(false).then(()=>{ try{ renderCentroOperativo(); }catch(e){} }); }catch(e){}
+    try{ loadJobWalletMapFromDb(false).then(map=>{ applyJobWalletMapToWorkers(map); try{ renderCentroOperativo(); }catch(e){} }); }catch(e){}
     try{ renderCentroOperativo(); }catch(e){}
     try{ renderPagosMpV18(); }catch(e){}
     try{ refreshSaldosPostWorker(); }catch(e){}
@@ -7797,3 +7814,4 @@ html, body { height:100%; overflow:hidden!important; }
 
 </body>
 </html>
+
