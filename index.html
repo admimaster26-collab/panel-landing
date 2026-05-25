@@ -6480,8 +6480,16 @@ body.nodo-ux-safe .ops-main-table td,body.nodo-ux-safe .ops-main-table th{font-s
   window.renderOpsWallets = renderOpsWallets = function(){
     const so = window.saldosOperativos || (typeof saldosOperativos !== 'undefined' ? saldosOperativos : null);
     const list = ((so && Array.isArray(so.billeteras) && so.billeteras.length) ? so.billeteras.map(normWallet) : listaWalletsBase());
-    if(!list.length){ setBox('opsWalletStrip', `<div class="ops-wallet"><div class="ops-wallet-name">Billeteras</div><div class="ops-wallet-meta">Sin billeteras visibles para esta PC.</div></div>`); return; }
-    setBox('opsWalletStrip', list.map(b=>`<div class="ops-wallet"><div class="ops-wallet-name">${esc(b.nombre||'Billetera')}</div><div class="ops-wallet-saldo">${moneySafe(b.saldo||0)}</div><div class="ops-wallet-meta">${esc(b.banco||'')} · ${esc(b.titular||'')}<br>Alias: ${esc(b.alias||'-')}</div><div class="ops-wallet-actions"><button class="mini-btn gray" onclick="copiarTextoOperativo('${attr(b.alias||'')}','Alias')">Alias</button><button class="mini-btn gray" onclick="copiarTextoOperativo('${attr(b.cbu||'')}','CBU/CVU')">CBU</button><button class="mini-btn yellow" onclick="abrirAjusteBilletera('${attr(b.id)}')">Ajustar</button></div></div>`).join(''));
+    let html;
+    if(!list.length){
+      html = `<div class="ops-wallet"><div class="ops-wallet-name">Billeteras</div><div class="ops-wallet-meta">Sin billeteras visibles para esta PC.</div></div>`;
+    } else {
+      html = list.map(b=>{
+        const mensaje = ['Datos para transferir:', b.nombre||'Billetera', b.titular?('Titular: '+b.titular):'', b.banco?('Banco/medio: '+b.banco):'', b.alias?('Alias: '+b.alias):'', b.cbu?('CBU/CVU: '+b.cbu):''].filter(Boolean).join('\n');
+        return `<div class="ops-wallet"><div class="ops-wallet-name">${esc(b.nombre||'Billetera')}</div><div class="ops-wallet-saldo">${moneySafe(b.saldo||0)}</div><div class="ops-wallet-meta">${esc(b.banco||'')} · ${esc(b.titular||'')}<br>Alias: ${esc(b.alias||'-')}${b.cbu?`<br>CBU/CVU: ${esc(b.cbu)}`:''}</div><div class="ops-wallet-actions"><button class="mini-btn gray" onclick="copiarTextoOperativo('${attr(b.alias||'')}','Alias')">Alias</button><button class="mini-btn gray" onclick="copiarTextoOperativo('${attr(b.cbu||'')}','CBU/CVU')">CBU</button><button class="mini-btn green" onclick="copiarTextoOperativo('${attr(mensaje)}','Mensaje billetera')">Mensaje WA</button><button class="mini-btn yellow" onclick="abrirAjusteBilletera('${attr(b.id)}')">Ajustar</button></div><div class="wallet-copy-card"><div class="wallet-copy-title">Mensaje para enviar</div><div>${esc(b.nombre||'Billetera')}<br>Alias: ${esc(b.alias||'-')}${b.cbu?`<br>CBU/CVU: ${esc(b.cbu)}`:''}</div></div></div>`;
+      }).join('');
+    }
+    if(window.__opsWalletStripHtml !== html){ window.__opsWalletStripHtml = html; setBox('opsWalletStrip', html); }
   };
 
   /* ---------- Acción rápida intuitiva ---------- */
@@ -7629,7 +7637,9 @@ html, body { height:100%; overflow:hidden!important; }
   window.renderCentroOperativo = renderCentroOperativo = function(){
     try{ if(typeof renderOpsKpis==='function') renderOpsKpis(); }catch(e){}
     try{ if(typeof renderOpsWallets==='function') renderOpsWallets(); }catch(e){}
-    renderQuickV18(false);
+    const ae=document.activeElement;
+    const quickBusy=ae && ['manualWorkerUsuarioInicio','manualWorkerMontoInicio','manualWorkerBilleteraInicio','agentUserClaveInicio','agentUserTipoInicio'].includes(ae.id);
+    if(!quickBusy) renderQuickV18(false);
     try{ renderPagosMpInicio(); }catch(e){}
     renderColaV18(false);
   };
@@ -8307,33 +8317,70 @@ html, body { height:100%; overflow:hidden!important; }
 <script>
 /* ---------- Acciones Agentes: crear usuario / cambiar clave ---------- */
 (function(){
-  if(window.__NODO_AGENT_USER_ACTIONS_V1__) return;
-  window.__NODO_AGENT_USER_ACTIONS_V1__ = true;
+  if(window.__NODO_AGENT_USER_ACTIONS_V2__) return;
+  window.__NODO_AGENT_USER_ACTIONS_V2__ = true;
 
   const $ = id => document.getElementById(id);
   const esc = v => String(v ?? '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+  const attr = v => esc(v).replace(/`/g, '&#96;');
   const val = id => String($(id)?.value ?? '').trim();
   const set = (id, html) => { const el=$(id); if(el) el.innerHTML=html; };
   const pc = () => (typeof pcOperativa !== 'undefined' && pcOperativa) ? pcOperativa : 'P1';
-  const token = () => {
-    if(typeof requireSessionToken === 'function') return requireSessionToken();
-    return window.panelSessionToken || '';
+  const token = () => typeof requireSessionToken === 'function' ? requireSessionToken() : (window.panelSessionToken || '');
+  const DEFAULT_PASS = '12345a';
+  const PLATFORM_LINK = window.NODO_PLATAFORMA_LINK || 'https://bet300.club';
+  const pendingKey = 'nodo_agent_user_pending_v2';
+
+  function getPending(){ try{return JSON.parse(localStorage.getItem(pendingKey)||'null');}catch(e){return null;} }
+  function setPending(v){ try{localStorage.setItem(pendingKey, JSON.stringify(v));}catch(e){} }
+  function clearPending(){ try{localStorage.removeItem(pendingKey);}catch(e){} }
+  function doneKey(jobId){ return 'nodo_agent_user_done_' + jobId; }
+  function isDone(jobId){ try{return sessionStorage.getItem(doneKey(jobId))==='1';}catch(e){return false;} }
+  function markDone(jobId){ try{sessionStorage.setItem(doneKey(jobId),'1');}catch(e){} }
+
+  function mensajeUsuario(usuario){
+    return [
+      'Datos de acceso a la plataforma:',
+      'Usuario: ' + usuario,
+      'Clave: ' + DEFAULT_PASS,
+      'Link: ' + PLATFORM_LINK,
+      '',
+      'Podés cambiar la clave desde la plataforma si querés.'
+    ].join('\n');
+  }
+  window.nodoCopiarUsuarioCreado = function(usuario){
+    const msg = mensajeUsuario(usuario);
+    if(typeof copiarTextoOperativo === 'function') copiarTextoOperativo(msg, 'datos de usuario');
+    else navigator.clipboard?.writeText(msg).catch(()=>{});
   };
+
+  function successCard(usuario, jobId){
+    if(!usuario || !jobId || isDone(jobId)) return;
+    markDone(jobId);
+    const msg = mensajeUsuario(usuario);
+    set('manualWorkerResultadoInicio', `
+      <div class="ok-box" id="usuarioCreadoCard" style="margin-top:10px">
+        <b>Usuario creado correctamente.</b>
+        <textarea readonly style="width:100%;min-height:94px;margin-top:8px;border-radius:10px;padding:9px;background:#071b12;color:#dcfce7;border:1px solid #14532d;font:13px/1.35 Consolas,monospace">${esc(msg)}</textarea>
+        <button class="mini-btn green" type="button" onclick="nodoCopiarUsuarioCreado('${attr(usuario)}')">Copiar mensaje</button>
+      </div>
+    `);
+    setTimeout(()=>{ const card=$('usuarioCreadoCard'); if(card) card.remove(); }, 30000);
+  }
 
   function ensureAgentUserActions(){
     if($('agentUserActionsBox')) return;
     const result = $('manualWorkerResultadoInicio');
-    const host = result?.closest('.nodo-v18-quick,.nodo-v17-quick,.nodo-v16-quick,.ops-panel') || $('opsQuickTop');
-    if(!result || !host) return;
+    if(!result) return;
     result.insertAdjacentHTML('beforebegin', `
       <div id="agentUserActionsBox" style="margin-top:12px;border-top:1px solid #273142;padding-top:12px">
         <div class="ops-panel-title" style="font-size:15px;margin-bottom:8px">Usuario Agentes</div>
         <div class="ops-manual-grid nodo-agent-user-grid">
-          <div><label>Clave</label><input id="agentUserClaveInicio" type="password" autocomplete="new-password" placeholder="clave nueva"></div>
+          <div><label>Clave</label><input id="agentUserClaveInicio" type="password" autocomplete="new-password" value="${DEFAULT_PASS}" placeholder="${DEFAULT_PASS}"></div>
           <div><label>Accion</label><select id="agentUserTipoInicio"><option value="CREAR_USUARIO">Crear usuario</option><option value="CAMBIAR_CLAVE">Cambiar clave</option></select></div>
           <div><label>&nbsp;</label><button class="btn btn-primary" type="button" style="height:38px;margin:0;padding:0 12px" onclick="crearJobUsuarioAgentesInicio()">Enviar accion</button></div>
         </div>
-        <div class="small">Usa el usuario escrito en Accion rapida. La clave no se muestra en la cola ni en el resultado.</div>
+        <div class="small">Para crear usuario se usa la clave genérica ${DEFAULT_PASS}. Luego el usuario puede cambiarla desde la plataforma.</div>
       </div>
     `);
   }
@@ -8343,26 +8390,22 @@ html, body { height:100%; overflow:hidden!important; }
     if(!clean) return;
     const userInput = $('manualWorkerUsuarioInicio') || $('manualWorkerUsuario');
     if(userInput){ userInput.value = clean; userInput.dispatchEvent(new Event('input', {bubbles:true})); userInput.focus(); }
-    const tipo = $('agentUserTipoInicio');
-    if(tipo) tipo.value = 'CREAR_USUARIO';
-    const out = $('manualWorkerResultadoInicio');
-    if(out) out.innerHTML = `<div class="alert-box">Alias sugerido cargado: <b>${esc(clean)}</b>. Revis  la clave y envi  Crear usuario nuevamente.</div>`;
-    const clave = $('agentUserClaveInicio');
-    if(clave) clave.focus();
+    const tipo = $('agentUserTipoInicio'); if(tipo) tipo.value = 'CREAR_USUARIO';
+    const clave = $('agentUserClaveInicio'); if(clave) clave.value = DEFAULT_PASS;
+    set('manualWorkerResultadoInicio', `<div class="alert-box">Alias sugerido cargado: <b>${esc(clean)}</b>. Esto sólo prepara el formulario; para reintentar el mismo job usá el botón del modal del worker.</div>`);
   };
+
   window.crearJobUsuarioAgentesInicio = async function(){
     const out = 'manualWorkerResultadoInicio';
     const usuario = val('manualWorkerUsuarioInicio');
-    const clave = val('agentUserClaveInicio');
     const tipo = val('agentUserTipoInicio') || 'CREAR_USUARIO';
+    const clave = tipo === 'CREAR_USUARIO' ? DEFAULT_PASS : (val('agentUserClaveInicio') || DEFAULT_PASS);
     const obs = val('manualWorkerObsInicio');
 
-    if(!usuario){ set(out, '<div class="err-box">Ingresa el usuario en Accion rapida.</div>'); return; }
-    if(!clave || clave.length < 4){ set(out, '<div class="err-box">Ingresa una clave valida.</div>'); return; }
-    if(tipo === 'CREAR_USUARIO' && clave.length < 6){ set(out, '<div class="err-box">Para crear usuario, la clave debe tener al menos 6 caracteres.</div>'); return; }
-    if(!/^[A-Za-z0-9]+$/.test(clave)){ set(out, '<div class="err-box">La clave solo puede tener letras y numeros.</div>'); return; }
+    if(!usuario){ set(out, '<div class="err-box">Ingresa el usuario en Acción rápida.</div>'); return; }
+    if(!/^[A-Za-z0-9]+$/.test(clave)){ set(out, '<div class="err-box">La clave solo puede tener letras y números.</div>'); return; }
 
-    set(out, `<div class="alert-box">Enviando ${tipo === 'CREAR_USUARIO' ? 'creacion de usuario' : 'cambio de clave'} al worker...</div>`);
+    set(out, `<div class="alert-box">Enviando ${tipo === 'CREAR_USUARIO' ? 'creación de usuario' : 'cambio de clave'} al worker...</div>`);
     const {data,error} = await supabaseClient.rpc('operativo_crear_worker_job_usuario_clave_v1', {
       p_session_token: token(),
       p_pc_codigo: pc(),
@@ -8371,283 +8414,108 @@ html, body { height:100%; overflow:hidden!important; }
       p_clave: clave,
       p_observacion: obs || ''
     });
-    $('agentUserClaveInicio').value = '';
     if(error){ set(out, `<div class="err-box">${esc(error.message || error)}</div>`); return; }
     const row = Array.isArray(data) ? data[0] : data;
     if(row?.ok === false){ set(out, `<div class="err-box">${esc(row.mensaje || row.error || 'No se pudo crear el job.')}</div>`); return; }
-    set(out, `<div class="ok-box">${tipo === 'CREAR_USUARIO' ? 'Crear usuario' : 'Cambiar clave'} enviado al worker. Job: <b>${esc(row?.job_id || '-')}</b></div>`);
-    try{ await refrescarTodo(false); }catch(e){}
+    const jobId = row?.job_id || row?.id || '';
+    setPending({jobId:Number(jobId), usuario, tipo, ts:Date.now()});
+    set(out, `<div class="ok-box">${tipo === 'CREAR_USUARIO' ? 'Crear usuario' : 'Cambiar clave'} enviado al worker. Job: <b>${esc(jobId || '-')}</b></div>`);
+    try{ await cargarWorkerJobs(true); }catch(e){}
   };
 
-  document.addEventListener('DOMContentLoaded',()=>setTimeout(ensureAgentUserActions,1000));
-  setInterval(ensureAgentUserActions, 1500);
+  function extraerSugerencias(error, usuario){
+    const m = String(error || '').match(/Sugerencias:\s*([^\.]+)/i);
+    const list = m ? m[1].split(',').map(x=>x.trim()).filter(Boolean).slice(0,4) : [];
+    if(list.length) return list;
+    const base = String(usuario || 'usuario').replace(/[^A-Za-z0-9]/g,'') || 'usuario';
+    const stem = base.replace(/[0-9]+$/,'') || base;
+    const nums = base.match(/[0-9]+$/)?.[0] || String(Date.now()).slice(-2);
+    const ins = (s,p)=>s.slice(0,p)+'x'+s.slice(p);
+    return Array.from(new Set([ins(stem, Math.max(1, Math.ceil(stem.length/2)))+nums, stem+'x'+(Number(nums.slice(-2)||10)+1), ins(base, Math.max(1, Math.floor(base.length/2)))+String(Date.now()).slice(-3)])).slice(0,4);
+  }
+
+  window.nodoReintentarAliasMismoJob = async function(jobId, alias){
+    const id = Number(jobId);
+    const usuario = String(alias || '').trim();
+    if(!id || !usuario) return;
+    const clave = DEFAULT_PASS;
+    set('manualWorkerResultadoInicio', `<div class="alert-box">Reintentando job #${esc(id)} con alias <b>${esc(usuario)}</b>...</div>`);
+    const {data,error} = await supabaseClient.rpc('operativo_reintentar_worker_job_usuario_v1', {
+      p_session_token: token(),
+      p_worker_job_id: id,
+      p_usuario: usuario,
+      p_clave: clave
+    });
+    if(error){ set('manualWorkerResultadoInicio', `<div class="err-box">No se pudo reintentar el mismo job. Ejecutá el SQL sql_worker_usuario_reintento_alias_v1.sql si todavía no está aplicado. ${esc(error.message || error)}</div>`); return; }
+    const row = Array.isArray(data) ? data[0] : data;
+    if(row?.ok === false){ set('manualWorkerResultadoInicio', `<div class="err-box">${esc(row.error || row.mensaje || 'No se pudo reintentar.')}</div>`); return; }
+    setPending({jobId:id, usuario, tipo:'CREAR_USUARIO', ts:Date.now()});
+    const userInput = $('manualWorkerUsuarioInicio'); if(userInput) userInput.value = usuario;
+    try{ cerrarModal?.(); }catch(e){}
+    set('manualWorkerResultadoInicio', `<div class="ok-box">Job #${esc(id)} reintentado con alias <b>${esc(usuario)}</b>. No se creó una solicitud nueva.</div>`);
+    try{ await cargarWorkerJobs(true); }catch(e){}
+  };
+
+  function renderAliasRetry(job){
+    const err = job?.error_mensaje || job?.resultado || '';
+    if(!/duplicad|duplicate|existe|usado/i.test(err)) return '';
+    const sugerencias = extraerSugerencias(err, job.usuario);
+    return `<div class="ops-compact-actions" style="margin-top:10px">${sugerencias.map(a=>`<button class="mini-btn green" type="button" onclick="nodoReintentarAliasMismoJob('${attr(job.id)}','${attr(a)}')">Reintentar con ${esc(a)}</button>`).join('')}</div>`;
+  }
+
+  function checkPendingUserJob(){
+    const pending = getPending();
+    if(!pending || !pending.jobId) return;
+    const job = (window.workerJobs || []).find(j => Number(j.id || j.job_id) === Number(pending.jobId));
+    if(!job) return;
+    const estado = String(job.estado || '').toUpperCase();
+    const err = job.error_mensaje || job.resultado || '';
+    if(estado === 'COMPLETADO'){
+      if(String(job.tipo_accion || '').toUpperCase() === 'CREAR_USUARIO') successCard(job.usuario || pending.usuario, pending.jobId);
+      clearPending();
+      return;
+    }
+    if(/REINTENTAR|ERROR|REQUIERE_MANUAL/i.test(estado) && /duplicad|duplicate|existe|usado/i.test(err)){
+      set('manualWorkerResultadoInicio', `<div class="alert-box">Alias duplicado para <b>${esc(job.usuario || pending.usuario)}</b>. Abrí Logs del job y elegí una variante para reintentar ese mismo job.</div>`);
+    }
+  }
+
+  const oldCargarWorker = window.cargarWorkerJobs || (typeof cargarWorkerJobs !== 'undefined' ? cargarWorkerJobs : null);
+  if(typeof oldCargarWorker === 'function'){
+    window.cargarWorkerJobs = cargarWorkerJobs = async function(){
+      const r = await oldCargarWorker.apply(this, arguments);
+      setTimeout(checkPendingUserJob, 80);
+      return r;
+    };
+  }
+
+  const oldDetalle = window.abrirDetalleWorkerJob;
+  if(typeof oldDetalle === 'function'){
+    window.abrirDetalleWorkerJob = function(jobId){
+      const j = (window.workerJobs || []).find(x => String(x.id) === String(jobId));
+      const err = j?.error_mensaje || j?.resultado || '';
+      if(!j || !/duplicad|duplicate|existe|usado/i.test(err)) return oldDetalle.apply(this, arguments);
+      abrirModal('Logs del worker', `
+        <div class="verify-box">
+          <div class="verify-title">Job #${esc(j.id)}</div>
+          ${verifyRow('PC', j.pc_codigo || '-')}
+          ${verifyRow('Usuario', j.usuario || '-')}
+          ${verifyRow('Tipo', j.tipo_accion || '-')}
+          ${verifyRow('Monto', money(j.monto || 0))}
+          ${verifyRow('Estado', j.estado || '-')}
+          ${verifyRow('Intentos', `${j.intentos || 0} / ${j.max_intentos || 3}`)}
+          <div class="worker-error-card modal">${esc(err)}${renderAliasRetry(j)}</div>
+        </div>
+        <div class="alert-box">Elegí una variante para reintentar este mismo job. No se crea una solicitud nueva.</div>
+      `, async()=>cerrarModal(), 'Cerrar');
+    };
+  }
+
   const oldRenderCentro = window.renderCentroOperativo;
   if(typeof oldRenderCentro === 'function'){
     window.renderCentroOperativo = function(){ const r=oldRenderCentro.apply(this, arguments); setTimeout(ensureAgentUserActions,50); return r; };
   }
-})();
-</script>
-<style id="nodo-quick-polish-css">
-  .quick-bubbles{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 0}
-  .quick-bubble{display:flex;align-items:center;gap:8px;max-width:100%;padding:9px 11px;border-radius:14px;border:1px solid #334155;background:#111827;color:#e5e7eb;font-size:13px;line-height:1.25;box-shadow:0 6px 18px rgba(0,0,0,.22)}
-  .quick-bubble.ok{border-color:#16a34a;background:#052e1b;color:#c7f9d4}
-  .quick-bubble.warn{border-color:#ca8a04;background:#3a2703;color:#fde68a}
-  .quick-bubble.err{border-color:#ef4444;background:#3a0d0d;color:#fecaca}
-  .quick-bubble.info{border-color:#2563eb;background:#0b1b3f;color:#bfdbfe}
-  .quick-bubble button,.quick-copy-btn{border:0;border-radius:10px;padding:7px 10px;font-weight:800;cursor:pointer;background:#3b5bfd;color:white;white-space:nowrap}
-  .quick-bubble .alias-chip{background:#f59e0b;color:#111827}
-  .quick-success-card{width:100%;padding:12px;border:1px solid #16a34a;border-radius:14px;background:#052e1b;color:#dcfce7;margin-top:10px}
-  .quick-success-card textarea{width:100%;min-height:92px;margin:8px 0;border-radius:10px;border:1px solid #14532d;background:#061b12;color:#eaffef;padding:9px;font:13px/1.35 Consolas,monospace;resize:vertical}
-  .wallet-copy-card{margin-top:10px;padding:10px;border-radius:12px;border:1px solid #1f7a58;background:#061d18;color:#d1fae5;font-size:12px;line-height:1.35}
-  .wallet-copy-card .wallet-copy-title{font-weight:900;margin-bottom:5px;color:#a7f3d0}
-  .ops-wallet .quick-copy-btn{margin-top:7px;background:#10b981;color:#052e1b}
-</style>
-<script id="nodo-quick-polish-js">
-(function(){
-  if(window.__NODO_QUICK_POLISH_V3__) return;
-  window.__NODO_QUICK_POLISH_V3__ = true;
-
-  const $ = id => document.getElementById(id);
-  const html = v => String(v ?? '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
-  const attr = v => html(v).replace(/`/g, '&#96;');
-  const txt = v => String(v ?? '').trim();
-  const QUICK_IDS = new Set(['manualWorkerUsuarioInicio','manualWorkerMontoInicio','manualWorkerTipoInicio','manualWorkerBilleteraInicio','manualWorkerObsInicio','agentUserClaveInicio','agentUserTipoInicio']);
-  const DEFAULT_AGENT_PASS = '12345a';
-  const PLATFORM_LINK = window.NODO_PLATAFORMA_LINK || 'https://bet300.club';
-  let quickInputAt = 0;
-  let queuedRefresh = false;
-  let visibleNoticeKey = '';
-  try{
-    if(sessionStorage.getItem('nodo_quick_polish_v3_cleaned') !== '1'){
-      localStorage.removeItem('nodo_last_agent_user_request');
-      sessionStorage.setItem('nodo_quick_polish_v3_cleaned', '1');
-    }
-  }catch(e){}
-
-  function now(){ return Date.now(); }
-  function quickElementActive(){ const el = document.activeElement; return !!(el && QUICK_IDS.has(el.id)); }
-  function quickHasDraft(){ for(const id of QUICK_IDS){ const el=$(id); if(el && !el.disabled && txt(el.value)) return true; } return false; }
-  function quickLocked(){ return quickElementActive() || (now() - quickInputAt < 4500); }
-  function rememberQuickTouch(ev){ if(ev?.target && QUICK_IDS.has(ev.target.id)) quickInputAt = now(); }
-  document.addEventListener('input', rememberQuickTouch, true);
-  document.addEventListener('keydown', rememberQuickTouch, true);
-  document.addEventListener('focusin', rememberQuickTouch, true);
-  document.addEventListener('focusout', ev=>{
-    if(ev?.target && QUICK_IDS.has(ev.target.id)) setTimeout(()=>{ if(!quickLocked() && queuedRefresh){ queuedRefresh=false; try{ window.refrescarTodo?.(false); }catch(e){} } }, 1200);
-  }, true);
-
-  function pendingGet(){ try{ return JSON.parse(localStorage.getItem('nodo_last_agent_user_request') || 'null'); }catch(e){ return null; } }
-  function pendingSet(obj){ try{ localStorage.setItem('nodo_last_agent_user_request', JSON.stringify(obj)); }catch(e){} }
-  function pendingClear(){ try{ localStorage.removeItem('nodo_last_agent_user_request'); }catch(e){} }
-  function doneKey(id){ return 'nodo_agent_user_notice_done_' + id; }
-  function wasDone(id){ try{ return !!sessionStorage.getItem(doneKey(id)); }catch(e){ return false; } }
-  function markDone(id){ try{ sessionStorage.setItem(doneKey(id),'1'); }catch(e){} }
-
-  function ensureBubbles(){
-    const result = $('manualWorkerResultadoInicio');
-    if(!result) return null;
-    let box = $('quickActionBubbles');
-    if(!box){ box = document.createElement('div'); box.id = 'quickActionBubbles'; box.className = 'quick-bubbles'; result.parentNode.insertBefore(box, result); }
-    return box;
-  }
-  function bubble(kind, body, key, ttl){
-    const box = ensureBubbles(); if(!box) return;
-    key = key || ('msg_' + now());
-    if(key !== visibleNoticeKey){ box.innerHTML = ''; visibleNoticeKey = key; }
-    let el = $('qb_current');
-    if(!el){ el = document.createElement('div'); el.id='qb_current'; box.appendChild(el); }
-    el.className='quick-bubble ' + (kind||'info');
-    el.innerHTML = body;
-    if(ttl){ setTimeout(()=>{ if(visibleNoticeKey===key){ box.innerHTML=''; visibleNoticeKey=''; } }, ttl); }
-  }
-  function clearBubbles(){ const box=$('quickActionBubbles'); if(box) box.innerHTML=''; visibleNoticeKey=''; }
-  window.nodoQuickBubble = bubble;
-
-  function copyText(text, label){
-    if(typeof window.copiarTextoOperativo === 'function') return window.copiarTextoOperativo(text, label || 'mensaje');
-    return navigator.clipboard?.writeText(text).catch(()=>{});
-  }
-  function mensajeUsuario(usuario, clave){
-    return ['Datos de acceso a la plataforma:', 'Usuario: ' + usuario, 'Clave: ' + clave, 'Link: ' + PLATFORM_LINK, '', 'Podés cambiar la clave desde la plataforma si querés.'].join('\n');
-  }
-  window.nodoCopiarUsuarioCreado = function(usuario, clave){ copyText(mensajeUsuario(usuario, clave || DEFAULT_AGENT_PASS), 'datos de usuario'); bubble('ok', 'Mensaje de usuario copiado para WhatsApp.', 'copied_user', 2500); };
-  function mostrarMensajeUsuarioCreado(usuario, clave, jobId){
-    if(!usuario || !jobId || wasDone(jobId)) return;
-    markDone(jobId);
-    const result = $('manualWorkerResultadoInicio'); if(!result) return;
-    const msg = mensajeUsuario(usuario, clave || DEFAULT_AGENT_PASS);
-    result.innerHTML = '<div class="quick-success-card" id="usuarioCreadoCard"><b>Usuario creado correctamente</b><textarea readonly>'+html(msg)+'</textarea><button class="quick-copy-btn" type="button" onclick="nodoCopiarUsuarioCreado(\''+attr(usuario)+'\',\''+attr(clave || DEFAULT_AGENT_PASS)+'\')">Copiar mensaje</button></div>';
-    bubble('ok', 'Usuario <b>'+html(usuario)+'</b> creado. Dejé el mensaje listo para copiar.', 'created_'+jobId, 8000);
-    setTimeout(()=>{ const card=$('usuarioCreadoCard'); if(card) card.remove(); clearBubbles(); }, 30000);
-  }
-
-  function looksDuplicate(text){ return /duplicad|duplicate|already|existe|existente|usado/i.test(String(text||'')); }
-  function suggestAliases(alias){
-    const raw = txt(alias).replace(/[^a-zA-Z0-9]/g,'') || 'usuario';
-    const base = raw.slice(0, 18);
-    const stamp = String(now()).slice(-4);
-    const stem = (base.replace(/[0-9]+$/,'') || base).slice(0, 14);
-    const nums = base.match(/[0-9]+$/)?.[0] || stamp.slice(-2);
-    const mid = Math.max(1, Math.ceil(stem.length / 2));
-    const ins = (s,p)=>s.slice(0,p)+'x'+s.slice(p);
-    return Array.from(new Set([ins(stem, mid)+nums, ins(stem, Math.max(1, stem.length-1))+stamp.slice(-2), stem+'x'+(Number(nums.slice(-2)||10)+1), ins(base, Math.max(1, Math.floor(base.length/2)))+stamp.slice(-3)])).filter(v => v.toLowerCase() !== base.toLowerCase()).slice(0,4);
-  }
-  function suggestionsFromText(error, alias){
-    const m = String(error||'').match(/Sugerencias:\s*([^\.]+)/i);
-    const list = m ? m[1].split(',').map(x=>x.trim()).filter(Boolean).slice(0,4) : [];
-    return list.length ? list : suggestAliases(alias);
-  }
-
-  window.nodoTomarAliasSugerido = function(alias){
-    const clean = txt(alias); if(!clean) return;
-    const userInput = $('manualWorkerUsuarioInicio') || $('manualWorkerUsuario');
-    if(userInput){ userInput.value = clean; userInput.dispatchEvent(new Event('input', {bubbles:true})); userInput.focus(); }
-    const tipo = $('agentUserTipoInicio'); if(tipo) tipo.value = 'CREAR_USUARIO';
-    const clave = $('agentUserClaveInicio'); if(clave && !txt(clave.value)) clave.value = DEFAULT_AGENT_PASS;
-    bubble('info', 'Alias sugerido cargado: <b>'+html(clean)+'</b>. Revisá y enviá Crear usuario.', 'alias_loaded', 5000);
-  };
-
-  window.nodoReintentarAliasMismoJob = async function(jobId, alias){
-    const id = Number(jobId); const clean = txt(alias);
-    if(!id || !clean) return;
-    if(!confirm('Reintentar el mismo job #' + id + ' usando el alias ' + clean + '?')) return;
-    const pending = pendingGet() || {};
-    const clave = txt($('agentUserClaveInicio')?.value) || pending.clave || DEFAULT_AGENT_PASS;
-    let ok = false;
-    try{
-      const rpc = await supabaseClient.rpc('operativo_reintentar_worker_job_usuario_v1', {
-        p_session_token: requireSessionToken(),
-        p_worker_job_id: id,
-        p_usuario: clean,
-        p_clave: clave
-      });
-      if(rpc.error) throw rpc.error;
-      ok = true;
-    }catch(e){
-      bubble('err', 'No pude reintentar el mismo job. Ejecutá el SQL <b>sql_worker_usuario_reintento_alias_v1.sql</b> y probamos de nuevo. Detalle: '+html(e.message||e), 'retry_sql_'+id, 16000);
-      return;
-    }
-    if(ok){
-      pendingSet({usuario: clean, clave, tipo:'CREAR_USUARIO', jobId:id, ts:now()});
-      const userInput = $('manualWorkerUsuarioInicio'); if(userInput) userInput.value = clean;
-      bubble('info', 'Job #'+id+' reintentado con alias <b>'+html(clean)+'</b>. No se creó una solicitud nueva.', 'retry_'+id, 9000);
-      try{ cerrarModal?.(); }catch(e){}
-      try{ await cargarWorkerJobs?.(true); await refrescarTodo?.(false); }catch(e){}
-    }
-  };
-
-  function duplicateButtons(job, mode){
-    const id = job?.id || job?.job_id; if(!id) return '';
-    const suggestions = suggestionsFromText(job.error_mensaje || job.resultado || '', job.usuario);
-    return '<div class="ops-compact-actions" style="margin-top:8px">'+suggestions.map(a=>'<button class="mini-btn green" type="button" onclick="nodoReintentarAliasMismoJob(\''+attr(id)+'\',\''+attr(a)+'\')">Usar '+html(a)+'</button>').join('')+'</div>';
-  }
-  function showDuplicateHelp(job){
-    if(!job?.id || wasDone('dup_'+job.id)) return;
-    const buttons = suggestionsFromText(job.error_mensaje || job.resultado || '', job.usuario).map(a=>'<button type="button" class="alias-chip" onclick="nodoReintentarAliasMismoJob(\''+attr(job.id)+'\',\''+attr(a)+'\')">Usar '+html(a)+'</button>').join('');
-    bubble('warn', '<b>Alias duplicado:</b> '+html(job.usuario)+'. Reintentá el mismo job con una variante: '+buttons, 'dup_'+job.id, 0);
-  }
-
-  const oldCreateAgent = window.crearJobUsuarioAgentesInicio;
-  if(typeof oldCreateAgent === 'function'){
-    window.crearJobUsuarioAgentesInicio = async function(){
-      clearBubbles();
-      const tipo = txt($('agentUserTipoInicio')?.value) || 'CREAR_USUARIO';
-      const user = txt($('manualWorkerUsuarioInicio')?.value);
-      const passEl = $('agentUserClaveInicio');
-      if(tipo === 'CREAR_USUARIO' && passEl && !txt(passEl.value)) passEl.value = DEFAULT_AGENT_PASS;
-      const clave = txt(passEl?.value) || DEFAULT_AGENT_PASS;
-      pendingSet({usuario:user, clave, tipo, ts:now()});
-      const res = await oldCreateAgent.apply(this, arguments);
-      const outText = $('manualWorkerResultadoInicio')?.innerText || '';
-      const jobId = outText.match(/Job:\s*(\d+)/i)?.[1];
-      if(jobId){ pendingSet({usuario:user, clave, tipo, jobId:Number(jobId), ts:now()}); bubble('info', 'Job #'+jobId+' enviado para '+(tipo==='CREAR_USUARIO'?'crear usuario':'cambiar clave')+'.', 'sent_'+jobId, 4500); }
-      return res;
-    };
-  }
-
-  function scanPendingAgentJob(){
-    const pending = pendingGet();
-    if(!pending || !pending.jobId) return;
-    const jobs = Array.isArray(window.workerJobs) ? window.workerJobs : [];
-    const job = jobs.find(j => Number(j.id || j.job_id) === Number(pending.jobId));
-    if(!job) return;
-    const id = job.id || job.job_id;
-    const state = String(job.estado || '').toUpperCase();
-    const err = job.error_mensaje || job.resultado || '';
-    if(state === 'COMPLETADO'){
-      if(String(job.tipo_accion).toUpperCase()==='CREAR_USUARIO') mostrarMensajeUsuarioCreado(job.usuario || pending.usuario, pending.clave || DEFAULT_AGENT_PASS, id);
-      pendingClear();
-      return;
-    }
-    if(err && /REINTENTAR|ERROR|REQUIERE_MANUAL/i.test(state + ' ' + (job.worker_estado||''))){
-      if(looksDuplicate(err) && String(job.tipo_accion).toUpperCase()==='CREAR_USUARIO') showDuplicateHelp(job);
-      else bubble('err', '<b>Error en '+html(job.tipo_accion||'job')+':</b> '+html(err), 'err_'+id, 12000);
-    }
-  }
-
-  function enhanceWalletCards(){
-    const list = window.saldosOperativos?.billeteras || window.billeterasOperativas || [];
-    const cards = document.querySelectorAll('#opsWalletStrip .ops-wallet');
-    cards.forEach((card, i)=>{
-      if(card.dataset.copyMsgReady) return;
-      const b = list[i] || {};
-      const name = b.nombre || b.billetera_nombre || card.querySelector('.ops-wallet-name')?.textContent || 'Billetera';
-      const alias = b.alias || b.billetera_alias || '-';
-      const cbu = b.cbu || b.cvu || b.cbu_cvu || '';
-      const titular = b.titular || b.nombre_titular || b.operador || '';
-      const banco = b.banco || b.tipo || b.red || '';
-      const msg = ['Datos para transferir:', name, titular ? 'Titular: '+titular : '', banco ? 'Banco/medio: '+banco : '', alias ? 'Alias: '+alias : '', cbu ? 'CBU/CVU: '+cbu : ''].filter(Boolean).join('\n');
-      const idx = window.__walletCopyMessages = window.__walletCopyMessages || [];
-      const n = idx.push(msg) - 1;
-      const actions = card.querySelector('.ops-wallet-actions') || card;
-      actions.insertAdjacentHTML('beforeend', '<button class="quick-copy-btn" type="button" onclick="nodoCopiarWalletMensaje('+n+')">Mensaje WA</button>');
-      card.insertAdjacentHTML('beforeend', '<div class="wallet-copy-card"><div class="wallet-copy-title">Mensaje para enviar</div><div>'+html(name)+'<br>Alias: '+html(alias)+(cbu?'<br>CBU/CVU: '+html(cbu):'')+'</div></div>');
-      card.dataset.copyMsgReady = '1';
-    });
-  }
-  window.nodoCopiarWalletMensaje = function(i){ const msg = window.__walletCopyMessages?.[i]; if(msg) copyText(msg, 'datos de billetera'); bubble('ok', 'Datos de billetera copiados para WhatsApp.', 'wallet_copied', 2500); };
-
-  const oldAbrirDetalle = window.abrirDetalleWorkerJob;
-  if(typeof oldAbrirDetalle === 'function'){
-    window.abrirDetalleWorkerJob = function(jobId){
-      const j = (window.workerJobs || []).find(x => String(x.id) === String(jobId));
-      if(!j || !looksDuplicate(j.error_mensaje || j.resultado || '')) return oldAbrirDetalle.apply(this, arguments);
-      abrirModal('Detalle worker #' + jobId, `
-        <div class="verify-box"><div class="verify-title">Job #${html(j.id)}</div>
-          ${verifyRow('PC', j.pc_codigo || '-')}${verifyRow('Usuario', j.usuario || '-')}${verifyRow('Tipo', j.tipo_accion || '-')}${verifyRow('Monto', money(j.monto || 0))}${verifyRow('Estado', j.estado || '-')}${verifyRow('Intentos', `${j.intentos || 0} / ${j.max_intentos || 3}`)}
-          <div class="worker-error-card modal">${html(j.error_mensaje || j.resultado || '')}${duplicateButtons(j, 'modal')}</div>
-        </div>`, async()=>cerrarModal(), 'Cerrar');
-    };
-  }
-
-  const oldRefresh = window.refrescarTodo;
-  if(typeof oldRefresh === 'function'){
-    window.refrescarTodo = async function(showToast=true){
-      if(showToast !== true && quickLocked() && quickHasDraft()){ queuedRefresh = true; scanPendingAgentJob(); return; }
-      const res = await oldRefresh.apply(this, arguments);
-      setTimeout(()=>{ ensureBubbles(); scanPendingAgentJob(); enhanceWalletCards(); }, 80);
-      return res;
-    };
-    try{ refrescarTodo = window.refrescarTodo; }catch(e){}
-  }
-  const oldRenderQuick = window.renderQuickV18;
-  if(typeof oldRenderQuick === 'function'){
-    window.renderQuickV18 = function(force=false){
-      if(!force && quickLocked() && quickHasDraft()){ queuedRefresh = true; ensureBubbles(); scanPendingAgentJob(); return; }
-      const res = oldRenderQuick.apply(this, arguments);
-      setTimeout(()=>{ ensureBubbles(); scanPendingAgentJob(); enhanceWalletCards(); }, 50);
-      return res;
-    };
-    try{ renderQuickV18 = window.renderQuickV18; }catch(e){}
-  }
-  const oldRenderWallets = window.renderOpsWallets;
-  if(typeof oldRenderWallets === 'function'){
-    window.renderOpsWallets = function(){ const res = oldRenderWallets.apply(this, arguments); setTimeout(enhanceWalletCards, 40); return res; };
-    try{ renderOpsWallets = window.renderOpsWallets; }catch(e){}
-  }
-
-  document.addEventListener('DOMContentLoaded',()=>setTimeout(()=>{ clearBubbles(); ensureBubbles(); scanPendingAgentJob(); enhanceWalletCards(); }, 1200));
-  setInterval(()=>{ scanPendingAgentJob(); enhanceWalletCards(); }, 2500);
+  document.addEventListener('DOMContentLoaded',()=>setTimeout(()=>{ ensureAgentUserActions(); checkPendingUserJob(); },1000));
 })();
 </script>
 </body>
