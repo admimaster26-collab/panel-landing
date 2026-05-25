@@ -7294,7 +7294,11 @@ html, body { height:100%; overflow:hidden!important; }
     return str(m.billetera_nombre || m.nombre_visible || '') || walletNameById(m.billetera_id);
   }
   function jobWalletId(j){
-    const direct = str(j?.billetera_id ?? j?.ID_BILLETERA ?? j?.wallet_id ?? '');
+    let payload = j?.payload || {};
+    if(typeof payload === 'string'){
+      try{ payload = JSON.parse(payload); }catch(e){ payload = {}; }
+    }
+    const direct = str(j?.billetera_id ?? j?.BILLETERA_ID ?? j?.ID_BILLETERA ?? j?.wallet_id ?? payload?.billetera_id ?? payload?.BILLETERA_ID ?? '');
     if(direct) return direct;
     const fromText = extractWalletIdFromText(`${j?.observacion||''} ${j?.observaciones||''} ${j?.descripcion||''} ${j?.resultado||''} ${j?.error_mensaje||''}`);
     if(fromText) return fromText;
@@ -7303,7 +7307,11 @@ html, body { height:100%; overflow:hidden!important; }
     return walletIdFromMovementsForJob(j?.id);
   }
   function jobWalletName(j){
-    const directName = str(j?.billetera_nombre || j?.BILLETERA_NOMBRE || j?.wallet_nombre || j?.nombre_billetera || '');
+    let payload = j?.payload || {};
+    if(typeof payload === 'string'){
+      try{ payload = JSON.parse(payload); }catch(e){ payload = {}; }
+    }
+    const directName = str(j?.billetera_nombre || j?.BILLETERA_NOMBRE || j?.wallet_nombre || j?.nombre_billetera || payload?.billetera_nombre || payload?.BILLETERA_NOMBRE || '');
     if(directName) return directName;
     const fromMov = walletNameFromMovementsForJob(j?.id);
     if(fromMov) return fromMov;
