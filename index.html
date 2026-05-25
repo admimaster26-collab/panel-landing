@@ -8263,5 +8263,38 @@ html, body { height:100%; overflow:hidden!important; }
   document.addEventListener('DOMContentLoaded',()=>setTimeout(()=>{ ensureAjustesExtras(); previewRetiro24(); },1200));
 })();
 </script>
+<script>
+/* ---------- Operativo limpio: ajustes sensibles pasan a Admin / Chunior ---------- */
+(function(){
+  if(window.__NODO_OPERATIVO_LIMPIO_V1__) return;
+  window.__NODO_OPERATIVO_LIMPIO_V1__ = true;
+  const txt=v=>String(v??'');
+  const hideSensitiveAjustes=()=>{
+    document.querySelectorAll('#viewAjustes .ops-panel').forEach(panel=>{
+      const title=txt(panel.querySelector('.ops-panel-title')?.textContent);
+      if(/Ajuste de fichas|Ajuste de billetera|Movimiento entre billeteras|Historial Agente CSV/i.test(title)){
+        panel.style.display='none';
+      }
+    });
+    const sub=document.querySelector('#viewAjustes .ops-sub');
+    if(sub) sub.textContent='Vista operativa de auditoria y correcciones puntuales. Ajustes contables y CSV se gestionan desde Admin; Chunior queda como fuente operativa.';
+    const grid=document.querySelector('#viewAjustes .ops-grid');
+    if(grid && !document.getElementById('nodoAjustesAdminNotice')){
+      const notice=document.createElement('div');
+      notice.id='nodoAjustesAdminNotice';
+      notice.className='ops-panel';
+      notice.innerHTML='<div class="ops-panel-title">Auditoria operativa</div><div class="alert-box">Los ajustes de fichas, billeteras, CSV y transferencias internas se movieron a Admin. En operativo queda correccion de billetera por job y consulta de movimientos.</div>';
+      grid.prepend(notice);
+    }
+  };
+  const oldMostrar=window.mostrarVista;
+  if(typeof oldMostrar==='function'){
+    window.mostrarVista=function(v){const r=oldMostrar.apply(this,arguments); if(v==='ajustes')setTimeout(hideSensitiveAjustes,120); return r;};
+  }
+  const oldRenderSelects=window.renderSelectsAjustes;
+  window.renderSelectsAjustes=function(){try{ if(typeof oldRenderSelects==='function') oldRenderSelects.apply(this,arguments); }catch(e){} setTimeout(hideSensitiveAjustes,80);};
+  document.addEventListener('DOMContentLoaded',()=>setTimeout(hideSensitiveAjustes,1200));
+})();
+</script>
 </body>
 </html>
