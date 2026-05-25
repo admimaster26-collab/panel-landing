@@ -5160,6 +5160,7 @@ async function cerrarSesion(){
       todo:4000
     }
   };
+  window.__NODO_FIRST_SYNC_READY__ = false;
 
   function n(v){ return String(v||"").trim(); }
   function norm(v){ return n(v).toUpperCase(); }
@@ -5295,6 +5296,7 @@ async function cerrarSesion(){
     clearTimeout(S.timers.heavy);
     S.timers.heavy=setTimeout(()=>flushHeavy(reason), 450);
   }
+  window.queueHeavy = queueHeavy;
 
   async function flushHeavy(reason="manual"){
     if(editing()){
@@ -5314,9 +5316,11 @@ async function cerrarSesion(){
       refreshBilleteras(false)
     ]);
     try{ if(typeof renderInicio==="function") renderInicio(); }catch(e){}
+    window.__NODO_FIRST_SYNC_READY__ = true;
     try{ if(typeof renderCentroOperativo==="function") renderCentroOperativo(); }catch(e){}
     setSyncStatus("Sync activo","ok");
   }
+  window.flushHeavy = flushHeavy;
 
   // Throttle de funciones pesadas llamadas por timers viejos.
   function wrapLoader(name, key, minMs){
@@ -7274,6 +7278,34 @@ html, body { height:100%; overflow:hidden!important; }
     map[str(jobId)] = str(billeteraId);
     writeJobWalletMap(map);
   }
+  async function loadJobWalletMapFromDb(force=false){
+    const now = Date.now();
+    if(!force && window.__NODO_JOB_WALLET_MAP_AT__ && now - window.__NODO_JOB_WALLET_MAP_AT__ < 5000) return window.__NODO_JOB_WALLET_MAP__ || {};
+    if(!window.supabaseClient || !pc()) return window.__NODO_JOB_WALLET_MAP__ || {};
+    try{
+      const {data,error}=await supabaseClient
+        .from('billetera_movimientos')
+        .select('worker_job_id,billetera_id,created_at')
+        .eq('pc_codigo', pc())
+        .not('worker_job_id','is',null)
+        .order('created_at',{ascending:false})
+        .limit(600);
+      if(error) throw error;
+      const map = {};
+      (data || []).forEach(m=>{
+        const jid = str(m.worker_job_id);
+        if(jid && m.billetera_id && !map[jid]) map[jid] = str(m.billetera_id);
+      });
+      window.__NODO_JOB_WALLET_MAP__ = map;
+      window.__NODO_JOB_WALLET_MAP_AT__ = now;
+      try{ Object.entries(map).forEach(([jobId,billeteraId])=>rememberJobWallet(jobId,billeteraId)); }catch(e){}
+      return map;
+    }catch(e){
+      console.warn('No se pudo cargar mapa job/billetera:', e.message || e);
+      window.__NODO_JOB_WALLET_MAP_AT__ = now;
+      return window.__NODO_JOB_WALLET_MAP__ || {};
+    }
+  }
   function extractWalletIdFromText(txt){
     const m = str(txt||'').match(/billetera_id\s*[=:]\s*(\d+)/i);
     return m ? m[1] : '';
@@ -7304,6 +7336,8 @@ html, body { height:100%; overflow:hidden!important; }
     if(fromText) return fromText;
     const fromMap = readJobWalletMap()[str(j?.id||'')];
     if(fromMap) return fromMap;
+    const fromDbMap = window.__NODO_JOB_WALLET_MAP__?.[str(j?.id||'')];
+    if(fromDbMap) return fromDbMap;
     return walletIdFromMovementsForJob(j?.id);
   }
   function jobWalletName(j){
@@ -7342,6 +7376,7 @@ html, body { height:100%; overflow:hidden!important; }
   async function refreshSaldosPostWorker(){
     await conciliarMovimientosWorker();
     try{ await (window.cargarSaldosOperativos || cargarSaldosOperativos)?.(true); }catch(e){}
+    try{ await loadJobWalletMapFromDb(true); }catch(e){}
     try{ await (window.cargarSaldoAgenteRealtime || cargarSaldoAgenteRealtime)?.(false); }catch(e){}
     try{ renderCentroOperativo(); }catch(e){}
   }
@@ -7427,6 +7462,10 @@ html, body { height:100%; overflow:hidden!important; }
   function renderColaV18(force=false){
     const wrap=$('opsColaUnificada')?.querySelector('.ops-table-wrap');
     const top=wrap?.scrollTop||0,left=wrap?.scrollLeft||0;
+    if(window.__NODO_FIRST_SYNC_READY__ === false && !force){
+      set('opsColaUnificada','<div class="alert-box">Sincronizando solicitudes, worker y billeteras...</div>');
+      return;
+    }
     if(editing() && !force && wrap && S.colaHtml) return;
     let rows=rowsOperativas();
     const texto=norm(val('opsFiltroTexto'));
@@ -7531,7 +7570,12 @@ html, body { height:100%; overflow:hidden!important; }
   function bootV18(){
     document.body.classList.add('nodo-v18');
     try{ const mp=$('mpPagosInicio'); if(mp) mp.innerHTML=''; }catch(e){}
+    if(window.__NODO_FIRST_SYNC_READY__ === false){
+      set('opsColaUnificada','<div class="alert-box">Sincronizando solicitudes, worker y billeteras...</div>');
+      try{ if(typeof window.queueHeavy==='function') window.queueHeavy('startup'); }catch(e){}
+    }
     renderQuickV18(true);
+    try{ loadJobWalletMapFromDb(false).then(()=>{ try{ renderCentroOperativo(); }catch(e){} }); }catch(e){}
     try{ renderCentroOperativo(); }catch(e){}
     try{ renderPagosMpV18(); }catch(e){}
     try{ refreshSaldosPostWorker(); }catch(e){}
