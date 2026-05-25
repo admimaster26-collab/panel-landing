@@ -8315,12 +8315,12 @@ html, body { height:100%; overflow:hidden!important; }
   function ensureAgentUserActions(){
     if($('agentUserActionsBox')) return;
     const result = $('manualWorkerResultadoInicio');
-    const panel = result?.closest('.ops-panel');
-    if(!panel) return;
+    const host = result?.closest('.nodo-v18-quick,.nodo-v17-quick,.nodo-v16-quick,.ops-panel') || $('opsQuickTop');
+    if(!result || !host) return;
     result.insertAdjacentHTML('beforebegin', `
       <div id="agentUserActionsBox" style="margin-top:12px;border-top:1px solid #273142;padding-top:12px">
         <div class="ops-panel-title" style="font-size:15px;margin-bottom:8px">Usuario Agentes</div>
-        <div class="ops-manual-grid">
+        <div class="ops-manual-grid nodo-agent-user-grid">
           <div><label>Clave</label><input id="agentUserClaveInicio" type="password" autocomplete="new-password" placeholder="clave nueva"></div>
           <div><label>Accion</label><select id="agentUserTipoInicio"><option value="CREAR_USUARIO">Crear usuario</option><option value="CAMBIAR_CLAVE">Cambiar clave</option></select></div>
           <div><label>&nbsp;</label><button class="btn btn-primary" type="button" style="height:38px;margin:0;padding:0 12px" onclick="crearJobUsuarioAgentesInicio()">Enviar accion</button></div>
@@ -8360,6 +8360,7 @@ html, body { height:100%; overflow:hidden!important; }
   };
 
   document.addEventListener('DOMContentLoaded',()=>setTimeout(ensureAgentUserActions,1000));
+  setInterval(ensureAgentUserActions, 1500);
   const oldRenderCentro = window.renderCentroOperativo;
   if(typeof oldRenderCentro === 'function'){
     window.renderCentroOperativo = function(){ const r=oldRenderCentro.apply(this, arguments); setTimeout(ensureAgentUserActions,50); return r; };
@@ -8368,4 +8369,3 @@ html, body { height:100%; overflow:hidden!important; }
 </script>
 </body>
 </html>
-
