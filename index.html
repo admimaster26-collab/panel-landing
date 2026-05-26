@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>NODO · OPERATIVO V20 · UX fina estable</title>
+<title>NODO · OPERATIVO V20 · UX fina realtime</title>
 
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif}
@@ -274,7 +274,7 @@ table{width:100%;border-collapse:collapse}th,td{padding:11px;border-bottom:1px s
   <div class="login-card">
     <img src="logo-nodo.png" class="logo" alt="NODO">
     <h2 style="margin-bottom:6px">PANEL OPERATIVO LITE</h2>
-    <div class="small" style="margin-bottom:16px">Versión V20 · UX fina estable</div>
+    <div class="small" style="margin-bottom:16px">Versión V20 · UX fina realtime</div>
     <label>Usuario</label>
     <input id="loginUsuario" autocomplete="username">
     <label>Clave</label>
@@ -8682,6 +8682,537 @@ body.nodo-v20-recuperado #opsQuickTop .nodo-v23-agent{display:none!important}
 
   document.addEventListener('DOMContentLoaded',()=>setTimeout(boot,500));
   window.addEventListener('load',()=>setTimeout(boot,800));
+  setTimeout(boot,900);
+})();
+</script>
+
+
+<style id="nodo-v20-ux-fina-2-css">
+  /* Sidebar responsive: al achicar ventana queda modo ícono */
+  @media(min-width:901px) and (max-width:1180px){
+    body.nodo-v20-ux-fina .layout{
+      grid-template-columns:72px 1fr!important;
+    }
+    body.nodo-v20-ux-fina .sidebar{
+      width:72px!important;
+      padding:10px 8px!important;
+      overflow-x:hidden!important;
+    }
+    body.nodo-v20-ux-fina .sidebar .logo{
+      width:42px!important;
+      height:42px!important;
+      object-fit:contain!important;
+      margin:0 auto 12px!important;
+    }
+    body.nodo-v20-ux-fina .sidebar .card{
+      display:none!important;
+    }
+    body.nodo-v20-ux-fina .nav-btn{
+      width:54px!important;
+      min-height:46px!important;
+      padding:9px!important;
+      text-align:center!important;
+      font-size:0!important;
+      overflow:visible!important;
+      display:flex!important;
+      align-items:center!important;
+      justify-content:center!important;
+    }
+    body.nodo-v20-ux-fina .nav-btn .nav-icon{
+      font-size:21px!important;
+      line-height:1!important;
+    }
+    body.nodo-v20-ux-fina .nav-btn .nav-text{
+      display:none!important;
+    }
+    body.nodo-v20-ux-fina .badge-alert{
+      right:-5px!important;
+      top:-5px!important;
+      transform:scale(.82);
+    }
+  }
+
+  /* Error compacto: solo botón, sin robar espacio en la tabla */
+  body.nodo-v20-ux-fina .nodo-estado-note{
+    display:none!important;
+  }
+  body.nodo-v20-ux-fina .nodo-error-click{
+    width:auto!important;
+    max-width:165px!important;
+    white-space:nowrap!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+  }
+
+  body.nodo-v20-ux-fina .nodo-sugerencia-copy{
+    border:none;
+    cursor:pointer;
+    background:rgba(255,255,255,.10);
+    color:#fff;
+    padding:7px 10px;
+    border-radius:10px;
+    font-weight:900;
+    margin:3px;
+  }
+  body.nodo-v20-ux-fina .nodo-sugerencia-copy:hover{
+    background:rgba(18,183,106,.22);
+  }
+  body.nodo-v20-ux-fina .nodo-modal-msg-final{
+    width:100%;
+    min-height:92px;
+    background:rgba(18,183,106,.12);
+    color:#d8ffe5;
+    border:1px solid rgba(18,183,106,.35);
+    border-radius:12px;
+    padding:12px;
+    font-family:Arial,sans-serif;
+    font-size:13px;
+    line-height:1.45;
+    resize:none;
+  }
+</style>
+
+<script id="nodo-v20-ux-fina-2-js">
+(function(){
+  if(window.__NODO_V20_UX_FINA_2__) return;
+  window.__NODO_V20_UX_FINA_2__ = true;
+
+  const WATCH = {
+    modalJobId:null,
+    modalJobUltimoEstado:'',
+    interval:null,
+    channel:null,
+    shownOk:{}
+  };
+
+  function $(id){return document.getElementById(id);}
+  function esc(v){
+    if(typeof escapeHtml === 'function') return escapeHtml(v);
+    return String(v ?? '').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'","&#039;");
+  }
+  function attr(v){
+    if(typeof escapeAttr === 'function') return escapeAttr(v);
+    return esc(v);
+  }
+  function norm(v){
+    if(typeof normalizar === 'function') return normalizar(v);
+    return String(v ?? '').trim().toUpperCase();
+  }
+  function dinero(v){
+    if(typeof money === 'function') return money(v);
+    return '$ ' + Number(v || 0).toLocaleString('es-AR');
+  }
+  function fecha(v){
+    if(typeof formatFecha === 'function') return formatFecha(v);
+    return esc(v || '');
+  }
+  function jobs(){
+    try{return Array.isArray(window.workerJobs) ? window.workerJobs : (Array.isArray(workerJobs) ? workerJobs : []);}
+    catch(e){return [];}
+  }
+  function setJobs(lista){
+    try{ window.workerJobs = lista; }catch(e){}
+    try{ workerJobs = lista; }catch(e){}
+  }
+  function jobById(id){
+    return jobs().find(j => String(j.id || j.job_id || j.worker_job_id || '') === String(id || '')) || null;
+  }
+  function tipoLindo(t){
+    const n = norm(t);
+    if(n === 'CARGAR_FICHAS') return 'Carga';
+    if(n === 'PROCESAR_RETIRO') return 'Retiro';
+    if(n === 'VALIDAR_USUARIO') return 'Validar usuario';
+    if(n === 'CREAR_USUARIO') return 'Crear usuario';
+    if(n === 'CAMBIAR_CLAVE') return 'Cambiar clave';
+    return String(t || '-');
+  }
+  function isOkEstado(e){ return ['COMPLETADO','OK','FINALIZADO'].includes(norm(e)); }
+  function isErrorEstado(e, err){ 
+    const n = norm(e);
+    return n.includes('ERROR') || n === 'REINTENTAR' || n === 'REQUIERE_MANUAL' || String(err || '').trim();
+  }
+  function puedeSerUsuarioCreado(j){
+    const t = norm(j?.tipo_accion || j?.tipo || '');
+    const txt = norm((j?.resultado || '') + ' ' + JSON.stringify(j?.payload || {}));
+    return t === 'CREAR_USUARIO' || txt.includes('USUARIO CREADO') || txt.includes('CREADO CORRECTAMENTE');
+  }
+  function parseJsonSeguro(v){
+    if(!v) return null;
+    if(typeof v === 'object') return v;
+    try{return JSON.parse(String(v));}catch(e){return null;}
+  }
+  function extraerDatoRegex(txt, labels){
+    for(const l of labels){
+      const re = new RegExp(l + "\\s*[:=]\\s*([^\\n\\r,;]+)", "i");
+      const m = String(txt || '').match(re);
+      if(m && m[1]) return m[1].trim();
+    }
+    return '';
+  }
+  function extraerUsuarioCreado(j){
+    const payload = parseJsonSeguro(j?.payload) || {};
+    const resultadoObj = parseJsonSeguro(j?.resultado) || {};
+    const txt = String(j?.resultado || j?.error_mensaje || '');
+    const usuario = payload.usuario_creado || payload.usuario || resultadoObj.usuario || resultadoObj.username || extraerDatoRegex(txt, ['Usuario','user','username']) || j?.usuario || '';
+    const clave = payload.clave || payload.password || resultadoObj.clave || resultadoObj.password || extraerDatoRegex(txt, ['Clave','Password','pass']) || '';
+    const link = payload.link || payload.url || resultadoObj.link || resultadoObj.url || extraerDatoRegex(txt, ['Link','URL']) || 'http://bet-300.pw/';
+    return {usuario, clave, link};
+  }
+  function copiarTexto(txt, nombre){
+    if(typeof copiarTextoOperativo === 'function'){
+      copiarTextoOperativo(txt, nombre || 'Texto');
+      return;
+    }
+    navigator.clipboard?.writeText(String(txt || ''));
+    if(typeof toast === 'function') toast((nombre || 'Texto') + ' copiado','green');
+  }
+  window.copiarSugerenciaUsuarioV20 = function(usuario){
+    copiarTexto(usuario, 'Usuario sugerido');
+    const inp = $('manualWorkerUsuarioInicio') || $('manualWorkerUsuario');
+    if(inp){
+      inp.value = usuario;
+      inp.dispatchEvent(new Event('input', {bubbles:true}));
+      inp.focus();
+      inp.select();
+    }
+  };
+  function variantesDesdeError(usuario, error){
+    const txt = String(error || '');
+    const sugMatch = txt.match(/Sugerencias?\s*:\s*([^\.]+)/i);
+    if(sugMatch && sugMatch[1]){
+      return sugMatch[1].split(',').map(x=>x.trim()).filter(Boolean).slice(0,6);
+    }
+    const base = String(usuario || 'usuario').toLowerCase().replace(/[^a-z0-9]/g,'').slice(0,14) || 'usuario';
+    const n = Math.floor(Math.random()*90)+10;
+    return [base+n, base+'1', base+'ok', base+'x', base+'vip'];
+  }
+  function sugerenciasAlias(usuario, error){
+    const t = norm(String(error || ''));
+    if(!(t.includes('DUPLIC') || t.includes('EXIST') || t.includes('ALIAS') || t.includes('USUARIO'))){
+      return '';
+    }
+    const vars = variantesDesdeError(usuario, error);
+    return `<div class="nodo-sugerencias-alias">
+      <b>Posible alias/usuario duplicado.</b>
+      <div class="small" style="margin-top:6px">Copiá una variante al campo Usuario y volvé a reintentar el mismo job.</div>
+      <div style="margin-top:8px">${vars.map(v=>`<button class="nodo-sugerencia-copy" onclick="copiarSugerenciaUsuarioV20('${attr(v)}')">${esc(v)}</button>`).join('')}</div>
+    </div>`;
+  }
+  window.mostrarModalUsuarioCreadoV20 = function(job){
+    const d = extraerUsuarioCreado(job || {});
+    const mensaje = `Usuario: ${d.usuario || ''}\nClave: ${d.clave || ''}\nLink: ${d.link || ''}`;
+    if(typeof abrirModal !== 'function'){
+      alert('Usuario creado\\n\\n' + mensaje);
+      return;
+    }
+    abrirModal('Usuario creado', `
+      <div class="verify-box good">
+        <div class="verify-title">Usuario creado correctamente</div>
+        <div class="verify-grid">
+          ${typeof verifyRow === 'function' ? verifyRow('Usuario', d.usuario || '-', '', true) : `<div>${esc(d.usuario)}</div>`}
+          ${typeof verifyRow === 'function' ? verifyRow('Clave', d.clave || '-', '', true) : `<div>${esc(d.clave)}</div>`}
+          ${typeof verifyRow === 'function' ? verifyRow('Link', d.link || '-', '', true) : `<div>${esc(d.link)}</div>`}
+        </div>
+        <textarea class="nodo-modal-msg-final" readonly>${esc(mensaje)}</textarea>
+        <button class="mini-btn green" style="margin-top:10px" onclick="copiarTextoOperativo ? copiarTextoOperativo(\`${attr(mensaje)}\`,'Mensaje usuario') : navigator.clipboard.writeText(\`${attr(mensaje)}\`)">Copiar mensaje</button>
+      </div>
+    `, async()=>cerrarModal(), 'Cerrar');
+  };
+
+  async function fetchJob(jobId){
+    let data = null;
+    let error = null;
+
+    try{
+      const r = await supabaseClient
+        .from('worker_jobs')
+        .select('*')
+        .eq('id', Number(jobId))
+        .single();
+      data = r.data;
+      error = r.error;
+    }catch(e){ error = e; }
+
+    if(error || !data){
+      const local = jobById(jobId);
+      return local;
+    }
+
+    const lista = jobs().slice();
+    const idx = lista.findIndex(j => String(j.id) === String(jobId));
+    if(idx >= 0) lista[idx] = {...lista[idx], ...data};
+    else lista.unshift(data);
+    setJobs(lista);
+    return data;
+  }
+
+  async function refrescarPantallasV20(){
+    try{ if(typeof cargarWorkerJobs === 'function') await cargarWorkerJobs(true); }catch(e){}
+    try{ if(typeof cargarSolicitudes === 'function') await cargarSolicitudes(true); }catch(e){}
+    try{ if(typeof renderWorkerJobs === 'function') renderWorkerJobs(); }catch(e){}
+    try{ if(typeof renderCentroOperativo === 'function') renderCentroOperativo(); }catch(e){}
+    try{ if(typeof renderColaUnificada === 'function') renderColaUnificada(); }catch(e){}
+  }
+
+  async function revisarJobYMostrarOk(jobId){
+    const j = await fetchJob(jobId);
+    if(!j) return;
+    if(isOkEstado(j.estado)){
+      await refrescarPantallasV20();
+      if(puedeSerUsuarioCreado(j) && !WATCH.shownOk[String(jobId)]){
+        WATCH.shownOk[String(jobId)] = true;
+        setTimeout(()=>window.mostrarModalUsuarioCreadoV20(j), 150);
+      }
+      stopWatchingJobV20();
+    }else if(isErrorEstado(j.estado, j.error_mensaje)){
+      await refrescarPantallasV20();
+      if(WATCH.modalJobId && String(WATCH.modalJobId) === String(jobId)){
+        // Si el modal de logs está abierto, actualizamos su contenido sin esperar refresh manual.
+        setTimeout(()=>window.abrirWorkerLogsUxFina(jobId), 250);
+      }
+    }
+  }
+
+  window.startWatchingJobV20 = function(jobId){
+    if(!jobId) return;
+    WATCH.modalJobId = String(jobId);
+    if(WATCH.interval) clearInterval(WATCH.interval);
+    WATCH.interval = setInterval(()=>revisarJobYMostrarOk(jobId), 1200);
+    revisarJobYMostrarOk(jobId);
+  };
+
+  window.stopWatchingJobV20 = function(){
+    if(WATCH.interval){
+      clearInterval(WATCH.interval);
+      WATCH.interval = null;
+    }
+    WATCH.modalJobId = null;
+  };
+
+  function iniciarRealtimeWorkerV20(){
+    if(WATCH.channel || !window.supabaseClient) return;
+    try{
+      WATCH.channel = supabaseClient
+        .channel('nodo-worker-jobs-v20-' + Math.random().toString(36).slice(2))
+        .on('postgres_changes', { event:'*', schema:'public', table:'worker_jobs' }, payload => {
+          const row = payload.new || payload.old || {};
+          const id = row.id;
+          if(!id) return;
+
+          const lista = jobs().slice();
+          const idx = lista.findIndex(j => String(j.id) === String(id));
+          if(payload.eventType === 'DELETE'){
+            if(idx >= 0) lista.splice(idx,1);
+          }else if(idx >= 0){
+            lista[idx] = {...lista[idx], ...row};
+          }else{
+            lista.unshift(row);
+          }
+          setJobs(lista);
+
+          try{ if(typeof renderWorkerJobs === 'function') renderWorkerJobs(); }catch(e){}
+          try{ if(typeof renderColaUnificada === 'function') renderColaUnificada(); }catch(e){}
+          try{ if(typeof renderCentroOperativo === 'function') renderCentroOperativo(); }catch(e){}
+
+          if(isOkEstado(row.estado) && puedeSerUsuarioCreado(row) && !WATCH.shownOk[String(id)]){
+            WATCH.shownOk[String(id)] = true;
+            setTimeout(()=>window.mostrarModalUsuarioCreadoV20(row), 120);
+          }
+        })
+        .subscribe();
+    }catch(e){
+      console.warn('Realtime worker no disponible:', e);
+    }
+  }
+
+  function renderEstadoCompacto(row){
+    const estado = row.worker || row.estado || '';
+    const error = row.error || '';
+    const job = row.job || '';
+    const n = norm(estado);
+
+    if(isOkEstado(estado)){
+      return `<div class="nodo-estado-unico"><span class="nodo-ok-chip">✅ OK</span></div>`;
+    }
+    if(isErrorEstado(estado, error)){
+      return `<div class="nodo-estado-unico">
+        <button class="nodo-error-click" onclick="abrirWorkerLogsUxFina('${attr(job)}')">⚠️ Error / revisar logs</button>
+      </div>`;
+    }
+    if(n === 'PROCESANDO' || n === 'PENDIENTE' || n === 'EN_COLA_WORKER' || n === 'PREPARANDO_COLA'){
+      return `<div class="nodo-estado-unico"><span class="nodo-run-chip">⏳ ${esc(estado || 'Pendiente')}</span></div>`;
+    }
+    return `<div class="nodo-estado-unico"><span class="nodo-warn-chip">${esc(estado || 'Sin estado')}</span></div>`;
+  }
+
+  const oldRenderCola = window.renderColaUnificada;
+  if(typeof oldRenderCola === 'function'){
+    window.renderColaUnificada = function(){
+      const r = oldRenderCola.apply(this, arguments);
+      setTimeout(() => {
+        document.querySelectorAll('.nodo-estado-note').forEach(el => el.remove());
+      }, 30);
+      return r;
+    };
+    try{ renderColaUnificada = window.renderColaUnificada; }catch(e){}
+  }
+
+  const oldRenderWorker = window.renderWorkerJobs;
+  if(typeof oldRenderWorker === 'function'){
+    window.renderWorkerJobs = function(){
+      const r = oldRenderWorker.apply(this, arguments);
+      setTimeout(() => {
+        document.querySelectorAll('.nodo-estado-note').forEach(el => el.remove());
+      }, 30);
+      return r;
+    };
+    try{ renderWorkerJobs = window.renderWorkerJobs; }catch(e){}
+  }
+
+  window.abrirWorkerLogsUxFina = async function(jobId){
+    if(!jobId){
+      alert('Este registro todavía no tiene job asociado.');
+      return;
+    }
+    const id = Number(jobId);
+    const j = await fetchJob(jobId);
+    window.startWatchingJobV20(jobId);
+
+    let logsHtml = '';
+    try{
+      const { data, error } = await supabaseClient
+        .from('worker_logs')
+        .select('*')
+        .eq('worker_job_id', id)
+        .order('created_at', { ascending:false })
+        .limit(30);
+      if(!error && data && data.length){
+        logsHtml = data.map(l => `
+          <div class="verify-box">
+            <div class="verify-title">${esc(l.nivel || l.tipo || 'LOG')} · ${fecha(l.created_at || '')}</div>
+            <div class="small">${esc(l.mensaje || l.detalle || JSON.stringify(l))}</div>
+          </div>
+        `).join('');
+      }
+    }catch(e){}
+
+    const estado = j ? (j.estado || '-') : '-';
+    const err = j ? (j.error_mensaje || '') : '';
+    const res = j ? (j.resultado || '') : '';
+    const usuario = j ? (j.usuario || '') : '';
+
+    const acciones = j ? `
+      <div class="nodo-log-actions">
+        <button class="mini-btn green" onclick="workerPanelReintentarJob('${attr(jobId)}')">Reintentar mismo job</button>
+        <button class="mini-btn yellow" onclick="abrirEditarBilleteraJobV20('${attr(jobId)}')">Editar billetera</button>
+        <button class="mini-btn red" onclick="workerPanelCancelarJob('${attr(jobId)}')">Cancelar</button>
+      </div>
+    ` : '';
+
+    const detalle = j ? `
+      <div class="verify-box">
+        <div class="verify-title">Job #${esc(j.id)} · ${esc(tipoLindo(j.tipo_accion))}</div>
+        <div class="verify-grid">
+          ${typeof verifyRow === 'function' ? verifyRow('Usuario', usuario || '-', '', true) : `<div>${esc(usuario)}</div>`}
+          ${typeof verifyRow === 'function' ? verifyRow('Monto', dinero(j.monto || 0)) : `<div>${dinero(j.monto||0)}</div>`}
+          ${typeof verifyRow === 'function' ? verifyRow('Estado', estado) : `<div>${esc(estado)}</div>`}
+          ${typeof verifyRow === 'function' ? verifyRow('Intentos', `${j.intentos || 0} / ${j.max_intentos || 3}`) : `<div>${esc(j.intentos || 0)}</div>`}
+        </div>
+      </div>
+      ${sugerenciasAlias(usuario, err || res)}
+      <div class="verify-box">
+        <div class="verify-title">Resultado / error</div>
+        ${err ? `<div class="worker-error-card">${esc(err)}</div>` : (res ? `<div class="ok-box">${esc(res)}</div>` : `<div class="alert-box">Sin resultado todavía.</div>`)}
+      </div>
+    ` : `<div class="alert-box">No encontré el job en memoria. Actualizá worker y volvé a abrir los logs.</div>`;
+
+    abrirModal('Logs del worker', `
+      ${acciones}
+      ${detalle}
+      ${logsHtml || `<div class="alert-box">Todavía no hay logs detallados para este job.</div>`}
+    `, async()=>{ window.stopWatchingJobV20(); cerrarModal(); }, 'Cerrar');
+  };
+
+  window.abrirWorkerLogs = window.abrirWorkerLogsUxFina;
+  window.abrirDetalleWorkerJob = window.abrirWorkerLogsUxFina;
+
+  window.workerPanelReintentarJob = async function(jobId){
+    try{
+      const id = Number(jobId);
+      const j = jobById(id) || await fetchJob(id);
+      const userInp = $('manualWorkerUsuarioInicio') || $('manualWorkerUsuario');
+      const usuarioSugerido = userInp && userInp.value ? userInp.value.trim() : '';
+
+      const args = { p_job_id:id };
+
+      // Siempre reintenta el MISMO job.
+      // Si el operador copió una variante al campo usuario, intentamos pasarla para que la RPC la use si está preparada.
+      if(usuarioSugerido && j && norm(j.tipo_accion) === 'CREAR_USUARIO' && usuarioSugerido !== String(j.usuario || '')){
+        args.p_usuario_override = usuarioSugerido;
+        args.p_usuario = usuarioSugerido;
+      }
+
+      const { data, error } = await supabaseClient.rpc('admin_reintentar_worker_job', args);
+      if(error) throw error;
+      const r = Array.isArray(data) ? data[0] : data;
+      if(r && r.ok === false) throw new Error(r.error || 'No se pudo reintentar.');
+
+      if(typeof toast === 'function') toast('Reintentando el mismo job','green');
+      window.startWatchingJobV20(id);
+
+      await refrescarPantallasV20();
+      setTimeout(()=>revisarJobYMostrarOk(id), 700);
+      setTimeout(()=>revisarJobYMostrarOk(id), 1600);
+      setTimeout(()=>revisarJobYMostrarOk(id), 2800);
+    }catch(e){
+      alert('Error reintentando job: ' + (e.message || e));
+    }
+  };
+
+  window.workerPanelCancelarJob = async function(jobId){
+    try{
+      const id = Number(jobId);
+      const { data, error } = await supabaseClient.rpc('admin_cancelar_worker_job', {
+        p_job_id:id,
+        p_motivo:'Cancelado desde panel operativo'
+      });
+      if(error) throw error;
+      const r = Array.isArray(data) ? data[0] : data;
+      if(r && r.ok === false) throw new Error(r.error || 'No se pudo cancelar.');
+      if(typeof toast === 'function') toast('Job cancelado','green');
+      window.stopWatchingJobV20();
+      await refrescarPantallasV20();
+    }catch(e){
+      alert('Error cancelando job: ' + (e.message || e));
+    }
+  };
+
+  function normalizarSidebar(){
+    document.querySelectorAll('.sidebar .nav-btn').forEach(btn => {
+      if(btn.dataset.navNormalizado === '1') return;
+      const badges = Array.from(btn.querySelectorAll('.badge-alert'));
+      badges.forEach(b=>b.remove());
+      const raw = btn.textContent.trim();
+      const m = raw.match(/^(\S+)\s*(.*)$/);
+      const icon = m ? m[1] : raw.slice(0,2);
+      let text = m ? m[2] : raw;
+      text = text.replace(/\s*\d+\s*$/,'').trim();
+      btn.innerHTML = `<span class="nav-icon">${esc(icon)}</span><span class="nav-text">${esc(text)}</span>`;
+      badges.forEach(b=>btn.appendChild(b));
+      btn.dataset.navNormalizado = '1';
+    });
+  }
+
+  function boot(){
+    document.body.classList.add('nodo-v20-ux-fina');
+    normalizarSidebar();
+    iniciarRealtimeWorkerV20();
+    try{ if(typeof renderWorkerJobs === 'function') renderWorkerJobs(); }catch(e){}
+    try{ if(typeof renderColaUnificada === 'function') renderColaUnificada(); }catch(e){}
+  }
+
+  document.addEventListener('DOMContentLoaded',()=>setTimeout(boot,400));
+  window.addEventListener('load',()=>setTimeout(boot,700));
   setTimeout(boot,900);
 })();
 </script>
