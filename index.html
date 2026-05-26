@@ -7862,20 +7862,6 @@ body.nodo-v20 #alertas .alert-box{padding:8px 10px;font-size:12px;margin-bottom:
 </script>
 
 
-<style id="nodo-v21-final-retiro-readonly-style">
-/* =========================================================
-   NODO V21 FINAL · Control retiros 24 hs solo lectura
-   - Importaciones quedan para Admin/Encargado.
-   - Operativo solo consulta y permite continuar con motivo obligatorio.
-========================================================= */
-.v21-final-alert{border:1px solid rgba(253,176,34,.48);background:#2a210d;color:#ffd98f;border-radius:14px;padding:12px;line-height:1.35;margin:10px 0}
-.v21-final-block{border:1px solid rgba(240,68,56,.48);background:#2b1111;color:#ffd0d0;border-radius:14px;padding:12px;line-height:1.35;margin:10px 0}
-.v21-final-ok{border:1px solid rgba(18,183,106,.48);background:#0f2b1d;color:#b9f7cb;border-radius:14px;padding:12px;line-height:1.35;margin:10px 0}
-.v21-final-muted{font-size:12px;color:#98a2b3;line-height:1.35;margin-top:8px}
-</style>
-
-
-
 <style id="nodo-final-cierre-css">
   .ops-wallet{cursor:pointer;padding:10px 12px!important;min-height:unset!important}
   .ops-wallet-actions{display:none!important}
@@ -8019,40 +8005,6 @@ body.nodo-v20 #alertas .alert-box{padding:8px 10px;font-size:12px;margin-bottom:
 </style>
 
 
-<style id="nodo-v25-neon-clean-css">
-  body.nodo-v25-neon .layout{grid-template-columns:64px 1fr!important;}
-  body.nodo-v25-neon .sidebar{width:64px!important;padding:10px 6px!important;overflow:hidden!important;background:#0b111b!important;border-right:1px solid rgba(56,189,248,.22)!important;}
-  body.nodo-v25-neon .sidebar .logo{width:42px!important;margin:0 auto 12px!important;}
-  body.nodo-v25-neon .sidebar .card{display:none!important;}
-  body.nodo-v25-neon .nav-btn{height:48px!important;width:52px!important;margin:0 auto 8px!important;padding:0!important;border-radius:14px!important;text-align:center!important;font-size:0!important;display:flex!important;align-items:center!important;justify-content:center!important;background:#111827!important;border:1px solid rgba(148,163,184,.15)!important;box-shadow:none!important;overflow:hidden!important;}
-  body.nodo-v25-neon .nav-btn::before{font-size:21px!important;line-height:1!important;filter:drop-shadow(0 0 8px rgba(56,189,248,.45));}
-  body.nodo-v25-neon #navInicio::before{content:'I';}
-  body.nodo-v25-neon #navSolicitudes::before{content:'S';}
-  body.nodo-v25-neon #navBilleteras::before{content:'B';color:#67e8f9;}
-  body.nodo-v25-neon #navChat::before{content:'C';color:#22d3ee;}
-  body.nodo-v25-neon #navWorker::before{content:'W';}
-  body.nodo-v25-neon #navAjustes::before{content:'A';color:#fbbf24;}
-  body.nodo-v25-neon .nav-btn[onclick*="cerrarSesion"]::before{content:'X';color:#fca5a5;}
-  body.nodo-v25-neon .nav-btn.active{background:linear-gradient(180deg,#1d4ed8,#2563eb)!important;border-color:#38bdf8!important;box-shadow:0 0 16px rgba(56,189,248,.42)!important;}
-  body.nodo-v25-neon .badge-alert{right:2px!important;top:1px!important;transform:scale(.72);}
-  body.nodo-v25-neon .main{padding-left:12px!important;}
-
-  body.nodo-v25-neon #opsKpis .ops-kpi:first-child,
-  body.nodo-v25-neon .ops-kpi:first-child{border-color:rgba(34,211,238,.7)!important;background:radial-gradient(circle at 18% 0%,rgba(34,211,238,.22),rgba(15,23,42,.96) 42%)!important;box-shadow:0 0 22px rgba(34,211,238,.22), inset 0 0 18px rgba(34,211,238,.08)!important;}
-  body.nodo-v25-neon #opsKpis .ops-kpi:first-child .ops-kpi-title,
-  body.nodo-v25-neon .ops-kpi:first-child .ops-kpi-title{color:#cffafe!important;letter-spacing:.8px!important;}
-  body.nodo-v25-neon #opsKpis .ops-kpi:first-child .ops-kpi-value,
-  body.nodo-v25-neon .ops-kpi:first-child .ops-kpi-value{color:#e0faff!important;text-shadow:0 0 8px rgba(34,211,238,.95),0 0 22px rgba(34,211,238,.55)!important;}
-
-  body.nodo-v25-neon .ops-wallet{border-color:rgba(34,211,238,.42)!important;background:linear-gradient(180deg,rgba(15,23,42,.98),rgba(8,18,24,.98))!important;box-shadow:0 0 18px rgba(34,211,238,.14), inset 0 0 16px rgba(34,211,238,.05)!important;}
-  body.nodo-v25-neon .ops-wallet-name{color:#e0faff!important;text-shadow:0 0 7px rgba(34,211,238,.85),0 0 18px rgba(34,211,238,.32)!important;letter-spacing:.3px!important;}
-  body.nodo-v25-neon .ops-wallet-saldo{color:#7dd3fc!important;text-shadow:0 0 8px rgba(34,211,238,.75)!important;}
-
-  body.nodo-v25-neon #opsQuickTop #agentUserActionsBox,
-  body.nodo-v25-neon #opsQuickTop #agentUserActionsBoxV5,
-  body.nodo-v25-neon #opsQuickTop .agent-user-v5{display:none!important;}
-  body.nodo-v25-neon #opsQuickTop .nodo-v23-agent ~ .nodo-v23-agent{display:none!important;}
-</style>
 <style id="nodo-v26-operativo-final-css">
   body.nodo-v26-final .layout{grid-template-columns:176px 1fr!important;}
   body.nodo-v26-final .sidebar{width:176px!important;padding:10px!important;overflow:hidden auto!important;background:#070b12!important;border-right:1px solid rgba(56,189,248,.20)!important;}
@@ -8088,152 +8040,115 @@ body.nodo-v20 #alertas .alert-box{padding:8px 10px;font-size:12px;margin-bottom:
 </style>
 
 
-<script>
+
+<style id="nodo-v20-recuperado-estable-css">
 /* =========================================================
-   NODO PATCH LIMPIO · Usuario Agentes único + sin temblor
-   - Elimina cajas viejas duplicadas.
-   - Inserta una sola caja de Usuario Agentes.
-   - No usa MutationObserver ni setInterval permanente.
-   - Se ejecuta después de renderCentroOperativo/refrescarTodo.
+   NODO V20 RECUPERADO ESTABLE
+========================================================= */
+body.nodo-v20-recuperado #agentUserActionsFinal{margin-top:12px;border-top:1px solid #273142;padding-top:12px}
+body.nodo-v20-recuperado #agentUserActionsFinal .agent-final-grid{display:grid;grid-template-columns:minmax(160px,1fr) minmax(150px,.75fr) auto;gap:9px;align-items:end}
+body.nodo-v20-recuperado #agentUserActionsFinal input,
+body.nodo-v20-recuperado #agentUserActionsFinal select{margin:0!important}
+body.nodo-v20-recuperado #agentUserActionsFinal .btn{height:38px;margin:0;padding:0 14px;white-space:nowrap}
+body.nodo-v20-recuperado .agent-user-final-note{font-size:12px;color:#98a2b3;margin-top:7px;line-height:1.35}
+body.nodo-v20-recuperado .nodo-created-user-modal textarea{box-sizing:border-box;width:100%;min-height:96px;margin-top:10px;border-radius:10px;padding:9px;background:#071b12;color:#dcfce7;border:1px solid #14532d;font:13px/1.35 Consolas,monospace}
+body.nodo-v20-recuperado .nav-btn .nav-ico{width:20px;display:inline-flex;justify-content:center;filter:drop-shadow(0 0 5px rgba(56,189,248,.32))}
+body.nodo-v20-recuperado .nav-btn .nav-label{display:inline-flex;align-items:center;gap:6px}
+body.nodo-v20-recuperado #opsQuickTop #agentUserActionsBox,
+body.nodo-v20-recuperado #opsQuickTop #agentUserActionsBoxV5,
+body.nodo-v20-recuperado #opsQuickTop #agentUserActionsBoxV23,
+body.nodo-v20-recuperado #opsQuickTop .agent-user-v5,
+body.nodo-v20-recuperado #opsQuickTop .nodo-v23-agent{display:none!important}
+@media(max-width:760px){body.nodo-v20-recuperado #agentUserActionsFinal .agent-final-grid{grid-template-columns:1fr!important}}
+</style>
+
+<script id="nodo-v20-recuperado-estable-js">
+/* =========================================================
+   NODO V20 RECUPERADO ESTABLE
+   - Usuario Agentes único.
+   - Crear usuario / cambiar clave en worker.
+   - Seguimiento pasivo al refrescar Worker.
+   - Modal final con acceso listo para copiar.
+   - Sin MutationObserver ni setInterval propio.
 ========================================================= */
 (function(){
-  if(window.__NODO_USUARIO_AGENTES_LIMPIO__) return;
-  window.__NODO_USUARIO_AGENTES_LIMPIO__ = true;
+  if(window.__NODO_V20_RECUPERADO_ESTABLE__) return;
+  window.__NODO_V20_RECUPERADO_ESTABLE__ = true;
 
   const DEFAULT_PASS = '12345a';
+  const PLATFORM_LINK = window.NODO_PLATAFORMA_LINK || 'http://bet-300.pw/';
+  const WATCH_KEY = 'nodo_v20_agent_user_watch_estable';
+  const SHOWN_KEY = 'nodo_v20_agent_user_shown_estable';
+
   const $ = id => document.getElementById(id);
-  const esc = v => String(v ?? '').replace(/[&<>"']/g, m => ({
-    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
-  }[m]));
+  const esc = v => String(v ?? '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
   const attr = v => esc(v).replace(/`/g,'&#96;');
   const val = id => String($(id)?.value ?? '').trim();
-  const token = () => typeof requireSessionToken === 'function' ? requireSessionToken() : (window.panelSessionToken || '');
-  const pc = () => {
-    try { return String(window.pcOperativa || pcOperativa || 'P1').trim().toUpperCase(); }
-    catch(e){ return 'P1'; }
+  const norm = v => {
+    try{return String(v ?? '').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toUpperCase().trim();}
+    catch(e){return String(v ?? '').toUpperCase().trim();}
   };
+  const token = () => typeof requireSessionToken === 'function' ? requireSessionToken() : (window.panelSessionToken || '');
+  const pc = () => { try{return String(window.pcOperativa || pcOperativa || 'P1').trim().toUpperCase();}catch(e){return 'P1';} };
 
-  function limpiarDuplicadosUsuarioAgentes(){
-    const selectores = [
-      '#agentUserActionsBox',
-      '#agentUserActionsBoxV5',
-      '#agentUserActionsBoxV23',
-      '#agentUserActionsFinal',
-      '.agent-user-v5',
-      '.nodo-v23-agent',
-      '.agent-user-final'
-    ];
-    document.querySelectorAll(selectores.join(',')).forEach(el => el.remove());
+  function readJson(key, fallback){ try{return JSON.parse(localStorage.getItem(key) || JSON.stringify(fallback));}catch(e){return fallback;} }
+  function writeJson(key, value){ try{localStorage.setItem(key, JSON.stringify(value));}catch(e){} }
+  function readWatch(){return readJson(WATCH_KEY, {});} function writeWatch(map){writeJson(WATCH_KEY, map || {});}
+  function readShown(){return readJson(SHOWN_KEY, {});} function writeShown(map){writeJson(SHOWN_KEY, map || {});}
+  function watchJob(jobId, usuario, tipo, clave){ const id=String(jobId||'').trim(); if(!id) return; const map=readWatch(); map[id]={usuario:String(usuario||''),tipo:String(tipo||''),clave:String(clave||DEFAULT_PASS),pc:pc(),ts:Date.now()}; writeWatch(map); }
+  function unwatchJob(jobId){ const id=String(jobId||'').trim(); if(!id) return; const map=readWatch(); delete map[id]; writeWatch(map); }
+  function wasShown(jobId){return !!readShown()[String(jobId||'')];}
+  function markShown(jobId){ const id=String(jobId||'').trim(); if(!id) return; const map=readShown(); map[id]=Date.now(); writeShown(map); }
+
+  function mensajeAcceso(usuario, clave){ return ['Usuario: '+String(usuario||''),'Clave: '+String(clave||DEFAULT_PASS),'Link: '+PLATFORM_LINK,'','Podés cambiar la clave desde la plataforma si querés.'].join('\n'); }
+  window.nodoCopiarUsuarioCreadoV20 = function(usuario, clave){ const msg=mensajeAcceso(usuario, clave || DEFAULT_PASS); if(typeof copiarTextoOperativo==='function') copiarTextoOperativo(msg,'datos de usuario'); else navigator.clipboard?.writeText(msg).catch(()=>alert(msg)); };
+
+  function modalUsuarioCreado(usuario, jobId, clave){
+    if(!usuario || !jobId || wasShown(jobId)) return;
+    markShown(jobId); unwatchJob(jobId);
+    const msg=mensajeAcceso(usuario, clave || DEFAULT_PASS);
+    const body=`<div class="verify-box nodo-created-user-modal"><div class="verify-title">Usuario creado correctamente</div><div class="verify-grid">${typeof verifyRow==='function'?verifyRow('Usuario',usuario,'',true):`<div>${esc(usuario)}</div>`}${typeof verifyRow==='function'?verifyRow('Clave',clave||DEFAULT_PASS,'',true):`<div>${esc(clave||DEFAULT_PASS)}</div>`}${typeof verifyRow==='function'?verifyRow('Link',PLATFORM_LINK,'',true):`<div>${esc(PLATFORM_LINK)}</div>`}</div><textarea readonly>${esc(msg)}</textarea><button class="mini-btn green" type="button" onclick="nodoCopiarUsuarioCreadoV20('${attr(usuario)}','${attr(clave||DEFAULT_PASS)}')">Copiar mensaje</button></div>`;
+    try{ abrirModal('Usuario creado', body, async()=>cerrarModal(), 'Cerrar'); }
+    catch(e){ const out=$('manualWorkerResultadoInicio'); if(out) out.innerHTML=`<div class="ok-box">Usuario <b>${esc(usuario)}</b> creado correctamente. <button class="mini-btn green" type="button" onclick="nodoCopiarUsuarioCreadoV20('${attr(usuario)}','${attr(clave||DEFAULT_PASS)}')">Copiar mensaje</button></div>`; }
   }
+  function modalClaveCambiada(usuario, jobId){ if(!usuario || !jobId || wasShown(jobId)) return; markShown(jobId); unwatchJob(jobId); const out=$('manualWorkerResultadoInicio'); if(out) out.innerHTML=`<div class="ok-box">Clave actualizada para <b>${esc(usuario)}</b>.</div>`; }
 
+  function jobsActuales(){ try{return Array.isArray(window.workerJobs)?window.workerJobs:(Array.isArray(workerJobs)?workerJobs:[]);}catch(e){return [];} }
+  function jobIdOf(j){return String(j?.id || j?.job_id || j?.worker_job_id || j?.ID || '').trim();}
+  function jobEstado(j){return norm(j?.estado || j?.ESTADO || j?.estado_worker || j?.ESTADO_WORKER || '');}
+  function jobUsuario(j){return String(j?.usuario || j?.USUARIO || j?.usuario_jugador || j?.USUARIO_JUGADOR || '').trim();}
+  function checkWatchedJobs(){ const map=readWatch(); if(!Object.keys(map).length) return; jobsActuales().forEach(j=>{ const id=jobIdOf(j); if(!id || !map[id]) return; const estado=jobEstado(j), w=map[id], usuario=jobUsuario(j)||w.usuario; if(['COMPLETADO','OK','FINALIZADO'].includes(estado)){ if(norm(w.tipo)==='CREAR_USUARIO') modalUsuarioCreado(usuario,id,w.clave||DEFAULT_PASS); else modalClaveCambiada(usuario,id); } if(['CANCELADO','CANCELADA','ERROR','ERROR_JOB','ERROR_WORKER'].includes(estado)) unwatchJob(id); }); }
+
+  function limpiarDuplicadosUsuarioAgentes(){ const selectores=['#agentUserActionsBox','#agentUserActionsBoxV5','#agentUserActionsBoxV23','.agent-user-v5','.nodo-v23-agent']; document.querySelectorAll(selectores.join(',')).forEach(el=>el.remove()); const finales=[...document.querySelectorAll('#agentUserActionsFinal')]; finales.slice(1).forEach(el=>el.remove()); }
   function asegurarUsuarioAgentes(){
-    const quick = $('opsQuickTop');
-    const result = $('manualWorkerResultadoInicio');
-    if(!quick && !result) return;
-
-    limpiarDuplicadosUsuarioAgentes();
-
-    const html = `
-      <div id="agentUserActionsFinal" class="agent-user-final" style="margin-top:12px;border-top:1px solid #273142;padding-top:12px">
-        <div class="ops-panel-title" style="font-size:15px;margin-bottom:8px">Usuario Agentes</div>
-        <div class="agent-final-grid" style="display:grid;grid-template-columns:1fr 1fr auto;gap:9px;align-items:end">
-          <div>
-            <label>Clave</label>
-            <input id="agentUserClaveFinal" type="password" autocomplete="new-password" value="${DEFAULT_PASS}" placeholder="${DEFAULT_PASS}" style="margin-bottom:0">
-          </div>
-          <div>
-            <label>Acción</label>
-            <select id="agentUserTipoFinal" style="margin-bottom:0">
-              <option value="CREAR_USUARIO">Crear usuario</option>
-              <option value="CAMBIAR_CLAVE">Cambiar clave</option>
-            </select>
-          </div>
-          <div>
-            <label>&nbsp;</label>
-            <button class="btn btn-primary" type="button" style="height:38px;margin:0;padding:0 12px;white-space:nowrap" onclick="crearJobUsuarioAgentesFinal()">Enviar acción</button>
-          </div>
-        </div>
-        <div class="small" style="margin-top:7px">Crear usuario usa la clave genérica ${DEFAULT_PASS}. Cambio de clave usa la clave indicada arriba.</div>
-      </div>
-    `;
-
-    if(result) result.insertAdjacentHTML('beforebegin', html);
-    else quick.insertAdjacentHTML('beforeend', html);
+    const result=$('manualWorkerResultadoInicio'), quick=$('opsQuickTop'); if(!result && !quick) return;
+    limpiarDuplicadosUsuarioAgentes(); if($('agentUserActionsFinal')) return;
+    const html=`<div id="agentUserActionsFinal" class="agent-user-final"><div class="ops-panel-title" style="font-size:15px;margin-bottom:8px">Usuario Agentes</div><div class="agent-final-grid"><div><label>Clave</label><input id="agentUserClaveFinal" type="password" autocomplete="new-password" value="${DEFAULT_PASS}" placeholder="${DEFAULT_PASS}"></div><div><label>Acción</label><select id="agentUserTipoFinal"><option value="CREAR_USUARIO">Crear usuario</option><option value="CAMBIAR_CLAVE">Cambiar clave</option></select></div><div><label>&nbsp;</label><button class="btn btn-primary" type="button" onclick="crearJobUsuarioAgentesFinal()">Enviar acción</button></div></div><div class="agent-user-final-note">Usa el usuario escrito en Acción rápida. Crear usuario deja clave ${DEFAULT_PASS}; cambiar clave usa la clave indicada.</div></div>`;
+    if(result) result.insertAdjacentHTML('beforebegin', html); else if(quick) quick.insertAdjacentHTML('beforeend', html);
   }
 
   window.crearJobUsuarioAgentesFinal = async function(){
-    const usuario = val('manualWorkerUsuarioInicio');
-    const tipo = val('agentUserTipoFinal') || 'CREAR_USUARIO';
-    const clave = tipo === 'CREAR_USUARIO' ? DEFAULT_PASS : (val('agentUserClaveFinal') || DEFAULT_PASS);
-    const out = $('manualWorkerResultadoInicio');
-
-    if(!usuario){
-      if(out) out.innerHTML = '<div class="err-box">Ingresá el usuario en Acción rápida.</div>';
-      return;
-    }
-
-    if(out){
-      out.innerHTML = `<div class="alert-box">Enviando ${tipo === 'CREAR_USUARIO' ? 'creación de usuario' : 'cambio de clave'} al worker...</div>`;
-    }
-
+    const usuario=val('manualWorkerUsuarioInicio'), tipo=val('agentUserTipoFinal')||'CREAR_USUARIO', clave=tipo==='CREAR_USUARIO'?DEFAULT_PASS:(val('agentUserClaveFinal')||DEFAULT_PASS), out=$('manualWorkerResultadoInicio');
+    if(!usuario){ if(out) out.innerHTML='<div class="err-box">Ingresá el usuario en Acción rápida.</div>'; return; }
+    if(out) out.innerHTML=`<div class="alert-box">Enviando ${tipo==='CREAR_USUARIO'?'creación de usuario':'cambio de clave'} al worker...</div>`;
     try{
-      const {data,error} = await supabaseClient.rpc('operativo_crear_worker_job_usuario_clave_v1', {
-        p_session_token: token(),
-        p_pc_codigo: pc(),
-        p_usuario: usuario,
-        p_tipo_accion: tipo,
-        p_clave: clave,
-        p_observacion: ''
-      });
-
-      if(error) throw error;
-
-      const row = Array.isArray(data) ? data[0] : data;
-      if(row && row.ok === false){
-        throw new Error(row.mensaje || row.error || 'No se pudo crear el job.');
-      }
-
-      const jobId = row?.job_id || row?.id || '';
-      if(out){
-        out.innerHTML = `<div class="ok-box">${tipo === 'CREAR_USUARIO' ? 'Crear usuario' : 'Cambiar clave'} enviado al worker. Job: <b>${esc(jobId || '-')}</b></div>`;
-      }
-
-      try{ if(typeof window.cargarWorkerJobs === 'function') await window.cargarWorkerJobs(true); }catch(e){}
-      try{ if(typeof window.renderCentroOperativo === 'function') window.renderCentroOperativo(); }catch(e){}
-    }catch(e){
-      if(out) out.innerHTML = `<div class="err-box">${esc(e.message || e)}</div>`;
-    }
+      const {data,error}=await supabaseClient.rpc('operativo_crear_worker_job_usuario_clave_v1',{p_session_token:token(),p_pc_codigo:pc(),p_usuario:usuario,p_tipo_accion:tipo,p_clave:clave,p_observacion:''});
+      if(error) throw error; const row=Array.isArray(data)?data[0]:data; if(row && row.ok===false) throw new Error(row.mensaje||row.error||'No se pudo crear el job.');
+      const jobId=row?.job_id || row?.id || row?.worker_job_id || ''; watchJob(jobId,usuario,tipo,clave);
+      if(out) out.innerHTML=`<div class="ok-box">${tipo==='CREAR_USUARIO'?'Crear usuario':'Cambiar clave'} enviado al worker. Job: <b>${esc(jobId||'-')}</b></div>`;
+      try{ if(typeof window.cargarWorkerJobs==='function') await window.cargarWorkerJobs(true); }catch(e){}
+      try{ checkWatchedJobs(); }catch(e){} try{ if(typeof window.renderCentroOperativo==='function') window.renderCentroOperativo(); }catch(e){}
+    }catch(e){ if(out) out.innerHTML=`<div class="err-box">${esc(e.message||e)}</div>`; }
   };
+  window.crearJobUsuarioAgentesInicio=window.crearJobUsuarioAgentesFinal; window.crearJobUsuarioAgentesInicioV5=window.crearJobUsuarioAgentesFinal; window.crearJobUsuarioAgentesInicioV23=window.crearJobUsuarioAgentesFinal;
 
-  window.crearJobUsuarioAgentesInicio = window.crearJobUsuarioAgentesFinal;
-  window.crearJobUsuarioAgentesInicioV5 = window.crearJobUsuarioAgentesFinal;
-  window.crearJobUsuarioAgentesInicioV23 = window.crearJobUsuarioAgentesFinal;
-
-  const renderCentroOriginal = window.renderCentroOperativo;
-  if(typeof renderCentroOriginal === 'function'){
-    window.renderCentroOperativo = function(){
-      const r = renderCentroOriginal.apply(this, arguments);
-      setTimeout(asegurarUsuarioAgentes, 80);
-      return r;
-    };
-    try{ renderCentroOperativo = window.renderCentroOperativo; }catch(e){}
-  }
-
-  const refrescarOriginal = window.refrescarTodo;
-  if(typeof refrescarOriginal === 'function'){
-    window.refrescarTodo = async function(){
-      const r = await refrescarOriginal.apply(this, arguments);
-      setTimeout(asegurarUsuarioAgentes, 120);
-      return r;
-    };
-    try{ refrescarTodo = window.refrescarTodo; }catch(e){}
-  }
-
-  document.addEventListener('DOMContentLoaded', () => setTimeout(asegurarUsuarioAgentes, 300));
-  window.addEventListener('load', () => setTimeout(asegurarUsuarioAgentes, 500));
-  setTimeout(asegurarUsuarioAgentes, 400);
+  function decorarNav(){ const map={navInicio:'🏠',navSolicitudes:'📋',navBilleteras:'💳',navChat:'💬',navWorker:'⚙️',navAjustes:'🧾'}; Object.entries(map).forEach(([id,ico])=>{ const btn=$(id); if(!btn || btn.dataset.nodoDecorado==='1') return; const badges=[...btn.querySelectorAll('.badge-alert')]; badges.forEach(b=>b.remove()); const texto=btn.textContent.replace(/\s+/g,' ').trim(); const limpio=texto.replace(/^([🏠📋💳💬⚙️🧾]+)\s*/,'').replace(/\s*\d+\s*$/,'').trim(); btn.innerHTML=`<span class="nav-ico">${ico}</span><span class="nav-label">${esc(limpio)}</span>`; badges.forEach(b=>btn.appendChild(b)); btn.dataset.nodoDecorado='1'; }); }
+  function limpiarEtiquetasEstaticas(){ const pairs=[['Cargar fichas','Carga'],['Retirar fichas','Retiro'],['CARGAR_FICHAS','Carga'],['PROCESAR_RETIRO','Retiro']]; document.querySelectorAll('option,button,.ops-panel-title,.card-title,label,span,div.small').forEach(el=>{ if(!el || el.children.length) return; let t=el.textContent||''; pairs.forEach(([a,b])=>{t=t.replaceAll(a,b);}); if(t!==el.textContent) el.textContent=t; }); }
+  function aplicarMejorasEstaticas(){ document.body.classList.add('nodo-v20-recuperado'); document.body.classList.add('nodo-v26-final'); decorarNav(); limpiarEtiquetasEstaticas(); asegurarUsuarioAgentes(); }
+  function wrapOnce(name, after, isAsync=false){ const original=window[name] || (typeof globalThis[name]!=='undefined'?globalThis[name]:null); if(typeof original!=='function' || original.__nodoV20Recuperado) return; const wrapped=isAsync?async function(){const r=await original.apply(this,arguments); setTimeout(after,80); return r;}:function(){const r=original.apply(this,arguments); setTimeout(after,80); return r;}; wrapped.__nodoV20Recuperado=true; window[name]=wrapped; try{ eval(name+' = window["'+name+'"]'); }catch(e){} }
+  wrapOnce('renderCentroOperativo', aplicarMejorasEstaticas, false); wrapOnce('refrescarTodo', aplicarMejorasEstaticas, true); wrapOnce('cargarWorkerJobs', function(){aplicarMejorasEstaticas(); checkWatchedJobs();}, true);
+  document.addEventListener('DOMContentLoaded',()=>setTimeout(aplicarMejorasEstaticas,350)); window.addEventListener('load',()=>setTimeout(aplicarMejorasEstaticas,650)); setTimeout(aplicarMejorasEstaticas,500);
 })();
 </script>
-
 </body>
 </html>
