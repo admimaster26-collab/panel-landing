@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>NODO · OPERATIVO V20 · Retry RPC fix</title>
+<title>NODO · OPERATIVO V20 · Requeue worker fix</title>
 
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif}
@@ -274,7 +274,7 @@ table{width:100%;border-collapse:collapse}th,td{padding:11px;border-bottom:1px s
   <div class="login-card">
     <img src="logo-nodo.png" class="logo" alt="NODO">
     <h2 style="margin-bottom:6px">PANEL OPERATIVO LITE</h2>
-    <div class="small" style="margin-bottom:16px">Versión V20 · Retry RPC fix</div>
+    <div class="small" style="margin-bottom:16px">Versión V20 · Requeue worker fix</div>
     <label>Usuario</label>
     <input id="loginUsuario" autocomplete="username">
     <label>Clave</label>
@@ -9901,6 +9901,202 @@ body.nodo-v20-recuperado #opsQuickTop .nodo-v23-agent{display:none!important}
   document.addEventListener('DOMContentLoaded',()=>setTimeout(boot,500));
   window.addEventListener('load',()=>setTimeout(boot,900));
   setTimeout(boot,1000);
+})();
+</script>
+
+
+<script id="nodo-v20-requeue-final-js">
+(function(){
+  if(window.__NODO_V20_REQUEUE_FINAL__) return;
+  window.__NODO_V20_REQUEUE_FINAL__ = true;
+
+  const STATE = { watching:{}, shown:{}, poll:null };
+
+  function $(id){ return document.getElementById(id); }
+  function norm(v){
+    try{return String(v ?? '').normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim().toUpperCase();}
+    catch(e){return String(v ?? '').trim().toUpperCase();}
+  }
+  function jobs(){
+    try{return Array.isArray(window.workerJobs) ? window.workerJobs : (Array.isArray(workerJobs) ? workerJobs : []);}
+    catch(e){return [];}
+  }
+  function jobById(id){
+    return jobs().find(j => String(j.id || j.job_id || j.worker_job_id || '') === String(id || '')) || null;
+  }
+  function isOk(e){ return ['COMPLETADO','OK','FINALIZADO'].includes(norm(e)); }
+  function parseJson(v){
+    if(!v) return null;
+    if(typeof v === 'object') return v;
+    try{return JSON.parse(String(v));}catch(e){return null;}
+  }
+  function datoRegex(txt, labels){
+    for(const l of labels){
+      const re = new RegExp(l + "\\s*[:=]\\s*([^\\n\\r,;]+)", "i");
+      const m = String(txt || '').match(re);
+      if(m && m[1]) return m[1].trim();
+    }
+    return '';
+  }
+  function isUsuarioJob(j){
+    const t = norm(j?.tipo_accion || j?.tipo || '');
+    const txt = norm((j?.resultado || '') + ' ' + JSON.stringify(j?.payload || {}));
+    return t === 'CREAR_USUARIO' || txt.includes('USUARIO CREADO') || txt.includes('CREADO CORRECTAMENTE');
+  }
+  function datosUsuario(j){
+    const payload = parseJson(j?.payload) || {};
+    const rj = parseJson(j?.resultado) || {};
+    const txt = String(j?.resultado || '');
+    return {
+      usuario: payload.usuario_creado || payload.usuario || rj.usuario || rj.username || datoRegex(txt, ['Usuario','user','username']) || j?.usuario || '',
+      clave: payload.clave || payload.password || rj.clave || rj.password || datoRegex(txt, ['Clave','Password','pass']) || '12345a',
+      link: payload.link || payload.url || rj.link || rj.url || datoRegex(txt, ['Link','URL']) || 'http://bet-300.pw/'
+    };
+  }
+
+  async function fetchJob(jobId){
+    try{
+      const r = await supabaseClient
+        .from('worker_jobs')
+        .select('*')
+        .eq('id', Number(jobId))
+        .single();
+
+      if(r && r.data) return r.data;
+    }catch(e){}
+    return jobById(jobId);
+  }
+
+  async function refrescarUI(){
+    try{ if(typeof cargarWorkerJobs === 'function') await cargarWorkerJobs(true); }catch(e){}
+    try{ if(typeof cargarSolicitudes === 'function') await cargarSolicitudes(true); }catch(e){}
+    try{ if(typeof renderWorkerJobs === 'function') renderWorkerJobs(); }catch(e){}
+    try{ if(typeof renderColaUnificada === 'function') renderColaUnificada(); }catch(e){}
+    try{ if(typeof renderCentroOperativo === 'function') renderCentroOperativo(); }catch(e){}
+  }
+
+  window.mostrarModalUsuarioCreadoV20 = function(job){
+    const d = datosUsuario(job || {});
+    const msg = `Usuario: ${d.usuario || ''}\nClave: ${d.clave || ''}\nLink: ${d.link || ''}`;
+
+    if(typeof abrirModal !== 'function'){
+      alert('Usuario creado\n\n' + msg);
+      return;
+    }
+
+    abrirModal('Usuario creado', `
+      <div class="verify-box good nodo-created-user-modal">
+        <div class="verify-title">Usuario creado correctamente</div>
+        <div class="verify-grid">
+          ${typeof verifyRow === 'function' ? verifyRow('Usuario', d.usuario || '-', '', true) : `<div>${d.usuario || '-'}</div>`}
+          ${typeof verifyRow === 'function' ? verifyRow('Clave', d.clave || '-', '', true) : `<div>${d.clave || '-'}</div>`}
+          ${typeof verifyRow === 'function' ? verifyRow('Link', d.link || '-', '', true) : `<div>${d.link || '-'}</div>`}
+        </div>
+        <textarea class="nodo-modal-msg-final" readonly>${msg.replaceAll('<','&lt;').replaceAll('>','&gt;')}</textarea>
+        <button class="mini-btn green" style="margin-top:10px" onclick="navigator.clipboard.writeText(\`${msg.replaceAll('`','\\`')}\`); if(window.toast) toast('Mensaje copiado','green')">Copiar mensaje</button>
+      </div>
+    `, async()=>cerrarModal(), 'Cerrar');
+  };
+
+  async function revisarJob(jobId){
+    const j = await fetchJob(jobId);
+    if(!j) return;
+
+    await refrescarUI();
+
+    if(isOk(j.estado) && isUsuarioJob(j) && !STATE.shown[String(jobId)]){
+      STATE.shown[String(jobId)] = true;
+      delete STATE.watching[String(jobId)];
+      setTimeout(() => window.mostrarModalUsuarioCreadoV20(j), 100);
+    }
+  }
+
+  function startWatch(jobId){
+    if(!jobId) return;
+    STATE.watching[String(jobId)] = Date.now();
+
+    if(!STATE.poll){
+      STATE.poll = setInterval(() => {
+        Object.keys(STATE.watching).forEach(id => revisarJob(id));
+      }, 750);
+    }
+
+    [250, 700, 1200, 1800, 2600, 3800, 5200, 7600, 10000, 14000].forEach(ms => {
+      setTimeout(() => revisarJob(jobId), ms);
+    });
+  }
+
+  window.startWatchingJobV20 = startWatch;
+
+  function usuarioElegido(jobId){
+    const j = jobById(jobId);
+    const inp = $('manualWorkerUsuarioInicio') || $('manualWorkerUsuario');
+    const escrito = String(inp?.value || '').trim();
+
+    if(escrito && j && escrito !== String(j.usuario || '').trim()){
+      return escrito;
+    }
+    return '';
+  }
+
+  async function actualizarUsuario(jobId, nuevoUsuario){
+    if(!nuevoUsuario) return {ok:true};
+
+    const { data, error } = await supabaseClient.rpc('admin_actualizar_usuario_worker_job', {
+      p_job_id: Number(jobId),
+      p_usuario: nuevoUsuario
+    });
+
+    if(error) return {ok:false, error:error.message || String(error)};
+
+    const r = Array.isArray(data) ? data[0] : data;
+    if(r && r.ok === false) return {ok:false, error:r.error || 'No pudo actualizar usuario'};
+
+    return {ok:true};
+  }
+
+  window.workerPanelReintentarJob = async function(jobId){
+    try{
+      const id = Number(jobId);
+      if(!id) throw new Error('Job inválido.');
+
+      const nuevoUsuario = usuarioElegido(id);
+
+      if(nuevoUsuario){
+        const upd = await actualizarUsuario(id, nuevoUsuario);
+        if(!upd.ok) throw new Error(upd.error);
+      }
+
+      const { data, error } = await supabaseClient.rpc('admin_reintentar_worker_job', {
+        p_job_id: id
+      });
+
+      if(error) throw error;
+
+      const r = Array.isArray(data) ? data[0] : data;
+      if(r && r.ok === false) throw new Error(r.error || 'No se pudo reencolar el job.');
+
+      if(typeof toast === 'function'){
+        toast('Job reencolado: PENDIENTE con intentos reiniciados','green');
+      }
+
+      startWatch(id);
+      await refrescarUI();
+
+      setTimeout(() => {
+        const title = document.getElementById('modalTitle');
+        if(title && /Logs del worker/i.test(title.textContent || '')){
+          try{ window.abrirWorkerLogsUxFina(id); }catch(e){}
+        }
+      }, 650);
+
+    }catch(e){
+      alert('Error reintentando job: ' + (e.message || e));
+    }
+  };
+
+  document.addEventListener('DOMContentLoaded',()=>setTimeout(refrescarUI,600));
+  window.addEventListener('load',()=>setTimeout(refrescarUI,900));
 })();
 </script>
 
