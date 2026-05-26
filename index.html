@@ -8126,9 +8126,24 @@ body.nodo-v20 #alertas .alert-box{padding:8px 10px;font-size:12px;margin-bottom:
   body.nodo-cierre-v2 .ops-main-table td{padding:7px 8px!important}
   body.nodo-cierre-v2 .ops-main-table th:nth-child(7),
   body.nodo-cierre-v2 .ops-main-table td:nth-child(7){min-width:72px;max-width:110px}
+  body.nodo-cierre-v2 .ops-main-table th:nth-child(8),
+  body.nodo-cierre-v2 .ops-main-table td:nth-child(8),
+  body.nodo-cierre-v2 .ops-main-table th:nth-child(9),
+  body.nodo-cierre-v2 .ops-main-table td:nth-child(9){min-width:62px;max-width:96px;text-align:center}
   body.nodo-cierre-v2 .nodo-created-user-modal textarea{box-sizing:border-box}
   body.nodo-cierre-v2 .worker-error-card .ops-compact-actions{margin-top:9px}
   body.nodo-cierre-v2 .worker-error-card .mini-btn.green{background:#16a34a;color:white}
+  body.nodo-cierre-v2 .ops-main-table .worker-result-card,
+  body.nodo-cierre-v2 .ops-main-table .worker-error-card{display:inline-flex!important;width:auto!important;min-width:0!important;padding:0!important;border:0!important;background:transparent!important}
+  body.nodo-cierre-v2 .ops-main-table .worker-result-card pre,
+  body.nodo-cierre-v2 .ops-main-table .worker-error-card .ops-compact-actions,
+  body.nodo-cierre-v2 .ops-main-table .worker-result-title{display:none!important}
+  body.nodo-cierre-v2 .nodo-status-dot{display:inline-flex;align-items:center;justify-content:center;min-width:34px;height:24px;border-radius:999px;padding:0 8px;font-size:11px;font-weight:900;line-height:1;color:#fff}
+  body.nodo-cierre-v2 .nodo-status-dot.ok{background:#086b2b}
+  body.nodo-cierre-v2 .nodo-status-dot.err{background:#7f1d1d}
+  body.nodo-cierre-v2 .nodo-status-dot.wait{background:#7a4c00;color:#ffe7a3}
+  body.nodo-cierre-v2 .nodo-status-dot.run{background:#1d4ed8}
+  body.nodo-cierre-v2 .nodo-status-dot.muted{background:#374151;color:#d1d5db}
 </style>
 <script id="nodo-cierre-v2-js">
 (function(){
@@ -8292,6 +8307,7 @@ body.nodo-v20 #alertas .alert-box{padding:8px 10px;font-size:12px;margin-bottom:
     return `<div class="worker-error-card ${esc(modo)}">${esc(txt)}${workerAliasDuplicadoHTML(txt, jobId)}</div>`;
   };
   window.workerResultadoOErrorHTML = workerResultadoOErrorHTML = function(resultado, error, modo='compact', jobId=''){
+    if(String(modo || 'compact') === 'compact') return resultPill(resultado, error);
     const bloques = [];
     if(resultado && typeof window.workerResultadoHTML === 'function') bloques.push(window.workerResultadoHTML(resultado, modo));
     else if(resultado) bloques.push(`<div class="worker-result-card ${esc(modo)}"><pre>${esc(resultado)}</pre></div>`);
@@ -8332,12 +8348,27 @@ body.nodo-v20 #alertas .alert-box{padding:8px 10px;font-size:12px;margin-bottom:
   };
 
   function resultPill(resultado, error){
-    if(error) return '<span class="nodo-v16-result-error">Error</span>';
+    const full = String(error || resultado || '').trim();
+    if(error) return `<span class="nodo-v16-result-error" title="${attr(full)}">Error</span>`;
     const txt = String(resultado || '').trim();
     if(!txt) return '<span class="small">-</span>';
-    if(/ERROR|RECHAZ|BLOQUEADO/i.test(txt)) return '<span class="nodo-v16-result-error">Error</span>';
-    return '<span class="nodo-v16-result-ok">OK</span>';
+    if(/ERROR|RECHAZ|BLOQUEADO/i.test(txt)) return `<span class="nodo-v16-result-error" title="${attr(full)}">Error</span>`;
+    return `<span class="nodo-v16-result-ok" title="${attr(full)}">OK</span>`;
   }
+  function compactStatusPill(value, kind='estado'){
+    const raw = String(value || '-');
+    const x = norm(raw);
+    if(!x || x === '-') return '<span class="small">-</span>';
+    if(['COMPLETADO','ACREDITADA','APROBADA','APROBADA_MANUAL','PAGADA','DONE'].includes(x)) return `<span class="nodo-status-dot ok" title="${attr(raw)}">OK</span>`;
+    if(['ERROR','ERROR_JOB','ERROR_WORKER','RECHAZADA','CANCELADO','CANCELADA','REQUIERE_MANUAL'].includes(x)) return `<span class="nodo-status-dot err" title="${attr(raw)}">ERR</span>`;
+    if(['PROCESANDO','EN_COLA_WORKER','PREPARANDO_COLA','EN_PROCESO_WORKER'].includes(x)) return `<span class="nodo-status-dot run" title="${attr(raw)}">...</span>`;
+    if(['REINTENTAR','PENDIENTE','NUEVA','NUEVO','EN_REVISION'].includes(x)) return `<span class="nodo-status-dot wait" title="${attr(raw)}">...</span>`;
+    return `<span class="nodo-status-dot muted" title="${attr(raw)}">${kind === 'worker' ? 'W' : 'S'}</span>`;
+  }
+  window.estadoBadge = estadoBadge = function(value){ return compactStatusPill(value, 'estado'); };
+  window.workerEstadoBadge = workerEstadoBadge = function(value){ return compactStatusPill(value, 'worker'); };
+  window.badgeEstado = window.estadoBadge;
+  window.badgeWorker = window.workerEstadoBadge;
   function walletNameFromId(id){
     if(!id) return '';
     const w = getWallets().find(x => String(x.id || x.ID || x.billetera_id || x.BILLETERA_ID) === String(id));
@@ -8419,7 +8450,7 @@ body.nodo-v20 #alertas .alert-box{padding:8px 10px;font-size:12px;margin-bottom:
       if(r.job && typeof window.abrirCorregirBilleteraJob === 'function') acciones += `<button class="mini-btn yellow" onclick="abrirCorregirBilleteraJob('${attr(r.job)}')">Billetera</button>`;
       acciones += '</div>';
       const mpChip = (tipoN === 'CARGA' && r.sid) ? ' <span class="mp-pill info">MP</span>' : '';
-      html += `<tr><td>${fechaFmt(r.fecha)}</td><td><span class="ops-origin ${r.origen === 'LANDING' ? 'landing' : 'manual'}">${esc(r.origen)}</span></td><td><b>${esc(r.usuario)}</b>${r.sub ? `<br><span class="small">${esc(r.sub)}</span>` : ''}</td><td>${esc(r.billetera || '-')}</td><td>${esc(r.tipo || '-')}${mpChip}</td><td>${moneyFmt(r.monto || 0)}</td><td>${resultPill(r.resultado, r.error)}</td><td>${estadoBadge(r.estado || '-')}</td><td>${r.job ? `#${esc(r.job)}<br>` : ''}${workerBadge(r.worker || 'SIN_WORKER')}</td><td>${acciones}</td></tr>`;
+      html += `<tr><td>${fechaFmt(r.fecha)}</td><td><span class="ops-origin ${r.origen === 'LANDING' ? 'landing' : 'manual'}">${esc(r.origen)}</span></td><td><b>${esc(r.usuario)}</b>${r.sub ? `<br><span class="small">${esc(r.sub)}</span>` : ''}</td><td>${esc(r.billetera || '-')}</td><td>${esc(r.tipo || '-')}${mpChip}</td><td>${moneyFmt(r.monto || 0)}</td><td>${resultPill(r.resultado, r.error)}</td><td>${compactStatusPill(r.estado || '-', 'estado')}</td><td>${r.job ? `#${esc(r.job)}<br>` : ''}${compactStatusPill(r.worker || 'SIN_WORKER', 'worker')}</td><td>${acciones}</td></tr>`;
     });
     html += '</tbody></table></div>';
     if(force || window.__NODO_FINAL_QUEUE_HTML__ !== html){
@@ -8481,11 +8512,31 @@ body.nodo-v20 #alertas .alert-box{padding:8px 10px;font-size:12px;margin-bottom:
     renderFinalQueue(force);
   }
   window.nodoRealtimeTickFinal = realtimeTick;
+  function installRealtime(){
+    if(window.__NODO_REALTIME_CHANNEL_V2__) return;
+    if(!window.supabaseClient || typeof supabaseClient.channel !== 'function') return;
+    try{
+      const channel = supabaseClient
+        .channel('nodo_ops_worker_' + pc())
+        .on('postgres_changes', {event:'*', schema:'public', table:'worker_jobs'}, payload => {
+          const row = payload?.new || payload?.old || {};
+          if(!row.pc_codigo || norm(row.pc_codigo) === pc()) realtimeTick(true);
+        })
+        .on('postgres_changes', {event:'*', schema:'public', table:'worker_logs'}, payload => {
+          const row = payload?.new || payload?.old || {};
+          const jobId = row.worker_job_id || row.job_id;
+          if(jobId && getJobs().some(j => Number(j.id || j.job_id) === Number(jobId))) realtimeTick(true);
+        })
+        .subscribe();
+      window.__NODO_REALTIME_CHANNEL_V2__ = channel;
+    }catch(e){}
+  }
   if(!window.__NODO_REALTIME_TIMER_V2__){
     window.__NODO_REALTIME_TIMER_V2__ = setInterval(() => realtimeTick(false), 1800);
   }
-  document.addEventListener('DOMContentLoaded', () => setTimeout(() => realtimeTick(true), 800));
-  window.addEventListener('load', () => setTimeout(() => realtimeTick(true), 1200));
+  document.addEventListener('DOMContentLoaded', () => setTimeout(() => { installRealtime(); realtimeTick(true); }, 800));
+  window.addEventListener('load', () => setTimeout(() => { installRealtime(); realtimeTick(true); }, 1200));
+  setTimeout(installRealtime, 1500);
 })();
 </script>
 </body>
