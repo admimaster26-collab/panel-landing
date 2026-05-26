@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>NODO · OPERATIVO V20 · Minimal UI</title>
+<title>NODO · OPERATIVO V20 · Organizada Fix</title>
 
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif}
@@ -274,7 +274,7 @@ table{width:100%;border-collapse:collapse}th,td{padding:11px;border-bottom:1px s
   <div class="login-card">
     <img src="logo-nodo.png" class="logo" alt="NODO">
     <h2 style="margin-bottom:6px">PANEL OPERATIVO LITE</h2>
-    <div class="small" style="margin-bottom:16px">Versión V20 · Minimal UI</div>
+    <div class="small" style="margin-bottom:16px">Versión V20 · Organizada Fix</div>
     <label>Usuario</label>
     <input id="loginUsuario" autocomplete="username">
     <label>Clave</label>
@@ -10612,6 +10612,936 @@ body.nodo-minimal-ui .ok-box{
   document.addEventListener('DOMContentLoaded',()=>setTimeout(boot,350));
   window.addEventListener('load',()=>setTimeout(boot,700));
   setTimeout(boot,900);
+})();
+</script>
+
+
+<style id="nodo-v20-organizada-test-css">
+/* =========================================================
+   NODO V20 · ORGANIZADA TEST
+   Reordena UX sin tocar lógica base.
+========================================================= */
+body.nodo-v20-organizada #viewInicio .nodo-org-shell{
+  display:grid;
+  grid-template-columns:minmax(360px,.92fr) minmax(420px,1.08fr);
+  gap:14px;
+  align-items:start;
+}
+body.nodo-v20-organizada #viewInicio .nodo-org-col{
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+}
+body.nodo-v20-organizada .nodo-org-section-title{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+  margin-bottom:12px;
+}
+body.nodo-v20-organizada .nodo-org-section-title h3{
+  font-size:17px;
+  font-weight:950;
+  letter-spacing:-.02em;
+  margin:0;
+}
+body.nodo-v20-organizada .nodo-org-mini-wallets{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+  gap:10px;
+}
+body.nodo-v20-organizada .nodo-org-wallet-mini{
+  background:linear-gradient(135deg,rgba(34,197,94,.10),rgba(59,130,246,.07));
+  border:1px solid rgba(148,163,184,.16);
+  border-radius:18px;
+  padding:13px;
+  min-height:104px;
+  position:relative;
+  overflow:hidden;
+}
+body.nodo-v20-organizada .nodo-org-wallet-mini.selected{
+  border-color:rgba(34,197,94,.45);
+  box-shadow:0 0 0 1px rgba(34,197,94,.18);
+}
+body.nodo-v20-organizada .nodo-org-wallet-mini .name{
+  font-weight:950;
+  font-size:14px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+body.nodo-v20-organizada .nodo-org-wallet-mini .saldo{
+  font-size:22px;
+  font-weight:950;
+  color:#BBF7D0;
+  margin:7px 0 3px;
+}
+body.nodo-v20-organizada .nodo-org-wallet-mini .meta{
+  font-size:11px;
+  color:#94A3B8;
+}
+body.nodo-v20-organizada .nodo-org-wallet-mini .tag{
+  position:absolute;
+  top:8px;
+  right:8px;
+  padding:3px 6px;
+  border-radius:8px;
+  background:rgba(34,197,94,.15);
+  color:#BBF7D0;
+  font-size:9px;
+  font-weight:950;
+}
+body.nodo-v20-organizada .nodo-org-tools{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  margin-top:10px;
+}
+body.nodo-v20-organizada .nodo-org-historial{
+  margin-top:14px;
+}
+body.nodo-v20-organizada .nodo-org-historial-filters{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(145px,1fr));
+  gap:8px;
+  margin-bottom:10px;
+}
+body.nodo-v20-organizada .nodo-org-historial-filters input,
+body.nodo-v20-organizada .nodo-org-historial-filters select{
+  margin:0!important;
+  padding:10px 12px!important;
+  border-radius:13px!important;
+}
+body.nodo-v20-organizada .nodo-org-empty{
+  color:#94A3B8;
+  font-size:13px;
+  text-align:center;
+  padding:18px;
+  border:1px dashed rgba(148,163,184,.18);
+  border-radius:16px;
+}
+body.nodo-v20-organizada .chat-quick-actions-v20{
+  display:flex!important;
+  align-items:center;
+  gap:6px;
+  flex-wrap:wrap;
+  margin-left:auto;
+}
+body.nodo-v20-organizada .chat-quick-actions-v20 input{
+  width:92px!important;
+  margin:0!important;
+  padding:8px 10px!important;
+  font-size:12px!important;
+  border-radius:12px!important;
+}
+body.nodo-v20-organizada .chat-quick-actions-v20 button{
+  white-space:nowrap!important;
+}
+body.nodo-v20-organizada .nodo-retiro24-bubble{
+  margin:10px 0;
+  padding:12px;
+  border-radius:16px;
+  font-size:13px;
+  line-height:1.35;
+}
+body.nodo-v20-organizada .nodo-retiro24-bubble.ok{
+  background:rgba(34,197,94,.10);
+  border:1px solid rgba(34,197,94,.28);
+  color:#BBF7D0;
+}
+body.nodo-v20-organizada .nodo-retiro24-bubble.warn{
+  background:rgba(245,158,11,.12);
+  border:1px solid rgba(245,158,11,.32);
+  color:#FDE68A;
+}
+body.nodo-v20-organizada .nodo-retiro24-bubble.err{
+  background:rgba(239,68,68,.12);
+  border:1px solid rgba(239,68,68,.32);
+  color:#FECACA;
+}
+@media(max-width:1180px){
+  body.nodo-v20-organizada #viewInicio .nodo-org-shell{
+    grid-template-columns:1fr;
+  }
+}
+</style>
+
+<script id="nodo-v20-organizada-test-js">
+(function(){
+  if(window.__NODO_V20_ORGANIZADA_TEST__) return;
+  window.__NODO_V20_ORGANIZADA_TEST__ = true;
+
+  const ORG = { installed:false, lastHist:[], histTimer:null };
+
+  function $(id){ return document.getElementById(id); }
+  function esc(v){
+    if(typeof escapeHtml === 'function') return escapeHtml(v);
+    return String(v ?? '').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'","&#039;");
+  }
+  function attr(v){
+    if(typeof escapeAttr === 'function') return escapeAttr(v);
+    return esc(v).replaceAll('`','&#96;');
+  }
+  function norm(v){
+    try{return String(v ?? '').normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim().toUpperCase();}
+    catch(e){return String(v ?? '').trim().toUpperCase();}
+  }
+  function moneyLocal(v){
+    if(typeof money === 'function') return money(v);
+    return Number(v||0).toLocaleString('es-AR',{style:'currency',currency:'ARS',maximumFractionDigits:0});
+  }
+  function fechaLocal(v){
+    if(typeof formatFecha === 'function') return formatFecha(v);
+    try{
+      const d = new Date(v);
+      if(isNaN(d)) return esc(v || '');
+      return d.toLocaleString('es-AR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit',hour12:false}).replace(',',' ·');
+    }catch(e){ return esc(v || ''); }
+  }
+  function val(id){ return $(id)?.value || ''; }
+  function setVal(id,v){
+    const el=$(id);
+    if(el){
+      el.value = v;
+      el.dispatchEvent(new Event('input',{bubbles:true}));
+      el.dispatchEvent(new Event('change',{bubbles:true}));
+    }
+  }
+  function getPc(){
+    return String(window.pcOperativa || (typeof pcOperativa !== 'undefined' ? pcOperativa : '') || '').trim().toUpperCase();
+  }
+  function getToken(){
+    return String(window.panelSessionToken || (typeof panelSessionToken !== 'undefined' ? panelSessionToken : '') || '');
+  }
+  function jobs(){
+    try{return Array.isArray(window.workerJobs) ? window.workerJobs : (Array.isArray(workerJobs) ? workerJobs : []);}
+    catch(e){return [];}
+  }
+  function solis(){
+    try{return Array.isArray(window.solicitudes) ? window.solicitudes : (Array.isArray(solicitudes) ? solicitudes : []);}
+    catch(e){return [];}
+  }
+  function wallets(){
+    try{
+      const s = window.saldosOperativos?.billeteras;
+      if(Array.isArray(s) && s.length) return s;
+      if(Array.isArray(window.billeteras)) return window.billeteras;
+      if(typeof billeteras !== 'undefined' && Array.isArray(billeteras)) return billeteras;
+    }catch(e){}
+    return [];
+  }
+
+  function getWalletName(w){
+    return w.nombre_visible || w.nombre || w.NOMBRE || w.alias || w.id || w.ID || 'Billetera';
+  }
+  function getWalletId(w){
+    return w.id || w.ID || w.id_billetera || w.billetera_id || '';
+  }
+  function getWalletSaldo(w){
+    return w.saldo_real ?? w.saldo ?? w.SALDO ?? w.monto ?? 0;
+  }
+  function getWalletTipo(w){
+    return w.banco || w.tipo || w.TIPO || w.provider || '';
+  }
+  function isSelectedWallet(w){
+    const id = String(getWalletId(w));
+    const sel = String(val('manualWorkerBilleteraInicio') || localStorage.getItem('nodoUltimaBilleteraImpactada') || '');
+    return id && sel && id === sel;
+  }
+
+  function renderMiniWallets(){
+    const cont=$('nodoOrgMiniWallets');
+    if(!cont) return;
+    const lista = wallets().slice(0,8);
+    if(!lista.length){
+      cont.innerHTML = '<div class="nodo-org-empty">Sin billeteras cargadas todavía.</div>';
+      return;
+    }
+    cont.innerHTML = lista.map(w => {
+      const id = getWalletId(w);
+      const selected = isSelectedWallet(w);
+      return `<div class="nodo-org-wallet-mini ${selected?'selected':''}" onclick="nodoOrgSeleccionarWallet('${attr(id)}')">
+        ${selected ? '<span class="tag">ACTIVA</span>' : ''}
+        <div class="name">${esc(getWalletName(w))}</div>
+        <div class="saldo">${moneyLocal(getWalletSaldo(w))}</div>
+        <div class="meta">${esc(getWalletTipo(w) || 'Billetera')} · ID ${esc(id || '-')}</div>
+        <div class="nodo-org-tools">
+          <button class="mini-btn blue" onclick="event.stopPropagation();nodoOrgSeleccionarWallet('${attr(id)}')">Usar</button>
+          <button class="mini-btn yellow" onclick="event.stopPropagation();abrirAjusteBilleteraV20 && abrirAjusteBilleteraV20('${attr(id)}')">Ajustar</button>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  window.nodoOrgSeleccionarWallet = function(id){
+    if(!id) return;
+    setVal('manualWorkerBilleteraInicio', id);
+    try{ localStorage.setItem('nodoUltimaBilleteraImpactada', String(id)); }catch(e){}
+    renderMiniWallets();
+    if(typeof toast === 'function') toast('Billetera seleccionada','green');
+  };
+
+  function htmlHistorial(){
+    return `<div class="card nodo-org-historial" id="nodoOrgHistorialCard">
+      <div class="nodo-org-section-title">
+        <h3>📊 Historial reciente</h3>
+        <button class="mini-btn gray" onclick="nodoOrgCargarHistorial(true)">🔄 Recargar</button>
+      </div>
+      <div class="nodo-org-historial-filters">
+        <select id="nodoOrgHistTipo" onchange="nodoOrgRenderHistorial()">
+          <option value="">Todos los tipos</option>
+          <option value="CARGA">Cargas</option>
+          <option value="RETIRO">Retiros</option>
+          <option value="CREAR_USUARIO">Crear usuario</option>
+          <option value="CAMBIAR_CLAVE">Cambiar clave</option>
+        </select>
+        <select id="nodoOrgHistEstado" onchange="nodoOrgRenderHistorial()">
+          <option value="">Todos los estados</option>
+          <option value="OK">OK</option>
+          <option value="ERROR">Error</option>
+          <option value="PENDIENTE">Pendiente</option>
+          <option value="CANCELADO">Cancelado</option>
+        </select>
+        <input id="nodoOrgHistBuscar" placeholder="Buscar usuario/job..." oninput="nodoOrgRenderHistorial()">
+      </div>
+      <div id="nodoOrgHistorialTabla"><div class="nodo-org-empty">Cargando historial...</div></div>
+    </div>`;
+  }
+
+  function montarInicioOrganizado(){
+    const view=$('viewInicio');
+    if(!view || $('nodoOrgShell')) return;
+
+    const panels = Array.from(view.querySelectorAll('.ops-panel,.card')).filter(el => !el.closest('#nodoOrgShell'));
+    const accion = panels.find(el => /Acción rápida|Operacion manual|Operación manual|Usuario Agentes/i.test(el.textContent || '')) || panels[0];
+    const cola = $('opsColaUnificada')?.closest('.ops-panel,.card') || panels.find(el => /Cola|Worker|operativa/i.test(el.textContent || ''));
+    const kpis = view.querySelector('.ops-kpis,.top-grid');
+    const walletsPanel = document.createElement('div');
+    walletsPanel.className = 'card';
+    walletsPanel.id = 'nodoOrgWalletsPanel';
+    walletsPanel.innerHTML = `<div class="nodo-org-section-title">
+      <h3>💳 Billeteras rápidas</h3>
+      <button class="mini-btn gray" onclick="mostrarVista && mostrarVista('billeteras')">Administrar</button>
+    </div>
+    <div id="nodoOrgMiniWallets" class="nodo-org-mini-wallets"></div>`;
+
+    const shell=document.createElement('div');
+    shell.id='nodoOrgShell';
+    shell.className='nodo-org-shell';
+
+    const left=document.createElement('div');
+    left.className='nodo-org-col';
+    const right=document.createElement('div');
+    right.className='nodo-org-col';
+
+    if(kpis) view.insertBefore(kpis, view.firstChild.nextSibling || view.firstChild);
+
+    if(accion) left.appendChild(accion);
+    left.appendChild(walletsPanel);
+
+    if(cola) right.appendChild(cola);
+    right.insertAdjacentHTML('beforeend', htmlHistorial());
+
+    shell.appendChild(left);
+    shell.appendChild(right);
+
+    // Agregar después de KPI/top header si existe
+    const after = kpis || view.querySelector('.ops-head') || view.firstElementChild;
+    if(after && after.parentElement === view) after.insertAdjacentElement('afterend', shell);
+    else view.appendChild(shell);
+
+    renderMiniWallets();
+    setTimeout(()=>window.nodoOrgCargarHistorial?.(false),300);
+  }
+
+  function tipoFromJob(j){
+    return norm(j.tipo_accion || j.tipo || '').replace('PROCESAR_','');
+  }
+  function estadoFromJob(j){
+    return norm(j.estado || j.ESTADO || '');
+  }
+  function historialDesdeMemoria(){
+    const arr=[];
+    jobs().forEach(j=>{
+      arr.push({
+        fecha:j.created_at || j.updated_at,
+        usuario:j.usuario || '',
+        tipo:tipoFromJob(j),
+        monto:j.monto || 0,
+        origen:'WORKER',
+        estado:estadoFromJob(j),
+        job:j.id || '',
+        billetera:j.billetera_id || j.payload?.billetera_id || ''
+      });
+    });
+    solis().forEach(s=>{
+      arr.push({
+        fecha:s.FECHA_CREACION || s.FECHA || s.created_at,
+        usuario:s.USUARIO || s.USUARIO_JUGADOR || '',
+        tipo:s.TIPO_SOLICITUD || s.TIPO || '',
+        monto:s.MONTO_DECLARADO || s.MONTO_REAL || 0,
+        origen:'LANDING',
+        estado:s.ESTADO_WORKER || s.ESTADO || '',
+        job:s.WORKER_JOB_ID || '',
+        billetera:s.BILLETERA_NOMBRE || s.billetera_nombre || ''
+      });
+    });
+    return arr;
+  }
+
+  window.nodoOrgCargarHistorial = async function(showToast=false){
+    let arr = historialDesdeMemoria();
+
+    // Si existe tabla historial_ops, suma lo que venga de CSV/importado.
+    try{
+      const {data,error} = await supabaseClient
+        .from('historial_ops')
+        .select('*')
+        .eq('pc_codigo', getPc())
+        .order('created_at',{ascending:false})
+        .limit(80);
+      if(!error && Array.isArray(data)){
+        data.forEach(h => arr.push({
+          fecha:h.created_at || h.fecha || h.updated_at,
+          usuario:h.usuario || '',
+          tipo:h.tipo || '',
+          monto:h.monto || 0,
+          origen:h.origen || 'HISTORIAL',
+          estado:h.estado || '',
+          job:h.worker_job_id || h.job_id || '',
+          billetera:h.billetera_nombre || h.billetera_id || ''
+        }));
+      }
+    }catch(e){}
+
+    arr.sort((a,b)=>new Date(b.fecha||0)-new Date(a.fecha||0));
+    ORG.lastHist = arr.slice(0,140);
+    window.nodoOrgRenderHistorial();
+    if(showToast && typeof toast === 'function') toast('Historial actualizado','green');
+  };
+
+  window.nodoOrgRenderHistorial = function(){
+    const box=$('nodoOrgHistorialTabla');
+    if(!box) return;
+    const tipo=norm(val('nodoOrgHistTipo'));
+    const estado=norm(val('nodoOrgHistEstado'));
+    const buscar=norm(val('nodoOrgHistBuscar'));
+
+    let arr=ORG.lastHist || [];
+    if(tipo) arr=arr.filter(x=>norm(x.tipo).includes(tipo));
+    if(estado) arr=arr.filter(x=>norm(x.estado).includes(estado));
+    if(buscar) arr=arr.filter(x=>norm(`${x.usuario} ${x.tipo} ${x.estado} ${x.origen} ${x.job} ${x.billetera}`).includes(buscar));
+    arr=arr.slice(0,70);
+
+    if(!arr.length){
+      box.innerHTML='<div class="nodo-org-empty">Sin movimientos para esos filtros.</div>';
+      return;
+    }
+
+    box.innerHTML = `<div class="table-wrap"><table><thead><tr>
+      <th>Hora</th><th>Usuario</th><th>Tipo</th><th>Monto</th><th>Origen</th><th>Estado</th><th>Job</th>
+    </tr></thead><tbody>${arr.map(x=>`
+      <tr>
+        <td>${fechaLocal(x.fecha)}</td>
+        <td><b>${esc(x.usuario || '-')}</b></td>
+        <td>${esc(x.tipo || '-')}</td>
+        <td><b>${moneyLocal(x.monto || 0)}</b></td>
+        <td><span class="ops-origin">${esc(x.origen || '-')}</span></td>
+        <td>${esc(x.estado || '-')}</td>
+        <td>${x.job ? '#'+esc(x.job) : '-'}</td>
+      </tr>`).join('')}</tbody></table></div>`;
+  };
+
+  async function consultarRetiro24(usuario){
+    const u=String(usuario||'').trim();
+    if(!u) return {ok:false,error:'Usuario vacío'};
+    const {data,error}=await supabaseClient.rpc('panel_controlar_retiro_24h_v21',{
+      p_session_token:getToken(),
+      p_pc_codigo:getPc(),
+      p_usuario:u
+    });
+    if(error) throw error;
+    return Array.isArray(data) ? data[0] : data;
+  }
+
+  function renderRetiroBubble(check){
+    if(!check || check.ok===false){
+      return `<div class="nodo-retiro24-bubble err"><b>⚠️ No pude validar retiro 24 hs</b><br>${esc(check?.error || 'Sin respuesta.')}</div>`;
+    }
+    if(check.bloqueado){
+      return `<div class="nodo-retiro24-bubble warn"><b>⚠️ Retiro reciente detectado</b><br>
+        Último: ${esc(check.ultimo_retiro_at_fmt || check.ultimo_retiro_at || '-')} · ${moneyLocal(check.ultimo_monto || 0)}
+        <br>Fuente: ${esc(check.fuente || 'historial/jobs')} · Hace: ${esc(check.horas_desde_ultimo ?? '-')} hs
+      </div>`;
+    }
+    return `<div class="nodo-retiro24-bubble ok"><b>✅ Sin retiro detectado en 24 hs</b><br>Revisado contra historial CSV + jobs.</div>`;
+  }
+
+  async function preControlRetiro24(usuario,monto,callback){
+    try{
+      const check=await consultarRetiro24(usuario);
+      if(check?.bloqueado){
+        abrirModal('Control retiro 24 hs', `
+          ${renderRetiroBubble(check)}
+          <label>Motivo para continuar</label>
+          <input id="nodoOrgMotivoRetiro24" placeholder="obligatorio: autorizado / revisión manual / excepción">
+        `, async()=>{
+          const motivo=String(val('nodoOrgMotivoRetiro24')).trim();
+          if(!motivo){ alert('El motivo es obligatorio.'); return; }
+          try{
+            await supabaseClient.rpc('panel_registrar_override_retiro_24h_v21',{
+              p_session_token:getToken(),
+              p_pc_codigo:getPc(),
+              p_usuario:usuario,
+              p_monto:Math.abs(Number(monto||0)),
+              p_motivo:motivo,
+              p_control:check || {}
+            });
+          }catch(e){}
+          cerrarModal();
+          await callback();
+        }, 'Continuar retiro');
+        return;
+      }
+      await callback();
+    }catch(e){
+      abrirModal('Control retiro 24 hs no disponible', `
+        <div class="nodo-retiro24-bubble err"><b>⚠️ No pude consultar retiro 24 hs</b><br>${esc(e.message || e)}</div>
+        <label>Motivo para continuar</label>
+        <input id="nodoOrgMotivoRetiro24" placeholder="obligatorio">
+      `, async()=>{
+        const motivo=String(val('nodoOrgMotivoRetiro24')).trim();
+        if(!motivo){ alert('El motivo es obligatorio.'); return; }
+        try{
+          await supabaseClient.rpc('panel_registrar_override_retiro_24h_v21',{
+            p_session_token:getToken(),
+            p_pc_codigo:getPc(),
+            p_usuario:usuario,
+            p_monto:Math.abs(Number(monto||0)),
+            p_motivo:'SIN_CONTROL_24H: '+motivo,
+            p_control:{ok:false,error:String(e.message || e)}
+          });
+        }catch(x){}
+        cerrarModal();
+        await callback();
+      }, 'Continuar');
+    }
+  }
+
+  function setTipoQuick(tipo){
+    const sel=$('manualWorkerTipoInicio') || $('manualWorkerTipo');
+    if(!sel) return;
+    const opts=Array.from(sel.options || []);
+    const n=norm(tipo);
+    const found=opts.find(o=>norm(o.value)===n || norm(o.textContent).includes(n) || norm(o.value).includes(n));
+    if(found) sel.value=found.value;
+    else sel.value=tipo;
+    sel.dispatchEvent(new Event('change',{bubbles:true}));
+  }
+
+  function getChatUsuario(){
+    const title=$('chatTitulo')?.textContent || '';
+    const sub=$('chatSubtitulo')?.textContent || '';
+    const fromState = window.chatActual?.usuario || window.chatActual?.USUARIO || window.chatActual?.usuario_jugador || '';
+    let u = String(fromState || '').trim();
+
+    if(!u && title && !/Seleccion/i.test(title)){
+      u = title.replace(/Chat|Usuario|Jugador|Seleccioná/gi,'').trim();
+    }
+    if(!u){
+      const m = sub.match(/usuario[:\s]+([a-zA-Z0-9_.-]+)/i);
+      if(m) u=m[1];
+    }
+    return u;
+  }
+
+  async function crearJobDesdeChat(tipo){
+    const usuario=getChatUsuario();
+    if(!usuario){
+      alert('No pude detectar el usuario del chat.');
+      return;
+    }
+
+    const monto = Number(val('chatMontoQuickV20') || 0);
+    if((tipo==='CARGAR_FICHAS' || tipo==='PROCESAR_RETIRO') && (!monto || monto <= 0)){
+      alert('Indicá un monto mayor a 0.');
+      return;
+    }
+
+    setVal('manualWorkerUsuarioInicio', usuario);
+    setVal('manualWorkerMontoInicio', Math.abs(monto));
+    setTipoQuick(tipo);
+
+    const ejecutar = async()=> {
+      if(typeof crearWorkerJobManualInicio === 'function'){
+        await crearWorkerJobManualInicio();
+      }else{
+        alert('No encontré la función crearWorkerJobManualInicio.');
+      }
+      try{ await window.nodoOrgCargarHistorial(false); }catch(e){}
+    };
+
+    if(tipo === 'PROCESAR_RETIRO'){
+      await preControlRetiro24(usuario, monto, ejecutar);
+    }else{
+      await ejecutar();
+    }
+  }
+
+  window.nodoOrgChatCrearUsuario = ()=>crearJobDesdeChat('CREAR_USUARIO');
+  window.nodoOrgChatCargar = ()=>crearJobDesdeChat('CARGAR_FICHAS');
+  window.nodoOrgChatRetirar = ()=>crearJobDesdeChat('PROCESAR_RETIRO');
+  window.nodoOrgChatCambiarClave = ()=>crearJobDesdeChat('CAMBIAR_CLAVE');
+
+  function ensureChatActions(){
+    const head = document.querySelector('#viewChat .chat-head') || $('chatHead') || document.querySelector('.chat-head');
+    if(!head || $('chatQuickActionsV20')) return;
+
+    const div=document.createElement('div');
+    div.id='chatQuickActionsV20';
+    div.className='chat-quick-actions-v20';
+    div.innerHTML=`
+      <input id="chatMontoQuickV20" type="number" min="1" placeholder="Monto">
+      <button class="mini-btn green" onclick="nodoOrgChatCargar()" title="Crear job de carga para usuario del chat">⚡ Cargar</button>
+      <button class="mini-btn red" onclick="nodoOrgChatRetirar()" title="Crear job de retiro con control 24 hs">🏧 Retirar</button>
+      <button class="mini-btn blue" onclick="nodoOrgChatCrearUsuario()" title="Crear usuario desde chat">👤 Crear</button>
+      <button class="mini-btn yellow" onclick="nodoOrgChatCambiarClave()" title="Cambiar clave desde chat">🔑 Clave</button>
+    `;
+    head.appendChild(div);
+  }
+
+  // Importador CSV liviano para operaciones de agente: registra retiros 24h en historial_ops.
+  window.nodoOrgAbrirImportarOpsCsv = function(){
+    abrirModal('Importar CSV operaciones agente', `
+      <div class="small" style="margin-bottom:10px">
+        Lee CSV tipo <b>agent_operations</b>. Los retiros de las últimas 24 hs se guardan en <b>historial_ops</b> para que el control 24h los tome junto con los jobs.
+      </div>
+      <label>PC destino</label>
+      <input id="nodoOrgCsvPc" value="${esc(getPc())}" placeholder="PC">
+      <label>Archivo CSV</label>
+      <input id="nodoOrgCsvFile" type="file" accept=".csv,text/csv">
+      <div id="nodoOrgCsvMsg"></div>
+    `, async()=>{
+      await window.nodoOrgImportarOpsCsv();
+    }, 'Importar');
+  };
+
+  function parseCsvSimple(text){
+    if(text.charCodeAt(0)===0xFEFF) text=text.slice(1);
+    let rows=[], row=[], cur='', q=false;
+    for(let i=0;i<text.length;i++){
+      const c=text[i];
+      if(q){
+        if(c==='"' && text[i+1]==='"'){cur+='"';i++;}
+        else if(c==='"') q=false;
+        else cur+=c;
+      }else{
+        if(c==='"') q=true;
+        else if(c===','){row.push(cur);cur='';}
+        else if(c==='\n'){row.push(cur);rows.push(row);row=[];cur='';}
+        else if(c==='\r'){}
+        else cur+=c;
+      }
+    }
+    if(cur || row.length){row.push(cur);rows.push(row);}
+    return rows;
+  }
+
+  window.nodoOrgImportarOpsCsv = async function(){
+    const file=$('nodoOrgCsvFile')?.files?.[0];
+    const pc=String(val('nodoOrgCsvPc') || getPc()).trim().toUpperCase();
+    if(!file){ setBoxSafe('nodoOrgCsvMsg','<div class="err-box">Seleccioná un CSV.</div>'); return; }
+    const txt=await file.text();
+    let lines=txt.replace(/\r\n/g,'\n').replace(/\r/g,'\n');
+    let rows=parseCsvSimple(lines);
+    if(rows[0] && String(rows[0][0]||'').toLowerCase().startsWith('sep=')) rows=rows.slice(1);
+    if(rows.length<2){ setBoxSafe('nodoOrgCsvMsg','<div class="err-box">CSV vacío.</div>'); return; }
+
+    const headers=rows[0].map(h=>String(h||'').trim().toLowerCase());
+    const idx={}; headers.forEach((h,i)=>idx[h]=i);
+    const col=(r,n)=>{ const i=idx[n]; return i===undefined?'':String(r[i]||'').trim(); };
+
+    const desde=new Date(Date.now()-24*60*60*1000);
+    const retiros=[];
+    for(let i=1;i<rows.length;i++){
+      const r=rows[i];
+      const alias=col(r,'alias').toLowerCase();
+      const tipo=col(r,'tipo');
+      const fecha=col(r,'fecha');
+      const cant=Number(String(col(r,'cantidad')).replace(/\./g,'').replace(',','.')) || 0;
+      if(!alias || alias==='donplata') continue;
+      const f=new Date(fecha);
+      if(tipo==='Deposito de un jugador' && cant<0 && !isNaN(f) && f>=desde){
+        retiros.push({alias, fecha:f.toISOString(), monto:Math.abs(cant)});
+      }
+    }
+
+    let ok=0, err=0;
+    for(const r of retiros){
+      try{
+        const {error}=await supabaseClient.from('historial_ops').insert({
+          usuario:r.alias,
+          tipo:'RETIRO',
+          monto:r.monto,
+          origen:'CSV_AGENT_OPERATIONS',
+          estado:'OK',
+          notas:'Importado CSV agente · retiro 24h · '+r.fecha,
+          pc_codigo:pc,
+          created_at:r.fecha
+        });
+        if(error) throw error;
+        ok++;
+      }catch(e){ err++; console.warn(e); }
+    }
+
+    setBoxSafe('nodoOrgCsvMsg', `<div class="ok-box">CSV procesado. Retiros 24h guardados: <b>${ok}</b>${err?` · errores: ${err}`:''}</div>`);
+    try{ await window.nodoOrgCargarHistorial(true); }catch(e){}
+  };
+
+  function setBoxSafe(id,html){ const el=$(id); if(el) el.innerHTML=html; }
+
+  function addCsvButton(){
+    const view=$('viewInicio');
+    if(!view || $('nodoOrgCsvBtn')) return;
+    const head=view.querySelector('.ops-head') || view.firstElementChild;
+    if(!head) return;
+    const btn=document.createElement('button');
+    btn.id='nodoOrgCsvBtn';
+    btn.className='mini-btn purple';
+    btn.textContent='📊 Importar CSV ops';
+    btn.onclick=()=>window.nodoOrgAbrirImportarOpsCsv();
+    const place=head.querySelector('.header-actions,.ops-head-actions') || head;
+    place.appendChild(btn);
+  }
+
+  function boot(){
+    document.body.classList.add('nodo-v20-organizada');
+    montarInicioOrganizado();
+    ensureChatActions();
+    addCsvButton();
+    renderMiniWallets();
+    clearTimeout(ORG.histTimer);
+    ORG.histTimer=setTimeout(()=>window.nodoOrgCargarHistorial?.(false),650);
+  }
+
+  const oldMostrar = window.mostrarVista;
+  if(typeof oldMostrar === 'function' && !oldMostrar.__nodoOrg){
+    window.mostrarVista = function(vista){
+      const r = oldMostrar.apply(this, arguments);
+      setTimeout(boot,100);
+      return r;
+    };
+    window.mostrarVista.__nodoOrg = true;
+    try{ mostrarVista = window.mostrarVista; }catch(e){}
+  }
+
+  const oldCentro = window.renderCentroOperativo;
+  if(typeof oldCentro === 'function' && !oldCentro.__nodoOrg){
+    window.renderCentroOperativo = function(){
+      const r = oldCentro.apply(this, arguments);
+      setTimeout(boot,120);
+      return r;
+    };
+    window.renderCentroOperativo.__nodoOrg = true;
+    try{ renderCentroOperativo = window.renderCentroOperativo; }catch(e){}
+  }
+
+  const oldChat = window.renderChat || window.renderChats || window.renderChatPanel;
+  if(typeof oldChat === 'function' && !oldChat.__nodoOrg){
+    const name = window.renderChat ? 'renderChat' : (window.renderChats ? 'renderChats' : 'renderChatPanel');
+    window[name] = function(){
+      const r = oldChat.apply(this, arguments);
+      setTimeout(ensureChatActions,80);
+      return r;
+    };
+    try{ eval(`${name}=window[name]`); }catch(e){}
+  }
+
+  document.addEventListener('DOMContentLoaded',()=>setTimeout(boot,700));
+  window.addEventListener('load',()=>setTimeout(boot,1200));
+  setTimeout(boot,1400);
+})();
+</script>
+
+
+<style id="nodo-v20-wallet-jobs-fix-css">
+  body.nodo-v20-organizada .nodo-wallet-job-chip{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    max-width:230px;
+    border-radius:999px;
+    padding:7px 10px;
+    background:rgba(59,130,246,.13);
+    border:1px solid rgba(59,130,246,.22);
+    color:#BFDBFE;
+    font-size:12px;
+    font-weight:900;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  body.nodo-v20-organizada .nodo-wallet-job-chip.na{
+    background:rgba(148,163,184,.09);
+    border-color:rgba(148,163,184,.16);
+    color:#CBD5E1;
+  }
+  body.nodo-v20-organizada .nodo-wallet-job-sub{
+    display:block;
+    color:#94A3B8;
+    font-size:11px;
+    margin-top:4px;
+  }
+</style>
+
+<script id="nodo-v20-wallet-jobs-fix-js">
+(function(){
+  if(window.__NODO_V20_WALLET_JOBS_FIX__) return;
+  window.__NODO_V20_WALLET_JOBS_FIX__ = true;
+
+  function esc(v){
+    if(typeof escapeHtml === 'function') return escapeHtml(v);
+    return String(v ?? '').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'","&#039;");
+  }
+  function norm(v){
+    try{return String(v ?? '').normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim().toUpperCase();}
+    catch(e){return String(v ?? '').trim().toUpperCase();}
+  }
+  function parse(v){
+    if(!v) return {};
+    if(typeof v === 'object') return v;
+    try{return JSON.parse(String(v));}catch(e){return {};}
+  }
+  function wallets(){
+    const out=[];
+    try{
+      if(Array.isArray(window.billeteras)) out.push(...window.billeteras);
+      if(typeof billeteras !== 'undefined' && Array.isArray(billeteras)) out.push(...billeteras);
+      if(Array.isArray(window.saldosOperativos?.billeteras)) out.push(...window.saldosOperativos.billeteras);
+      if(Array.isArray(window.wallets)) out.push(...window.wallets);
+    }catch(e){}
+    const seen=new Set();
+    return out.filter(w=>{
+      const k=String(w.id||w.ID||w.id_billetera||w.billetera_id||w.nombre_visible||w.nombre||'');
+      if(!k || seen.has(k)) return false;
+      seen.add(k);
+      return true;
+    });
+  }
+  function walletId(w){ return w.id ?? w.ID ?? w.id_billetera ?? w.billetera_id ?? ''; }
+  function walletName(w){ return w.nombre_visible || w.nombre || w.NOMBRE || w.alias || w.titular || ('Billetera '+walletId(w)); }
+  function walletTipo(w){ return w.banco || w.tipo || w.TIPO || w.provider || ''; }
+
+  function resolverWallet(job){
+    const p=parse(job?.payload);
+    const rawId = job?.billetera_id ?? job?.id_billetera ?? job?.wallet_id ?? p.billetera_id ?? p.id_billetera ?? p.wallet_id ?? '';
+    const rawName = job?.billetera_nombre ?? job?.nombre_billetera ?? job?.wallet_nombre ?? p.billetera_nombre ?? p.nombre_billetera ?? p.wallet_nombre ?? '';
+    const rawTipo = job?.billetera_tipo ?? job?.tipo_billetera ?? p.billetera_tipo ?? p.tipo_billetera ?? '';
+
+    const lista=wallets();
+    let found=null;
+
+    if(rawId !== '' && rawId !== null && rawId !== undefined){
+      found = lista.find(w => String(walletId(w)) === String(rawId));
+    }
+
+    if(!found && rawName){
+      found = lista.find(w => norm(walletName(w)).includes(norm(rawName)) || norm(rawName).includes(norm(walletName(w))));
+    }
+
+    if(found){
+      return {
+        id:walletId(found),
+        name:walletName(found),
+        tipo:walletTipo(found),
+        source:'map'
+      };
+    }
+
+    if(rawName || rawId){
+      return {
+        id:rawId,
+        name:rawName || ('ID '+rawId),
+        tipo:rawTipo,
+        source:'job'
+      };
+    }
+
+    return null;
+  }
+
+  window.nodoResolverWalletJobV20 = resolverWallet;
+
+  window.walletLabelForJob = function(job){
+    const w=resolverWallet(job);
+    if(!w){
+      return `<span class="nodo-wallet-job-chip na">— No aplica</span>`;
+    }
+    return `<span class="nodo-wallet-job-chip">💳 ${esc(w.name)}</span>${w.tipo || w.id ? `<span class="nodo-wallet-job-sub">${esc(w.tipo || 'Billetera')}${w.id ? ' · ID '+esc(w.id) : ''}</span>` : ''}`;
+  };
+
+  function jobs(){
+    try{return Array.isArray(window.workerJobs) ? window.workerJobs : (Array.isArray(workerJobs) ? workerJobs : []);}
+    catch(e){return [];}
+  }
+  function jobById(id){
+    return jobs().find(j => String(j.id || j.job_id || j.worker_job_id || '') === String(id || '')) || null;
+  }
+
+  function injectWalletCells(){
+    document.querySelectorAll('tr').forEach(tr=>{
+      const txt=tr.textContent || '';
+      const m=txt.match(/Job\s*#?(\d+)/i) || txt.match(/#(\d+)/);
+      if(!m) return;
+      const job=jobById(m[1]);
+      if(!job) return;
+
+      // Busca celda de billetera que esté vacía o tenga No aplica / guion.
+      const cells=Array.from(tr.children || []);
+      const target=cells.find(td=>{
+        const t=norm(td.textContent);
+        return t === '-' || t.includes('NO APLICA') || t.includes('SIN BILLETERA') || t === '';
+      });
+
+      if(target && !target.dataset.walletFixed){
+        const html=window.walletLabelForJob(job);
+        if(!/NO APLICA/.test(norm(html)) || /BILLETERA|CARGA|RETIRO/.test(norm(txt))){
+          target.innerHTML=html;
+          target.dataset.walletFixed='1';
+        }
+      }
+    });
+  }
+
+  const oldWorker=window.renderWorkerJobs;
+  if(typeof oldWorker === 'function' && !oldWorker.__walletFix){
+    window.renderWorkerJobs=function(){
+      const r=oldWorker.apply(this,arguments);
+      setTimeout(injectWalletCells,80);
+      return r;
+    };
+    window.renderWorkerJobs.__walletFix=true;
+    try{ renderWorkerJobs=window.renderWorkerJobs; }catch(e){}
+  }
+
+  const oldCola=window.renderColaUnificada;
+  if(typeof oldCola === 'function' && !oldCola.__walletFix){
+    window.renderColaUnificada=function(){
+      const r=oldCola.apply(this,arguments);
+      setTimeout(injectWalletCells,80);
+      return r;
+    };
+    window.renderColaUnificada.__walletFix=true;
+    try{ renderColaUnificada=window.renderColaUnificada; }catch(e){}
+  }
+
+  function boot(){
+    try{ injectWalletCells(); }catch(e){}
+  }
+
+  document.addEventListener('DOMContentLoaded',()=>setTimeout(boot,900));
+  window.addEventListener('load',()=>setTimeout(boot,1300));
+  setTimeout(boot,1600);
 })();
 </script>
 
