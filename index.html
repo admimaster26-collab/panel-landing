@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>NODO · OPERATIVO V20 · Organizada Fix</title>
+<title>NODO · OPERATIVO</title>
 
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif}
@@ -274,7 +274,7 @@ table{width:100%;border-collapse:collapse}th,td{padding:11px;border-bottom:1px s
   <div class="login-card">
     <img src="logo-nodo.png" class="logo" alt="NODO">
     <h2 style="margin-bottom:6px">PANEL OPERATIVO LITE</h2>
-    <div class="small" style="margin-bottom:16px">Versión V20 · Organizada Fix</div>
+    <div class="small" style="margin-bottom:16px">Versión V20 · Organizada Wallet Fix</div>
     <label>Usuario</label>
     <input id="loginUsuario" autocomplete="username">
     <label>Clave</label>
@@ -11542,6 +11542,332 @@ body.nodo-v20-organizada .nodo-retiro24-bubble.err{
   document.addEventListener('DOMContentLoaded',()=>setTimeout(boot,900));
   window.addEventListener('load',()=>setTimeout(boot,1300));
   setTimeout(boot,1600);
+})();
+</script>
+
+
+<style id="nodo-v20-accion-billetera-fix-css">
+/* =========================================================
+   NODO V20 · FIX BILLETERA IMPACTADA EN ACCIÓN RÁPIDA
+   La reorganización visual había escondido el campo de billetera.
+========================================================= */
+body.nodo-v20-organizada .ops-manual-grid{
+  display:grid!important;
+  grid-template-columns:1.05fr 120px 160px 1.15fr 1fr 125px!important;
+  gap:10px!important;
+  align-items:end!important;
+}
+
+/* Reset de los nth-child viejos que podían esconder campos */
+body.nodo-v20-organizada .ops-manual-grid > div{
+  display:block!important;
+  grid-column:auto!important;
+  grid-row:auto!important;
+}
+
+/* Orden visual esperado:
+   1 Usuario
+   2 Monto
+   3 Acción
+   4 Billetera impactada
+   5 Observación
+   botón Enviar
+*/
+body.nodo-v20-organizada .ops-manual-grid > div:nth-child(1){
+  grid-column:1!important;
+  grid-row:1!important;
+}
+body.nodo-v20-organizada .ops-manual-grid > div:nth-child(3){
+  grid-column:2!important;
+  grid-row:1!important;
+}
+body.nodo-v20-organizada .ops-manual-grid > div:nth-child(2){
+  grid-column:3!important;
+  grid-row:1!important;
+}
+body.nodo-v20-organizada .ops-manual-grid > div:nth-child(4){
+  grid-column:4!important;
+  grid-row:1!important;
+}
+body.nodo-v20-organizada .ops-manual-grid > div:nth-child(5){
+  grid-column:5!important;
+  grid-row:1!important;
+  display:block!important;
+}
+body.nodo-v20-organizada .ops-panel .btn.btn-green[onclick="crearWorkerJobManualInicio()"],
+body.nodo-v20-organizada .ops-manual-grid button[onclick="crearWorkerJobManualInicio()"]{
+  grid-column:6!important;
+  grid-row:1!important;
+  width:100%!important;
+  min-height:45px!important;
+}
+
+/* Si no entra en ancho medio, baja observación/enviar abajo */
+@media(max-width:1350px){
+  body.nodo-v20-organizada .ops-manual-grid{
+    grid-template-columns:1fr 130px 170px 1fr!important;
+  }
+  body.nodo-v20-organizada .ops-manual-grid > div:nth-child(1){grid-column:1!important;grid-row:1!important}
+  body.nodo-v20-organizada .ops-manual-grid > div:nth-child(3){grid-column:2!important;grid-row:1!important}
+  body.nodo-v20-organizada .ops-manual-grid > div:nth-child(2){grid-column:3!important;grid-row:1!important}
+  body.nodo-v20-organizada .ops-manual-grid > div:nth-child(4){grid-column:4!important;grid-row:1!important}
+  body.nodo-v20-organizada .ops-manual-grid > div:nth-child(5){grid-column:1 / 4!important;grid-row:2!important}
+  body.nodo-v20-organizada .ops-panel .btn.btn-green[onclick="crearWorkerJobManualInicio()"],
+  body.nodo-v20-organizada .ops-manual-grid button[onclick="crearWorkerJobManualInicio()"]{
+    grid-column:4!important;
+    grid-row:2!important;
+  }
+}
+@media(max-width:900px){
+  body.nodo-v20-organizada .ops-manual-grid{
+    grid-template-columns:1fr!important;
+  }
+  body.nodo-v20-organizada .ops-manual-grid > div,
+  body.nodo-v20-organizada .ops-panel .btn.btn-green[onclick="crearWorkerJobManualInicio()"],
+  body.nodo-v20-organizada .ops-manual-grid button[onclick="crearWorkerJobManualInicio()"]{
+    grid-column:1!important;
+    grid-row:auto!important;
+  }
+}
+
+/* Mini billetera activa visual */
+body.nodo-v20-organizada .nodo-billetera-impactada-hint{
+  margin-top:8px;
+  font-size:12px;
+  color:#BFDBFE;
+  background:rgba(59,130,246,.10);
+  border:1px solid rgba(59,130,246,.18);
+  border-radius:12px;
+  padding:8px 10px;
+}
+body.nodo-v20-organizada .nodo-billetera-impactada-hint b{
+  color:#fff;
+}
+</style>
+
+<script id="nodo-v20-accion-billetera-fix-js">
+(function(){
+  if(window.__NODO_V20_ACCION_BILLETERA_FIX__) return;
+  window.__NODO_V20_ACCION_BILLETERA_FIX__ = true;
+
+  function $(id){ return document.getElementById(id); }
+  function esc(v){
+    if(typeof escapeHtml === 'function') return escapeHtml(v);
+    return String(v ?? '').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'","&#039;");
+  }
+  function norm(v){
+    try{return String(v ?? '').normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim().toUpperCase();}
+    catch(e){return String(v ?? '').trim().toUpperCase();}
+  }
+  function wallets(){
+    const out=[];
+    try{
+      if(Array.isArray(window.billeteras)) out.push(...window.billeteras);
+      if(typeof billeteras !== 'undefined' && Array.isArray(billeteras)) out.push(...billeteras);
+      if(Array.isArray(window.saldosOperativos?.billeteras)) out.push(...window.saldosOperativos.billeteras);
+      if(Array.isArray(window.wallets)) out.push(...window.wallets);
+    }catch(e){}
+    const seen=new Set();
+    return out.filter(w=>{
+      const k=String(w.id||w.ID||w.id_billetera||w.billetera_id||w.nombre_visible||w.nombre||'');
+      if(!k || seen.has(k)) return false;
+      seen.add(k);
+      return true;
+    });
+  }
+  function walletId(w){ return w.id ?? w.ID ?? w.id_billetera ?? w.billetera_id ?? ''; }
+  function walletName(w){ return w.nombre_visible || w.nombre || w.NOMBRE || w.alias || w.titular || ('Billetera '+walletId(w)); }
+  function walletTipo(w){ return w.banco || w.tipo || w.TIPO || w.provider || ''; }
+  function money(v){
+    if(typeof window.money === 'function') return window.money(v);
+    return Number(v||0).toLocaleString('es-AR',{style:'currency',currency:'ARS',maximumFractionDigits:0});
+  }
+  function walletSaldo(w){ return w.saldo_real ?? w.saldo ?? w.SALDO ?? w.monto ?? 0; }
+
+  function findBilleteraSelect(){
+    return $('manualWorkerBilleteraInicio') || $('manualWorkerBilletera') || document.querySelector('select[id*="Billetera"][id*="Inicio"]') || document.querySelector('select[id*="Billetera"]');
+  }
+
+  function ensureBilleteraVisible(){
+    const sel=findBilleteraSelect();
+    const grid=document.querySelector('#viewInicio .ops-manual-grid');
+    if(!sel || !grid) return;
+
+    const wrap=sel.closest('div');
+    if(wrap){
+      wrap.style.display='block';
+      wrap.style.visibility='visible';
+      wrap.classList.remove('hidden');
+    }
+
+    sel.style.display='block';
+    sel.style.visibility='visible';
+    sel.disabled=false;
+
+    // Etiqueta clara
+    const label=wrap?.querySelector('label');
+    if(label && !/impactada/i.test(label.textContent || '')){
+      label.textContent='Billetera impactada';
+    }
+
+    // Poblar si el select quedó vacío
+    const lista=wallets();
+    if(lista.length && sel.options.length <= 1){
+      const current=sel.value;
+      sel.innerHTML='<option value="">Seleccionar billetera</option>' + lista.map(w=>{
+        const id=walletId(w);
+        const name=walletName(w);
+        const tipo=walletTipo(w);
+        return `<option value="${esc(id)}">${esc(name)}${tipo?' · '+esc(tipo):''}</option>`;
+      }).join('');
+      if(current) sel.value=current;
+    }
+
+    // Restaurar última billetera usada/activa
+    const saved=localStorage.getItem('nodoUltimaBilleteraImpactada') || localStorage.getItem('nodo_wallet_impactada') || '';
+    if(saved && !sel.value){
+      sel.value=saved;
+    }
+
+    updateHintBilletera();
+  }
+
+  function updateHintBilletera(){
+    const sel=findBilleteraSelect();
+    const grid=document.querySelector('#viewInicio .ops-manual-grid');
+    if(!sel || !grid) return;
+
+    let hint=$('nodoBilleteraImpactadaHint');
+    if(!hint){
+      hint=document.createElement('div');
+      hint.id='nodoBilleteraImpactadaHint';
+      hint.className='nodo-billetera-impactada-hint';
+      const panel=grid.closest('.ops-panel,.card') || grid.parentElement;
+      panel?.appendChild(hint);
+    }
+
+    const id=String(sel.value || '').trim();
+    if(!id){
+      hint.innerHTML='⚠️ Seleccioná la <b>billetera impactada</b> para que el job aplique el saldo correctamente.';
+      return;
+    }
+
+    const w=wallets().find(x=>String(walletId(x))===id);
+    if(w){
+      hint.innerHTML=`💳 Billetera impactada: <b>${esc(walletName(w))}</b> · ${esc(walletTipo(w) || 'Billetera')} · Saldo ${money(walletSaldo(w))}`;
+    }else{
+      hint.innerHTML=`💳 Billetera impactada seleccionada: <b>ID ${esc(id)}</b>`;
+    }
+  }
+
+  function patchWalletButtons(){
+    // Botones "Usar" de mini-cards: además de setear, fuerza select visible y valor.
+    const old=window.nodoOrgSeleccionarWallet;
+    if(typeof old === 'function' && !old.__billeteraFix){
+      window.nodoOrgSeleccionarWallet=function(id){
+        const r=old.apply(this,arguments);
+        const sel=findBilleteraSelect();
+        if(sel && id){
+          sel.value=String(id);
+          sel.dispatchEvent(new Event('change',{bubbles:true}));
+          try{
+            localStorage.setItem('nodoUltimaBilleteraImpactada', String(id));
+            localStorage.setItem('nodo_wallet_impactada', String(id));
+          }catch(e){}
+        }
+        setTimeout(()=>{ensureBilleteraVisible();updateHintBilletera();},50);
+        return r;
+      };
+      window.nodoOrgSeleccionarWallet.__billeteraFix=true;
+    }
+  }
+
+  function patchCrearJob(){
+    const old=window.crearWorkerJobManualInicio;
+    if(typeof old === 'function' && !old.__billeteraFix){
+      window.crearWorkerJobManualInicio=async function(){
+        ensureBilleteraVisible();
+        const sel=findBilleteraSelect();
+        const tipoSel=$('manualWorkerTipoInicio') || $('manualWorkerTipo');
+        const tipo=norm(tipoSel?.value || tipoSel?.selectedOptions?.[0]?.textContent || '');
+        const monto=Number(($('manualWorkerMontoInicio') || $('manualWorkerMonto'))?.value || 0);
+
+        const requiereBilletera =
+          tipo.includes('CARGA') ||
+          tipo.includes('RETIRO') ||
+          tipo.includes('FICHAS') ||
+          monto !== 0;
+
+        if(requiereBilletera && (!sel || !sel.value)){
+          const box=$('manualWorkerResultadoInicio') || $('manualWorkerResultado');
+          if(box){
+            box.innerHTML='<div class="err-box">Seleccioná la billetera impactada.</div>';
+          }else{
+            alert('Seleccioná la billetera impactada.');
+          }
+          return;
+        }
+
+        if(sel && sel.value){
+          try{
+            localStorage.setItem('nodoUltimaBilleteraImpactada', String(sel.value));
+            localStorage.setItem('nodo_wallet_impactada', String(sel.value));
+          }catch(e){}
+        }
+
+        return old.apply(this,arguments);
+      };
+      window.crearWorkerJobManualInicio.__billeteraFix=true;
+      try{ crearWorkerJobManualInicio=window.crearWorkerJobManualInicio; }catch(e){}
+    }
+  }
+
+  function boot(){
+    ensureBilleteraVisible();
+    patchWalletButtons();
+    patchCrearJob();
+
+    const sel=findBilleteraSelect();
+    if(sel && !sel.dataset.walletFixBound){
+      sel.addEventListener('change',()=>{
+        try{
+          if(sel.value){
+            localStorage.setItem('nodoUltimaBilleteraImpactada', String(sel.value));
+            localStorage.setItem('nodo_wallet_impactada', String(sel.value));
+          }
+        }catch(e){}
+        updateHintBilletera();
+      });
+      sel.dataset.walletFixBound='1';
+    }
+  }
+
+  const oldCentro=window.renderCentroOperativo;
+  if(typeof oldCentro === 'function' && !oldCentro.__accionBilleteraFix){
+    window.renderCentroOperativo=function(){
+      const r=oldCentro.apply(this,arguments);
+      setTimeout(boot,100);
+      return r;
+    };
+    window.renderCentroOperativo.__accionBilleteraFix=true;
+    try{ renderCentroOperativo=window.renderCentroOperativo; }catch(e){}
+  }
+
+  const oldInicio=window.renderInicio;
+  if(typeof oldInicio === 'function' && !oldInicio.__accionBilleteraFix){
+    window.renderInicio=function(){
+      const r=oldInicio.apply(this,arguments);
+      setTimeout(boot,100);
+      return r;
+    };
+    window.renderInicio.__accionBilleteraFix=true;
+    try{ renderInicio=window.renderInicio; }catch(e){}
+  }
+
+  document.addEventListener('DOMContentLoaded',()=>setTimeout(boot,700));
+  window.addEventListener('load',()=>setTimeout(boot,1200));
+  setTimeout(boot,1500);
+  setInterval(boot,3000);
 })();
 </script>
 
