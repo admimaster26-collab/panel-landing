@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>NODO · OPERATIVO V20 · Auditoría y billeteras</title>
+<title>NODO Â· OPERATIVO V20 Â· AuditorÃ­a y billeteras</title>
 
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif}
@@ -82,7 +82,7 @@ table{width:100%;border-collapse:collapse}th,td{padding:11px;border-bottom:1px s
 .transfer-chat-card{background:linear-gradient(145deg,rgba(45,35,12,.96),rgba(13,30,46,.94));border:1px solid rgba(253,176,34,.42);border-radius:14px;padding:12px;min-width:230px}.transfer-chat-title{color:#ffd98f;font-weight:900;margin-bottom:10px}.transfer-chat-row{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:8px;margin-top:8px}.transfer-chat-label{font-size:11px;color:#cbd5e1;text-transform:uppercase;font-weight:900;margin-bottom:4px}.transfer-chat-value{font-weight:900;color:#fff;word-break:break-all}.transfer-chat-note{color:#ffd98f;font-size:12px;margin-top:10px;line-height:1.35}
 
 
-/* === MODAL DE VERIFICACIÓN DE SOLICITUD === */
+/* === MODAL DE VERIFICACIÃ“N DE SOLICITUD === */
 .verify-box{
   border:1px solid #30384a;
   background:#111827;
@@ -257,7 +257,7 @@ table{width:100%;border-collapse:collapse}th,td{padding:11px;border-bottom:1px s
 @media(max-width:1100px){.ops-grid{grid-template-columns:1fr}.ops-title{font-size:22px}}
 
 
-/* NODO V9 · UX compacta y scroll estable */
+/* NODO V9 Â· UX compacta y scroll estable */
 .main{overscroll-behavior:contain;scroll-behavior:auto;will-change:scroll-position}.table-wrap,.ops-table-wrap,.chat-body{overscroll-behavior:contain;scroll-behavior:auto;scrollbar-gutter:stable both-edges}.ops-table-wrap{max-height:64vh}.ops-main-table th,.ops-main-table td{white-space:nowrap}.ops-main-table td:nth-child(8){white-space:normal;min-width:230px}.ops-main-table td:last-child,.ops-main-table th:last-child{position:sticky;right:0;background:#111722;z-index:2}.ops-alert,.mp-detect-sub,.ops-sub,.worker-live-small{display:none!important}.mp-detect-panel{margin-top:8px}.ops-wallet-strip{grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:8px}.ops-wallet{padding:10px}.ops-wallet-meta{font-size:11px;line-height:1.25}.ops-kpis{grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px}.ops-kpi{padding:10px}.ops-kpi-value{font-size:24px}.nav-btn{min-height:42px}.alert-box{padding:10px}.view-title-sub,.page-help,.hint-panel{display:none!important}
 
 </style>
@@ -274,7 +274,7 @@ table{width:100%;border-collapse:collapse}th,td{padding:11px;border-bottom:1px s
   <div class="login-card">
     <img src="logo-nodo.png" class="logo" alt="NODO">
     <h2 style="margin-bottom:6px">PANEL OPERATIVO LITE</h2>
-    <div class="small" style="margin-bottom:16px">Versión V20 · Auditoría + billeteras compactas</div>
+    <div class="small" style="margin-bottom:16px">VersiÃ³n V20 Â· AuditorÃ­a + billeteras compactas</div>
     <label>Usuario</label>
     <input id="loginUsuario" autocomplete="username">
     <label>Clave</label>
@@ -286,7 +286,7 @@ table{width:100%;border-collapse:collapse}th,td{padding:11px;border-bottom:1px s
 
 <div id="appView" class="hidden">
   <div class="mobile-top">
-    <button class="mini-btn blue" onclick="abrirMenuMobile()">☰ Menú</button>
+    <button class="mini-btn blue" onclick="abrirMenuMobile()">â˜° MenÃº</button>
     <b>NODO Operativo</b>
     <button class="mini-btn red" onclick="cerrarSesion()">Salir</button>
   </div>
@@ -296,14 +296,14 @@ table{width:100%;border-collapse:collapse}th,td{padding:11px;border-bottom:1px s
       <img src="logo-nodo.png" class="logo" alt="NODO">
       <div class="card"><div id="operadorInfo"></div></div>
 
-      <button id="navInicio" class="nav-btn active" onclick="mostrarVista('inicio')">🏠 Inicio</button>
-      <button id="navSolicitudes" class="nav-btn" onclick="mostrarVista('solicitudes')">📋 Solicitudes <span id="badgeSolicitudes" class="badge-alert hidden">0</span></button>
-      <button id="navBilleteras" class="nav-btn" onclick="mostrarVista('billeteras')">💳 Billeteras</button>
-      <button id="navChat" class="nav-btn" onclick="mostrarVista('chat')">💬 Chat <span id="badgeChat" class="badge-alert badge-chat hidden">0</span></button>
-      <button id="navWorker" class="nav-btn" onclick="mostrarVista('worker')">⚙️ Worker <span id="badgeWorker" class="badge-alert hidden">0</span></button>
-      <button id="navAjustes" class="nav-btn" onclick="mostrarVista('ajustes')">🧾 Ajustes</button>
+      <button id="navInicio" class="nav-btn active" onclick="mostrarVista('inicio')">ðŸ  Inicio</button>
+      <button id="navSolicitudes" class="nav-btn" onclick="mostrarVista('solicitudes')">ðŸ“‹ Solicitudes <span id="badgeSolicitudes" class="badge-alert hidden">0</span></button>
+      <button id="navBilleteras" class="nav-btn" onclick="mostrarVista('billeteras')">ðŸ’³ Billeteras</button>
+      <button id="navChat" class="nav-btn" onclick="mostrarVista('chat')">ðŸ’¬ Chat <span id="badgeChat" class="badge-alert badge-chat hidden">0</span></button>
+      <button id="navWorker" class="nav-btn" onclick="mostrarVista('worker')">âš™ï¸ Worker <span id="badgeWorker" class="badge-alert hidden">0</span></button>
+      <button id="navAjustes" class="nav-btn" onclick="mostrarVista('ajustes')">ðŸ§¾ Ajustes</button>
 
-      <button class="nav-btn" onclick="cerrarSesion()">🚪 Cerrar sesión</button>
+      <button class="nav-btn" onclick="cerrarSesion()">ðŸšª Cerrar sesiÃ³n</button>
     </aside>
 
     <main class="main">
@@ -311,12 +311,12 @@ table{width:100%;border-collapse:collapse}th,td{padding:11px;border-bottom:1px s
         <div class="ops-head">
           <div>
             <div class="ops-title">Centro Operativo</div>
-            <div class="ops-sub">PC actual · solicitudes · worker · billeteras · fichas en una sola vista.</div>
+            <div class="ops-sub">PC actual Â· solicitudes Â· worker Â· billeteras Â· fichas en una sola vista.</div>
           </div>
           <div class="ops-compact-actions">
-            <button class="mini-btn blue" onclick="refrescarTodo(true)">🔄 Actualizar</button>
-            <button class="mini-btn green" onclick="mostrarVista('chat')">💬 Chat</button>
-            <button class="mini-btn yellow" onclick="mostrarVista('ajustes')">🧾 Ajustes</button>
+            <button class="mini-btn blue" onclick="refrescarTodo(true)">ðŸ”„ Actualizar</button>
+            <button class="mini-btn green" onclick="mostrarVista('chat')">ðŸ’¬ Chat</button>
+            <button class="mini-btn yellow" onclick="mostrarVista('ajustes')">ðŸ§¾ Ajustes</button>
           </div>
         </div>
 
@@ -329,7 +329,7 @@ table{width:100%;border-collapse:collapse}th,td{padding:11px;border-bottom:1px s
           <div class="ops-panel">
             <div style="display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap">
               <div>
-                <div class="ops-panel-title">📌 Cola operativa</div>
+                <div class="ops-panel-title">ðŸ“Œ Cola operativa</div>
                 <div class="small">Solicitudes de landing + acciones manuales + jobs del worker.</div>
               </div>
               <div class="ops-compact-actions">
@@ -344,20 +344,20 @@ table{width:100%;border-collapse:collapse}th,td{padding:11px;border-bottom:1px s
 
           <div>
             <div class="ops-panel">
-              <div class="ops-panel-title">⚡ Acción rápida</div>
+              <div class="ops-panel-title">âš¡ AcciÃ³n rÃ¡pida</div>
               <div class="ops-alert">Carga: suma dinero a billetera y resta fichas. Retiro: resta dinero y recupera fichas.</div>
               <div class="ops-manual-grid">
                 <div><label>Usuario</label><input id="manualWorkerUsuarioInicio" placeholder="ej: pruebasan"></div>
                 <div><label>Tipo</label><select id="manualWorkerTipoInicio" onchange="ajustarMontoWorkerManualInicio()"><option value="VALIDAR_USUARIO">Validar usuario</option><option value="CARGAR_FICHAS">Carga</option><option value="PROCESAR_RETIRO">Retiro</option></select></div>
                 <div><label>Monto</label><input id="manualWorkerMontoInicio" type="number" min="0" step="1" placeholder="ej: 2000"></div>
                 <div><label>Billetera impactada</label><select id="manualWorkerBilleteraInicio"><option value="">No aplica / seleccionar</option></select></div>
-                <div><label>Observación</label><input id="manualWorkerObsInicio" placeholder="opcional"></div>
+                <div><label>ObservaciÃ³n</label><input id="manualWorkerObsInicio" placeholder="opcional"></div>
               </div>
               <button class="btn btn-green" style="margin-top:12px" onclick="crearWorkerJobManualInicio()">Enviar al worker</button>
               <div id="manualWorkerResultadoInicio" style="margin-top:12px"></div>
             </div>
             <div class="ops-panel">
-              <div class="ops-panel-title">🧾 Ajustes rápidos</div>
+              <div class="ops-panel-title">ðŸ§¾ Ajustes rÃ¡pidos</div>
               <div class="ops-compact-actions">
                 <button class="mini-btn purple" onclick="abrirAjusteFichas()">Ajustar fichas</button>
                 <button class="mini-btn yellow" onclick="abrirAjusteBilletera()">Ajustar billetera</button>
@@ -370,7 +370,7 @@ table{width:100%;border-collapse:collapse}th,td{padding:11px;border-bottom:1px s
 
       <section id="viewSolicitudes" class="hidden">
         <div class="card">
-          <h2 class="card-title">📋 Solicitudes</h2>
+          <h2 class="card-title">ðŸ“‹ Solicitudes</h2>
           <div class="filters">
             <select id="filtroEstado" onchange="renderSolicitudes()">
               <option value="">Todas</option>
@@ -391,7 +391,7 @@ table{width:100%;border-collapse:collapse}th,td{padding:11px;border-bottom:1px s
 
       <section id="viewBilleteras" class="hidden">
         <div class="card">
-          <h2 class="card-title">💳 Billeteras para landing</h2>
+          <h2 class="card-title">ðŸ’³ Billeteras para landing</h2>
           <div class="alert-box">Solo una billetera puede quedar marcada como <b>EN LANDING</b>. No se muestran montos en este panel.</div>
           <div id="walletsGrid" class="wallet-grid"></div>
         </div>
@@ -401,9 +401,9 @@ table{width:100%;border-collapse:collapse}th,td{padding:11px;border-bottom:1px s
         <div style="display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:12px">
           <div>
             <h1 style="font-size:26px">Chat interno</h1>
-            <div class="small">Consultas desde landing. Podés pegar texto o imágenes con Ctrl + V.</div>
+            <div class="small">Consultas desde landing. PodÃ©s pegar texto o imÃ¡genes con Ctrl + V.</div>
           </div>
-          <button class="mini-btn blue" onclick="cargarChats(true)">🔄 Actualizar chats</button>
+          <button class="mini-btn blue" onclick="cargarChats(true)">ðŸ”„ Actualizar chats</button>
         </div>
 
         <div class="chat-layout">
@@ -418,29 +418,29 @@ table{width:100%;border-collapse:collapse}th,td{padding:11px;border-bottom:1px s
           <div class="chat-panel">
             <div class="chat-head">
               <div>
-                <b id="chatTitulo">Seleccioná un chat</b>
-                <div id="chatSubtitulo" class="small">Sin conversación abierta</div>
+                <b id="chatTitulo">SeleccionÃ¡ un chat</b>
+                <div id="chatSubtitulo" class="small">Sin conversaciÃ³n abierta</div>
               </div>
               <span id="chatEstado" class="badge badge-muted">-</span>
             </div>
 
             <div id="chatBody" class="chat-body">
-              <div class="alert-box">Seleccioná un chat de la izquierda para responder.</div>
+              <div class="alert-box">SeleccionÃ¡ un chat de la izquierda para responder.</div>
             </div>
 
             <div class="chat-compose">
               <div id="chatPreview" class="chat-preview">
                 <div style="display:flex;align-items:center;gap:10px">
                   <img id="chatPreviewImg" src="" alt="Imagen">
-                  <div><b>Imagen lista</b><div class="chat-meta">Se enviará con el mensaje</div></div>
+                  <div><b>Imagen lista</b><div class="chat-meta">Se enviarÃ¡ con el mensaje</div></div>
                 </div>
-                <button class="mini-btn red" onclick="quitarImagenChat()">×</button>
+                <button class="mini-btn red" onclick="quitarImagenChat()">Ã—</button>
               </div>
 
               <div class="chat-row">
-                <button class="mini-btn gray" onclick="document.getElementById('chatFile').click()">📎</button>
+                <button class="mini-btn gray" onclick="document.getElementById('chatFile').click()">ðŸ“Ž</button>
                 <textarea id="chatInput" rows="1" placeholder="Responder..."></textarea>
-                <button class="mini-btn blue" onclick="enviarChat()">➤</button>
+                <button class="mini-btn blue" onclick="enviarChat()">âž¤</button>
               </div>
               <div class="transfer-send-box">
                 <label class="small" style="display:block;margin-bottom:6px">Enviar datos de transferencia por chat</label>
@@ -463,13 +463,13 @@ table{width:100%;border-collapse:collapse}th,td{padding:11px;border-bottom:1px s
             <h1 style="font-size:26px">Worker operativo</h1>
             <div class="small">Cola de trabajo de la PC actual y acciones manuales al worker.</div>
           </div>
-          <button class="mini-btn blue" onclick="cargarWorkerJobs(true)">🔄 Actualizar worker</button>
+          <button class="mini-btn blue" onclick="cargarWorkerJobs(true)">ðŸ”„ Actualizar worker</button>
         </div>
 
         <div class="card">
-          <h2 class="card-title">⚡ Acción manual al worker</h2>
+          <h2 class="card-title">âš¡ AcciÃ³n manual al worker</h2>
           <div class="alert-box">
-            Usá esto cuando el operador ya revisó el caso y necesita generar una carga/retiro/validación sin que el usuario lo inicie desde la landing.
+            UsÃ¡ esto cuando el operador ya revisÃ³ el caso y necesita generar una carga/retiro/validaciÃ³n sin que el usuario lo inicie desde la landing.
           </div>
 
           <div class="filters worker-panel-grid">
@@ -478,7 +478,7 @@ table{width:100%;border-collapse:collapse}th,td{padding:11px;border-bottom:1px s
               <input id="manualWorkerUsuario" placeholder="ej: pruebasan">
             </div>
             <div>
-              <label>Tipo de acción</label>
+              <label>Tipo de acciÃ³n</label>
               <select id="manualWorkerTipo" onchange="ajustarMontoWorkerManual()">
                 <option value="VALIDAR_USUARIO">Validar usuario</option>
                 <option value="CARGAR_FICHAS">Carga</option>
@@ -494,10 +494,10 @@ table{width:100%;border-collapse:collapse}th,td{padding:11px;border-bottom:1px s
               <select id="manualWorkerBilletera">
                 <option value="">Sin billetera / solo validar</option>
               </select>
-              <div class="small">Carga: suma dinero a billetera. Retiro: resta dinero. En fichas es al revés.</div>
+              <div class="small">Carga: suma dinero a billetera. Retiro: resta dinero. En fichas es al revÃ©s.</div>
             </div>
             <div>
-              <label>Observación</label>
+              <label>ObservaciÃ³n</label>
               <input id="manualWorkerObs" placeholder="opcional">
             </div>
           </div>
@@ -507,7 +507,7 @@ table{width:100%;border-collapse:collapse}th,td{padding:11px;border-bottom:1px s
         </div>
 
         <div class="card">
-          <h2 class="card-title">📌 Cola del worker · PC actual</h2>
+          <h2 class="card-title">ðŸ“Œ Cola del worker Â· PC actual</h2>
           <div class="filters">
             <input id="workerFiltroTexto" placeholder="Buscar job, usuario, error..." oninput="renderWorkerJobs()">
             <select id="workerFiltroEstado" onchange="renderWorkerJobs()">
@@ -528,10 +528,10 @@ table{width:100%;border-collapse:collapse}th,td{padding:11px;border-bottom:1px s
         </div>
       </section>
       <section id="viewAjustes" class="hidden">
-        <div class="ops-head"><div><div class="ops-title">Ajustes</div><div class="ops-sub">Correcciones con motivo obligatorio. Todo queda trazado por operador y fecha.</div></div><button class="mini-btn blue" onclick="refrescarTodo(true)">🔄 Actualizar</button></div>
+        <div class="ops-head"><div><div class="ops-title">Ajustes</div><div class="ops-sub">Correcciones con motivo obligatorio. Todo queda trazado por operador y fecha.</div></div><button class="mini-btn blue" onclick="refrescarTodo(true)">ðŸ”„ Actualizar</button></div>
         <div class="ops-grid">
           <div class="ops-panel">
-            <div class="ops-panel-title">🎰 Ajuste de fichas</div>
+            <div class="ops-panel-title">ðŸŽ° Ajuste de fichas</div>
             <label>Tipo</label><select id="ajusteFichasSigno"><option value="1">Sumar fichas al agente</option><option value="-1">Restar fichas al agente</option></select>
             <label>Monto</label><input id="ajusteFichasMonto" type="number" min="1" placeholder="ej: 10000">
             <label>Usuario relacionado</label><input id="ajusteFichasUsuario" placeholder="opcional">
@@ -540,7 +540,7 @@ table{width:100%;border-collapse:collapse}th,td{padding:11px;border-bottom:1px s
             <div id="ajusteFichasResultado" style="margin-top:12px"></div>
           </div>
           <div class="ops-panel">
-            <div class="ops-panel-title">💳 Ajuste de billetera</div>
+            <div class="ops-panel-title">ðŸ’³ Ajuste de billetera</div>
             <label>Billetera</label><select id="ajusteBilleteraId"></select>
             <label>Tipo</label><select id="ajusteBilleteraSigno"><option value="1">Sumar dinero</option><option value="-1">Restar dinero</option></select>
             <label>Monto</label><input id="ajusteBilleteraMonto" type="number" min="1" placeholder="ej: 10000">
@@ -550,7 +550,7 @@ table{width:100%;border-collapse:collapse}th,td{padding:11px;border-bottom:1px s
             <div id="ajusteBilleteraResultado" style="margin-top:12px"></div>
           </div>
           <div class="ops-panel">
-            <div class="ops-panel-title">🔁 Movimiento entre billeteras</div>
+            <div class="ops-panel-title">ðŸ” Movimiento entre billeteras</div>
             <div class="small" style="margin-bottom:10px">Mueve saldo interno entre billeteras de la misma PC. No genera job de Agentes.</div>
             <label>Desde billetera</label><select id="transferBilleteraOrigen"></select>
             <label>Hacia billetera</label><select id="transferBilleteraDestino"></select>
@@ -582,7 +582,7 @@ table{width:100%;border-collapse:collapse}th,td{padding:11px;border-bottom:1px s
 <div id="selectorPcOverlay" class="modal-overlay hidden">
   <div class="modal">
     <div class="modal-title">Seleccionar PC operativa</div>
-    <p class="small">Elegí la PC que cubrís hoy.</p>
+    <p class="small">ElegÃ­ la PC que cubrÃ­s hoy.</p>
     <div id="pcSelectorGrid" style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:20px"></div>
   </div>
 </div>
@@ -590,10 +590,10 @@ table{width:100%;border-collapse:collapse}th,td{padding:11px;border-bottom:1px s
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 /* =========================================================
-   OPERATIVO CHAT NOTIFY V8 · ESTABLE SIN REDECLARAR
+   OPERATIVO CHAT NOTIFY V8 Â· ESTABLE SIN REDECLARAR
    - Sin let/const globales duplicados.
-   - Sin recursión en mostrarVista.
-   - Badge lateral Chat suma mensajes nuevos aunque estés en Inicio.
+   - Sin recursiÃ³n en mostrarVista.
+   - Badge lateral Chat suma mensajes nuevos aunque estÃ©s en Inicio.
    - Chat se limpia solo al abrir/clickearel chat o al responder.
    - Carga mensajes desde RPC PC como fuente principal.
 ========================================================= */
@@ -662,10 +662,10 @@ table{width:100%;border-collapse:collapse}th,td{padding:11px;border-bottom:1px s
   }
 
   function resumenPreview(texto, imagen){
-    if(imagen) return "📎 Imagen";
+    if(imagen) return "ðŸ“Ž Imagen";
     const t = String(texto || "").trim();
     if(!t) return "";
-    if(t.startsWith("TRANSFER_CARD:")) return "💳 Tarjeta de transferencia enviada";
+    if(t.startsWith("TRANSFER_CARD:")) return "ðŸ’³ Tarjeta de transferencia enviada";
     return t.length > 44 ? t.slice(0,44) + "..." : t;
   }
 
@@ -769,7 +769,7 @@ table{width:100%;border-collapse:collapse}th,td{padding:11px;border-bottom:1px s
 
     if(nuevos > 0 && silencioso){
       try{
-        toast(`💬 ${nuevos} mensaje/s nuevo/s de usuario`, "blue");
+        toast(`ðŸ’¬ ${nuevos} mensaje/s nuevo/s de usuario`, "blue");
         if(typeof sonidoNotificacion === "function") sonidoNotificacion();
       }catch(e){}
     }
@@ -818,8 +818,8 @@ table{width:100%;border-collapse:collapse}th,td{padding:11px;border-bottom:1px s
 
     setBox("chatTitulo", `
       <span>${escapeHtml(c.USUARIO || "Usuario")}</span>
-      <button class="chat-icon-btn" title="Copiar usuario" onclick="copiarTextoOperativo('${escapeAttr(c.USUARIO || "")}','Usuario')">📋</button>
-      <button class="chat-icon-btn" title="Info usuario" onclick="abrirInfoChatUsuario()">ℹ️</button>
+      <button class="chat-icon-btn" title="Copiar usuario" onclick="copiarTextoOperativo('${escapeAttr(c.USUARIO || "")}','Usuario')">ðŸ“‹</button>
+      <button class="chat-icon-btn" title="Info usuario" onclick="abrirInfoChatUsuario()">â„¹ï¸</button>
     `);
     setBox("chatSubtitulo", `${formatFecha(c.FECHA_ULTIMO || c.FECHA || "")}`);
     setBox("chatEstado", c.SOLICITUD_ID ? `Solicitud: ${escapeHtml(c.SOLICITUD_ID)}` : "-");
@@ -839,7 +839,7 @@ table{width:100%;border-collapse:collapse}th,td{padding:11px;border-bottom:1px s
         p_session_token: requireSessionToken(),
         p_chat_id: chatActualId
       });
-    }catch(e){ console.warn("No se pudo marcar leído backend:", e); }
+    }catch(e){ console.warn("No se pudo marcar leÃ­do backend:", e); }
 
     renderChatList();
     verificarChats(true);
@@ -850,7 +850,7 @@ table{width:100%;border-collapse:collapse}th,td{padding:11px;border-bottom:1px s
   window.cargarChatActual = async function(scroll=true){
     if(!chatActualId) return;
 
-    // Si está en Inicio u otra sección, NO cargamos/limpiamos el chat abierto anterior.
+    // Si estÃ¡ en Inicio u otra secciÃ³n, NO cargamos/limpiamos el chat abierto anterior.
     if(!isChatVisible()) return;
 
     const mensajes = await loadMensajesPc();
@@ -868,7 +868,7 @@ table{width:100%;border-collapse:collapse}th,td{padding:11px;border-bottom:1px s
     window.chatMensajes = chatMensajes = ms || [];
     renderChatMensajes();
 
-    // No limpia badge automáticamente acá. Solo abrirChat o enviarChat.
+    // No limpia badge automÃ¡ticamente acÃ¡. Solo abrirChat o enviarChat.
     renderChatList();
     verificarChats(true);
     renderInicio();
@@ -885,7 +885,7 @@ table{width:100%;border-collapse:collapse}th,td{padding:11px;border-bottom:1px s
     if(!body) return;
 
     if(!chatMensajes || !chatMensajes.length){
-      body.innerHTML = `<div class="alert-box">Sin mensajes todavía.</div>`;
+      body.innerHTML = `<div class="alert-box">Sin mensajes todavÃ­a.</div>`;
       return;
     }
 
@@ -932,10 +932,10 @@ table{width:100%;border-collapse:collapse}th,td{padding:11px;border-bottom:1px s
     setBox("statSolicitudesTotalPc",`Total PC: ${solicitudes.length}`);
     setBox("statChats",unread);
     setBox("statBilletera",bil.NOMBRE_VISIBLE||bil.BILLETERA_NOMBRE||"-");
-    setBox("statBilleteraTipo",bil.TIPO?`${bil.TIPO} · ${bil.PC||pcOperativa}`:"-");
+    setBox("statBilleteraTipo",bil.TIPO?`${bil.TIPO} Â· ${bil.PC||pcOperativa}`:"-");
     setBox("alertas",`
-      ${pendientes.length?`<div class="alert-box">🔔 Hay ${pendientes.length} solicitud/es pendiente/s.</div>`:""}
-      ${unread?`<div class="alert-box">💬 Hay ${unread} mensaje/s de chat sin leer.</div>`:""}
+      ${pendientes.length?`<div class="alert-box">ðŸ”” Hay ${pendientes.length} solicitud/es pendiente/s.</div>`:""}
+      ${unread?`<div class="alert-box">ðŸ’¬ Hay ${unread} mensaje/s de chat sin leer.</div>`:""}
     `);
     setBox("resumenTurnosOperativo",resumenTurnosOperativoHTML(solicitudes));
     setBox("tablaSolicitudesInicio",tablaSolicitudesHTML(pendientes.slice(0,40)));
@@ -950,10 +950,10 @@ table{width:100%;border-collapse:collapse}th,td{padding:11px;border-bottom:1px s
 
     abrirModal("Info del chat", `
       <div class="verify-box">
-        <div class="verify-title">👤 Usuario</div>
+        <div class="verify-title">ðŸ‘¤ Usuario</div>
         <div class="verify-grid">
           ${verifyRow("Usuario", c.USUARIO || "-", "", true)}
-          ${verifyRow("Teléfono", c.TELEFONO || "-", "", true)}
+          ${verifyRow("TelÃ©fono", c.TELEFONO || "-", "", true)}
           ${verifyRow("Nombre", c.NOMBRE_COMPLETO || "-", "", false)}
           ${verifyRow("PC", c.PC || pcOperativa || "-")}
           ${verifyRow("Solicitud", c.SOLICITUD_ID || "-")}
@@ -1009,7 +1009,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbwvZGRAOxBLNIQ52mlED6Zl
 const SUPABASE_URL = "https://pjvvyvfcwjoocjqvdror.supabase.co";
 const SUPABASE_KEY = "sb_publishable_NYqRoKptTgcL90VAVF2kqA_Gl06mEUF";
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-window.supabaseClient = supabaseClient; // FIX: permite que los módulos de Realtime usen el cliente global
+window.supabaseClient = supabaseClient; // FIX: permite que los mÃ³dulos de Realtime usen el cliente global
 
 let operador=null, pcOperativa=null, panelSessionToken="";
 const LS_OPERADOR="nodo_operador_lite";
@@ -1054,7 +1054,7 @@ async function validarSesionGuardada(token, pc){
   });
 
   if(error){
-    console.warn("Sesión guardada inválida:", error.message);
+    console.warn("SesiÃ³n guardada invÃ¡lida:", error.message);
     return false;
   }
 
@@ -1085,7 +1085,7 @@ async function validarSesionGuardada(token, pc){
 
 function requireSessionToken(){
   if(!panelSessionToken){
-    throw new Error("Sesión no iniciada. Volvé a ingresar.");
+    throw new Error("SesiÃ³n no iniciada. VolvÃ© a ingresar.");
   }
   return panelSessionToken;
 }
@@ -1113,7 +1113,7 @@ function formatFecha(fechaRaw){
       hour:"2-digit",
       minute:"2-digit",
       hour12:false
-    }).replace(",", " ·");
+    }).replace(",", " Â·");
 
   }catch(e){
     return String(fechaRaw || "");
@@ -1156,7 +1156,7 @@ async function api(data){
   Object.keys(data).forEach(k=>fd.append(k,data[k]??""));
   const res=await fetch(API_URL,{method:"POST",body:fd});
   const text=await res.text();
-  try{return JSON.parse(text)}catch(e){console.error(text);return{ok:false,error:"Respuesta inválida de API"}}
+  try{return JSON.parse(text)}catch(e){console.error(text);return{ok:false,error:"Respuesta invÃ¡lida de API"}}
 }
 
 
@@ -1221,7 +1221,7 @@ async function cargarSolicitudesSupabase(){
       solicitudes:(data || []).map(mapSolicitudSupabase)
     };
   }catch(e){
-    return { ok:false, error:e.message || "Sesión inválida" };
+    return { ok:false, error:e.message || "SesiÃ³n invÃ¡lida" };
   }
 }
 
@@ -1250,7 +1250,7 @@ function workerBadge(s){
 async function crearWorkerJobSolicitud(id){
   // Ya no se usa en el flujo nuevo.
   // panel_operativo_aprobar_solicitud aprueba y crea el job en una sola RPC.
-  return { ok:false, error:"Función reemplazada por panel_operativo_aprobar_solicitud." };
+  return { ok:false, error:"FunciÃ³n reemplazada por panel_operativo_aprobar_solicitud." };
 }
 
 async function cargarWorkerLogs(jobId){
@@ -1303,7 +1303,7 @@ async function abrirWorkerLogs(jobId){
     if(!error && data && data.length){
       logsHtml = data.map(l => `
         <div class="verify-box">
-          <div class="verify-title">${escapeHtml(l.nivel || l.tipo || "LOG")} · ${formatFecha(l.created_at || "")}</div>
+          <div class="verify-title">${escapeHtml(l.nivel || l.tipo || "LOG")} Â· ${formatFecha(l.created_at || "")}</div>
           <div class="small">${escapeHtml(l.mensaje || l.detalle || JSON.stringify(l))}</div>
         </div>
       `).join("");
@@ -1312,7 +1312,7 @@ async function abrirWorkerLogs(jobId){
 
   abrirModal("Logs del worker", `
     ${detalle || ""}
-    ${logsHtml || `<div class="alert-box">Todavía no hay logs detallados para este job. Se muestra el estado actual del job arriba.</div>`}
+    ${logsHtml || `<div class="alert-box">TodavÃ­a no hay logs detallados para este job. Se muestra el estado actual del job arriba.</div>`}
   `, async()=>cerrarModal(), "Cerrar");
 }
 
@@ -1337,9 +1337,9 @@ async function reintentarWorker(jobId){
 }
 
 async function actualizarSolicitudSupabase(id, cambios){
-  // Compatibilidad mínima. Las acciones sensibles se migraron a RPC específicas.
+  // Compatibilidad mÃ­nima. Las acciones sensibles se migraron a RPC especÃ­ficas.
   console.warn("actualizarSolicitudSupabase directo deshabilitado", id, cambios);
-  return { ok:false, error:"Acción directa deshabilitada. Usá RPC de panel." };
+  return { ok:false, error:"AcciÃ³n directa deshabilitada. UsÃ¡ RPC de panel." };
 }
 
 async function apiPostNoCors(data){
@@ -1391,7 +1391,7 @@ async function obtenerPcsDisponiblesOperador(op){
   const pcRaw = String(op.pc_codigo || op.pc || op.PC || "").trim();
 
   if(rol === "ADMIN" || rol === "ENCARGADO" || rol === "SUPERVISOR" || rol === "SUPERADMIN" || tipo === "FRANQUERO" || tipo === "FRAMQUERO"){
-    // Temporal: hasta migrar el catálogo de PCs a RPC de panel.
+    // Temporal: hasta migrar el catÃ¡logo de PCs a RPC de panel.
     return ["P1","P2","P3","P4","P5"];
   }
 
@@ -1407,11 +1407,11 @@ async function login(){
   const clave = val("loginClave").trim();
 
   if(!usuario || !clave){
-    setBox("loginMsg",`<div class="alert-box">Completá usuario y clave.</div>`);
+    setBox("loginMsg",`<div class="alert-box">CompletÃ¡ usuario y clave.</div>`);
     return;
   }
 
-  setBox("loginMsg",`<div class="alert-box">Ingresando con sesión segura...</div>`);
+  setBox("loginMsg",`<div class="alert-box">Ingresando con sesiÃ³n segura...</div>`);
 
   const { data, error } = await supabaseClient.rpc("panel_login", {
     p_usuario: usuario,
@@ -1527,8 +1527,8 @@ let supabaseSolicitudesChannel = null;
 
 function iniciarRealtimeSolicitudes(){
   // Blindaje RPC:
-  // Evitamos suscripciones directas a tablas públicas.
-  // El panel se actualiza por polling con RPC de sesión.
+  // Evitamos suscripciones directas a tablas pÃºblicas.
+  // El panel se actualiza por polling con RPC de sesiÃ³n.
   return;
 }
 
@@ -1582,7 +1582,7 @@ async function cargarSaldosOperativos(silencioso=true){
   });
 
   if(error){
-    console.warn("Saldos operativos no disponibles todavía:", error.message || error);
+    console.warn("Saldos operativos no disponibles todavÃ­a:", error.message || error);
     saldosOperativos = null;
     renderSaldosOperativos();
     return;
@@ -1605,7 +1605,7 @@ function renderSaldosOperativos(){
       <div class="balance-card">
         <div class="balance-title">Saldos operativos</div>
         <div class="balance-value">Pendiente</div>
-        <div class="balance-sub">Ejecutá el SQL de movimientos para ver fichas y saldos de billeteras en tiempo operativo.</div>
+        <div class="balance-sub">EjecutÃ¡ el SQL de movimientos para ver fichas y saldos de billeteras en tiempo operativo.</div>
       </div>
     `;
     return;
@@ -1616,9 +1616,9 @@ function renderSaldosOperativos(){
 
   let html = `
     <div class="balance-card fichas">
-      <div class="balance-title">Fichas agente · ${escapeHtml(pcOperativa || "")}</div>
+      <div class="balance-title">Fichas agente Â· ${escapeHtml(pcOperativa || "")}</div>
       <div class="balance-value">${money(fichas.saldo || 0)}</div>
-      <div class="balance-sub">Carga al usuario: resta fichas · Retiro: recupera fichas</div>
+      <div class="balance-sub">Carga al usuario: resta fichas Â· Retiro: recupera fichas</div>
     </div>
   `;
 
@@ -1627,7 +1627,7 @@ function renderSaldosOperativos(){
       <div class="balance-card wallet">
         <div class="balance-title">${escapeHtml(b.nombre_visible || b.nombre || "Billetera")}</div>
         <div class="balance-value">${money(b.saldo || 0)}</div>
-        <div class="balance-sub">${escapeHtml(b.banco || b.tipo || "")} · ${escapeHtml(b.titular || "")}<br>Alias: ${escapeHtml(b.alias || "-")}</div>
+        <div class="balance-sub">${escapeHtml(b.banco || b.tipo || "")} Â· ${escapeHtml(b.titular || "")}<br>Alias: ${escapeHtml(b.alias || "-")}</div>
       </div>
     `;
   });
@@ -1797,10 +1797,10 @@ function renderInicio(){
   setBox("statSolicitudesTotalPc",`Total PC: ${solicitudes.length}`);
   setBox("statChats",unread);
   setBox("statBilletera",bil.NOMBRE_VISIBLE||bil.BILLETERA_NOMBRE||"-");
-  setBox("statBilleteraTipo",bil.TIPO?`${bil.TIPO} · ${bil.PC||pcOperativa}`:"-");
+  setBox("statBilleteraTipo",bil.TIPO?`${bil.TIPO} Â· ${bil.PC||pcOperativa}`:"-");
   setBox("alertas",`
-    ${pendientes.length?`<div class="alert-box">🔔 Hay ${pendientes.length} solicitud/es pendiente/s.</div>`:""}
-    ${unread?`<div class="alert-box">💬 Hay ${unread} mensaje/s de chat sin leer.</div>`:""}
+    ${pendientes.length?`<div class="alert-box">ðŸ”” Hay ${pendientes.length} solicitud/es pendiente/s.</div>`:""}
+    ${unread?`<div class="alert-box">ðŸ’¬ Hay ${unread} mensaje/s de chat sin leer.</div>`:""}
   `);
   setBox("resumenTurnosOperativo",resumenTurnosOperativoHTML(solicitudes));
   setBox("tablaSolicitudesInicio",tablaSolicitudesHTML(pendientes.slice(0,40)));
@@ -1840,7 +1840,7 @@ function tablaSolicitudesHTML(lista){
     <th>Monto</th>
     <th>Estado</th>
     <th>Worker</th>
-    <th>Acción</th>
+    <th>AcciÃ³n</th>
   </tr></thead><tbody>`;
 
   lista.forEach(s=>{
@@ -1892,8 +1892,8 @@ function renderBilleteras(){
     const activa=normalizar(b.ACTIVA)==="SI";
     const seleccionada=normalizar(b.SELECCIONADA_MANUAL)==="SI";
     html+=`<div class="wallet-card ${activa?"ok":"paused"} ${seleccionada?"selected":""}">
-      <div class="wallet-name">💳 ${b.NOMBRE_VISIBLE||b.BILLETERA_NOMBRE||b.ID_BILLETERA}</div>
-      <div class="wallet-type">${b.TIPO||""} · ${b.PC||pcOperativa}</div>
+      <div class="wallet-name">ðŸ’³ ${b.NOMBRE_VISIBLE||b.BILLETERA_NOMBRE||b.ID_BILLETERA}</div>
+      <div class="wallet-type">${b.TIPO||""} Â· ${b.PC||pcOperativa}</div>
       <div style="margin-top:12px">
         ${activa?'<span class="badge badge-ok">ACTIVA</span>':'<span class="badge badge-danger">PAUSADA</span>'}
         ${seleccionada?'<span class="badge badge-blue">EN LANDING</span>':''}
@@ -1978,7 +1978,7 @@ function verifyRow(label, value, extraClass="", copiar=false){
 function renderDatosSolicitudModal(s){
   return `
     <div class="verify-box good">
-      <div class="verify-title">✅ Datos de la solicitud</div>
+      <div class="verify-title">âœ… Datos de la solicitud</div>
       <div class="verify-grid">
         ${verifyRow("Usuario", s.USUARIO || s.USUARIO_JUGADOR || "-")}
         ${verifyRow("Nombre completo", s.NOMBRE_COMPLETO || "-")}
@@ -1987,7 +1987,7 @@ function renderDatosSolicitudModal(s){
         ${verifyRow("Tipo", normalizar(s.TIPO_SOLICITUD || s.TIPO))}
         ${verifyRow("Monto solicitado", money(s.MONTO_DECLARADO || s.MONTO_REAL || 0), "big")}
         ${verifyRow("Referencia pago", s.REFERENCIA_PAGO || "-")}
-        ${verifyRow("Validación Agentes", s.USUARIO_VALIDADO_AGENTES ? "Usuario validado ✅" : "Sin validación")}
+        ${verifyRow("ValidaciÃ³n Agentes", s.USUARIO_VALIDADO_AGENTES ? "Usuario validado âœ…" : "Sin validaciÃ³n")}
         ${verifyRow("Fecha", formatFecha(s.FECHA_CREACION || s.FECHA))}
       </div>
     </div>
@@ -2001,9 +2001,9 @@ function renderBilleteraVerificacionModal(s){
   if(!b){
     return `
       <div class="verify-box warn">
-        <div class="verify-title">💳 Billetera indicada por la landing</div>
+        <div class="verify-title">ðŸ’³ Billetera indicada por la landing</div>
         <div class="alert-box">
-          No pude cruzar esta solicitud con una billetera cargada en el panel. Verificá manualmente el nombre mostrado.
+          No pude cruzar esta solicitud con una billetera cargada en el panel. VerificÃ¡ manualmente el nombre mostrado.
         </div>
         <div class="verify-grid">
           ${verifyRow("Billetera", nombreLanding)}
@@ -2015,14 +2015,14 @@ function renderBilleteraVerificacionModal(s){
 
   return `
     <div class="verify-box">
-      <div class="verify-title">💳 Billetera a verificar</div>
+      <div class="verify-title">ðŸ’³ Billetera a verificar</div>
       <div class="verify-grid">
         ${verifyRow("Nombre visible", b.NOMBRE_VISIBLE || b.BILLETERA_NOMBRE || nombreLanding)}
         ${verifyRow("Titular", b.TITULAR || "-")}
         ${verifyRow("Alias", b.ALIAS || "-")}
         ${verifyRow("CBU / CVU", b.CVU_CBU || "-")}
         ${verifyRow("Banco / Tipo", b.TIPO || "-")}
-        ${verifyRow("Estado", `${b.ACTIVA || "-"} · ${b.ESTADO || "-"}`)}
+        ${verifyRow("Estado", `${b.ACTIVA || "-"} Â· ${b.ESTADO || "-"}`)}
       </div>
     </div>
   `;
@@ -2031,13 +2031,13 @@ function renderBilleteraVerificacionModal(s){
 function renderDestinoRetiroModal(s){
   return `
     <div class="verify-box">
-      <div class="verify-title">🏦 Destino del retiro</div>
+      <div class="verify-title">ðŸ¦ Destino del retiro</div>
       <div class="verify-grid">
         ${verifyRow("Alias / CBU / CVU destino", s.RETIRO_ALIAS_CBU || "-", "", true)}
         ${verifyRow("Titular destino", s.RETIRO_TITULAR || "-", "", true)}
         ${verifyRow("Monto solicitado", money(s.MONTO_DECLARADO || s.MONTO_REAL || 0), "big")}
         ${verifyRow("Cuenta retiro", s.RETIRO_CUENTA_ESTADO || "-")}
-        ${verifyRow("Requiere revisión", s.RETIRO_REQUIERE_REVISION ? "Sí" : "No")}
+        ${verifyRow("Requiere revisiÃ³n", s.RETIRO_REQUIERE_REVISION ? "SÃ­" : "No")}
         ${verifyRow("Antifraude", s.ANTIFRAUDE_ESTADO || "-")}
         ${verifyRow("Usuario", s.USUARIO || s.USUARIO_JUGADOR || "-")}
       </div>
@@ -2056,9 +2056,9 @@ function abrirAprobarSolicitud(id){
     ${renderBilleteraVerificacionModal(s)}
 
     <div class="alert-box">
-      <b>Verificación manual:</b><br>
-      Buscá el movimiento recibido en la billetera usando titular, alias/CBU y monto solicitado. 
-      Si el importe real coincide, confirmá el monto y enviá al worker.
+      <b>VerificaciÃ³n manual:</b><br>
+      BuscÃ¡ el movimiento recibido en la billetera usando titular, alias/CBU y monto solicitado. 
+      Si el importe real coincide, confirmÃ¡ el monto y enviÃ¡ al worker.
     </div>
 
     <label>Monto real a cargar</label>
@@ -2068,7 +2068,7 @@ function abrirAprobarSolicitud(id){
     <textarea id="apObs" placeholder="Ej: comprobado en MP / titular coincide / ajuste de monto"></textarea>
 
     <div class="alert-box">
-      Al aprobar, la solicitud NO se acredita todavía. Se enviará a la cola del worker para que el robot cargue en Agentes.
+      Al aprobar, la solicitud NO se acredita todavÃ­a. Se enviarÃ¡ a la cola del worker para que el robot cargue en Agentes.
     </div>
   `,async()=>{
 
@@ -2077,7 +2077,7 @@ function abrirAprobarSolicitud(id){
     const montoFinal = Number(val("apMonto") || s.MONTO_DECLARADO || 0);
 
     if(!montoFinal || montoFinal <= 0){
-      alert("Ingresá un monto real válido antes de enviar al worker.");
+      alert("IngresÃ¡ un monto real vÃ¡lido antes de enviar al worker.");
       return;
     }
 
@@ -2113,10 +2113,10 @@ function cuentaRetiroAccionesHtml(s){
 
   return `
     <div class="verify-box warn">
-      <div class="verify-title">🛡️ Control cuenta de retiro</div>
+      <div class="verify-title">ðŸ›¡ï¸ Control cuenta de retiro</div>
       <div class="alert-box">
         Estado actual: <b>${escapeHtml(s.RETIRO_CUENTA_ESTADO || "Sin estado")}</b><br>
-        Si los datos coinciden con el criterio operativo, podés marcar esta cuenta como verificada.
+        Si los datos coinciden con el criterio operativo, podÃ©s marcar esta cuenta como verificada.
       </div>
       <div class="row-actions">
         ${puedeVerificar ? `<button class="mini-btn green" type="button" onclick="verificarCuentaRetiro('${s.CUENTA_RETIRO_ID}')">Verificar cuenta</button>` : ""}
@@ -2127,7 +2127,7 @@ function cuentaRetiroAccionesHtml(s){
 }
 
 async function verificarCuentaRetiro(cuentaId){
-  if(!confirm("¿Marcar esta cuenta de retiro como VERIFICADA?")) return;
+  if(!confirm("Â¿Marcar esta cuenta de retiro como VERIFICADA?")) return;
   const operadorNombre = operador?.usuario || operador?.nombre || "";
 
   const { data, error } = await supabaseClient.rpc("panel_retiro_verificar_cuenta", {
@@ -2146,7 +2146,7 @@ async function verificarCuentaRetiro(cuentaId){
 }
 
 async function bloquearCuentaRetiro(cuentaId){
-  const motivo = prompt("Motivo del bloqueo:", "Datos no coinciden / requiere revisión");
+  const motivo = prompt("Motivo del bloqueo:", "Datos no coinciden / requiere revisiÃ³n");
   if(motivo === null) return;
 
   const operadorNombre = operador?.usuario || operador?.nombre || "";
@@ -2180,7 +2180,7 @@ function abrirCerrarRetiro(id){
 
     <div class="alert-box">
       <b>Datos de cuenta para pagar el retiro</b><br>
-      Revisá estos datos antes de aprobar. El worker retira fichas en Agentes; el pago al CBU/alias se realiza manualmente.
+      RevisÃ¡ estos datos antes de aprobar. El worker retira fichas en Agentes; el pago al CBU/alias se realiza manualmente.
     </div>
 
     <label>CBU / CVU / Alias de destino</label>
@@ -2202,14 +2202,14 @@ function abrirCerrarRetiro(id){
     <textarea id="retObs" placeholder="Ej: datos verificados / pago pendiente / diferencia consultada"></textarea>
 
     <div class="alert-box">
-      Al aprobar, el retiro NO queda pagado todavía. Se enviará a la cola del worker para que el robot procese en Agentes.
+      Al aprobar, el retiro NO queda pagado todavÃ­a. Se enviarÃ¡ a la cola del worker para que el robot procese en Agentes.
     </div>
   `,async()=>{
 
     const operadorNombre = operador?.usuario || operador?.nombre || "";
 
     if(String(s.RETIRO_CUENTA_ESTADO || "").toUpperCase() === "BLOQUEADA"){
-      alert("La cuenta de retiro está BLOQUEADA. No se puede aprobar este retiro.");
+      alert("La cuenta de retiro estÃ¡ BLOQUEADA. No se puede aprobar este retiro.");
       return;
     }
 
@@ -2226,7 +2226,7 @@ function abrirCerrarRetiro(id){
     const montoFinal = Number(val("retMonto") || s.MONTO_DECLARADO || 0);
 
     if(!montoFinal || montoFinal <= 0){
-      alert("Ingresá un monto final válido antes de enviar al worker.");
+      alert("IngresÃ¡ un monto final vÃ¡lido antes de enviar al worker.");
       return;
     }
 
@@ -2279,11 +2279,11 @@ function abrirRechazarSolicitud(id){
 
 async function seleccionarBilletera(id){
   if(!id){
-    alert("Billetera inválida.");
+    alert("Billetera invÃ¡lida.");
     return;
   }
 
-  if(!confirm("¿Poner esta billetera en landing para la PC actual?")) return;
+  if(!confirm("Â¿Poner esta billetera en landing para la PC actual?")) return;
 
   const { data, error } = await supabaseClient.rpc("panel_operativo_seleccionar_billetera", {
     p_session_token: requireSessionToken(),
@@ -2301,14 +2301,14 @@ async function seleccionarBilletera(id){
 
 async function cambiarEstadoBilletera(id, activa){
   if(!id){
-    alert("Billetera inválida.");
+    alert("Billetera invÃ¡lida.");
     return;
   }
 
   const esActiva = String(activa || "").toUpperCase() === "SI" || activa === true;
   const accion = esActiva ? "activar" : "pausar";
 
-  if(!confirm(`¿Querés ${accion} esta billetera?`)) return;
+  if(!confirm(`Â¿QuerÃ©s ${accion} esta billetera?`)) return;
 
   const { data, error } = await supabaseClient.rpc("panel_operativo_cambiar_estado_billetera", {
     p_session_token: requireSessionToken(),
@@ -2345,10 +2345,10 @@ function renderChatList(){
         <span>${escapeHtml(usuario)}</span>
         ${unread?`<span class="chat-unread">${unread}</span>`:""}
       </div>
-      <div class="small">${escapeHtml(c.NOMBRE_COMPLETO||"")} ${c.TELEFONO ? "· "+escapeHtml(c.TELEFONO) : ""}</div>
+      <div class="small">${escapeHtml(c.NOMBRE_COMPLETO||"")} ${c.TELEFONO ? "Â· "+escapeHtml(c.TELEFONO) : ""}</div>
       <div class="small">${formatFecha(c.FECHA_ULTIMO||c.FECHA||"")}</div>
       <div class="chat-user-row">
-        <div class="small ${preview.startsWith("📄") ? "chat-preview-transfer" : ""}">${escapeHtml(preview)}</div>
+        <div class="small ${preview.startsWith("ðŸ“„") ? "chat-preview-transfer" : ""}">${escapeHtml(preview)}</div>
         <button class="chat-copy-btn" onclick="event.stopPropagation();copiarTextoOperativo('${escapeAttr(usuario)}','Usuario')">Copiar usuario</button>
       </div>
     </div>`;
@@ -2391,13 +2391,13 @@ function parseTransferCardMessage(text){
   const raw = String(text || "").trim();
   if(!raw.startsWith(TRANSFER_CARD_PREFIX)) return null;
   try{return JSON.parse(raw.slice(TRANSFER_CARD_PREFIX.length));}
-  catch(e){console.warn("Tarjeta inválida", e);return null;}
+  catch(e){console.warn("Tarjeta invÃ¡lida", e);return null;}
 }
 
 
 function resumenMensajeChatPreview(texto, imagenUrl=""){
   const card = parseTransferCardMessage(texto || "");
-  if(card) return "📄 Tarjeta de transferencia enviada";
+  if(card) return "ðŸ“„ Tarjeta de transferencia enviada";
   if(texto) return texto;
   if(imagenUrl) return "Imagen adjunta";
   return "";
@@ -2411,7 +2411,7 @@ function billeterasDisponiblesChat(){
     const pcOk = String(b.PC || "").trim().toUpperCase() === String(pcOperativa || "").trim().toUpperCase();
     const activaOk = normalizar(b.ACTIVA) === "SI" || b.activa === true;
     const estado = normalizar(b.ESTADO || b.estado || "ACTIVA");
-    const estadoOk = !["CAIDA", "CAÍDA", "PAUSADA", "INACTIVA", "BAJA", "NO"].includes(estado);
+    const estadoOk = !["CAIDA", "CAÃDA", "PAUSADA", "INACTIVA", "BAJA", "NO"].includes(estado);
     const tieneDato = String(b.ALIAS || b.CVU_CBU || "").trim() !== "";
 
     return pcOk && activaOk && estadoOk && tieneDato;
@@ -2430,7 +2430,7 @@ function renderWalletSelectChat(){
   }
 
   sel.innerHTML = '<option value="">Elegir billetera disponible...</option>' + disponibles.map(b=>{
-    const nombre = `${b.NOMBRE_VISIBLE || b.BILLETERA_NOMBRE || b.ID_BILLETERA} · ${b.TIPO || "Billetera"} · ${b.ALIAS || b.CVU_CBU || ""}`;
+    const nombre = `${b.NOMBRE_VISIBLE || b.BILLETERA_NOMBRE || b.ID_BILLETERA} Â· ${b.TIPO || "Billetera"} Â· ${b.ALIAS || b.CVU_CBU || ""}`;
     return `<option value="${escapeAttr(b.ID_BILLETERA)}">${escapeHtml(nombre)}</option>`;
   }).join("");
 }
@@ -2441,7 +2441,7 @@ function escapeAttr(text){
 
 async function enviarTarjetaTransferencia(){
   if(!chatActualId){
-    alert("Seleccioná un chat primero.");
+    alert("SeleccionÃ¡ un chat primero.");
     return;
   }
 
@@ -2449,7 +2449,7 @@ async function enviarTarjetaTransferencia(){
   const wallet = getWalletById(id);
 
   if(!wallet){
-    alert("Seleccioná una billetera.");
+    alert("SeleccionÃ¡ una billetera.");
     return;
   }
 
@@ -2524,11 +2524,11 @@ function renderChatMensajes(){
 
   const usuarioChat = chat.USUARIO || "Chat landing";
   setBox("chatTitulo",`${escapeHtml(usuarioChat)} <button class="chat-copy-btn" onclick="copiarTextoOperativo('${escapeAttr(usuarioChat)}','Usuario')">Copiar usuario</button>`);
-  setBox("chatSubtitulo",`${chat.NOMBRE_COMPLETO||""} ${chat.TELEFONO? "· "+chat.TELEFONO:""}`);
+  setBox("chatSubtitulo",`${chat.NOMBRE_COMPLETO||""} ${chat.TELEFONO? "Â· "+chat.TELEFONO:""}`);
   setBox("chatEstado",chat.SOLICITUD_ID?`Solicitud: ${chat.SOLICITUD_ID}`:"Sin solicitud");
 
   if(!chatMensajes.length){
-    setBox("chatBody",`<div class="alert-box">Sin mensajes todavía.</div>`);
+    setBox("chatBody",`<div class="alert-box">Sin mensajes todavÃ­a.</div>`);
     return;
   }
 
@@ -2547,7 +2547,7 @@ function renderChatMensajes(){
         ${card ? renderTransferCardChat(card) : escapeHtml(mensaje)}
         ${imagen?`<img src="${normalizarImagenUrl(imagen)}" alt="Imagen">`:""}
       </div>
-      <div class="chat-meta">${esUser?"Usuario":"Operador"} · ${formatFecha(fecha)}</div>
+      <div class="chat-meta">${esUser?"Usuario":"Operador"} Â· ${formatFecha(fecha)}</div>
     </div>`;
   });
 
@@ -2557,7 +2557,7 @@ function renderChatMensajes(){
 }
 async function enviarChat(){
   if(!chatActualId){
-    alert("Seleccioná un chat primero.");
+    alert("SeleccionÃ¡ un chat primero.");
     return;
   }
 
@@ -2598,7 +2598,7 @@ function agregarMensajeLocalPanel(mensaje, imagen){
         ${card ? renderTransferCardChat(card) : escapeHtml(mensaje || "")}
         ${imagen ? `<img src="${imagen}" alt="Imagen">` : ""}
       </div>
-      <div class="chat-meta">Operador · enviando...</div>
+      <div class="chat-meta">Operador Â· enviando...</div>
     </div>
   `);
   box.scrollTop = box.scrollHeight;
@@ -2606,7 +2606,7 @@ function agregarMensajeLocalPanel(mensaje, imagen){
 function marcarUltimoMensajePanelEnviado(){
   const metas = document.querySelectorAll("#chatBody .chat-msg.op .chat-meta");
   const last = metas[metas.length - 1];
-  if(last && last.innerText.includes("enviando")) last.innerText = "Operador · enviado";
+  if(last && last.innerText.includes("enviando")) last.innerText = "Operador Â· enviado";
 }
 function tomarImagenChatFile(){
   const file=document.getElementById("chatFile").files[0];
@@ -2614,7 +2614,7 @@ function tomarImagenChatFile(){
 }
 function leerImagenChat(file){
   if(!file.type.startsWith("image/")){
-    alert("Pegá o adjuntá una imagen válida.");
+    alert("PegÃ¡ o adjuntÃ¡ una imagen vÃ¡lida.");
     return;
   }
 
@@ -2658,7 +2658,7 @@ function verificarSolicitudes(silencioso=false){
   if(pendientes.length){badge.classList.remove("hidden");badge.innerText=pendientes.length}else badge.classList.add("hidden");
   let nuevas=0;ids.forEach(id=>{if(!lastPendientesIds.has(id))nuevas++});
   if(!silencioso||lastPendientesIds.size===0){lastPendientesIds=ids;return}
-  if(nuevas>0){toast(`🔔 ${nuevas} nueva/s solicitud/es`);sonido("solicitud")}
+  if(nuevas>0){toast(`ðŸ”” ${nuevas} nueva/s solicitud/es`);sonido("solicitud")}
   lastPendientesIds=ids;
 }
 function verificarChats(silencioso=false){
@@ -2673,7 +2673,7 @@ function verificarChats(silencioso=false){
   }
 
   if(silencioso && unread>lastChatUnread){
-    toast("💬 Nuevo mensaje de chat");
+    toast("ðŸ’¬ Nuevo mensaje de chat");
     sonido("chat");
   }
 
@@ -2731,7 +2731,7 @@ function renderWalletSelectWorkerManual(){
   lista.forEach(b=>{
     const id = b.ID_BILLETERA || b.id || "";
     const nombre = b.NOMBRE_VISIBLE || b.BILLETERA_NOMBRE || "Billetera";
-    html += `<option value="${escapeAttr(id)}">${escapeHtml(nombre)} · ${escapeHtml(b.TIPO || "")} · ${escapeHtml(b.TITULAR || "")}</option>`;
+    html += `<option value="${escapeAttr(id)}">${escapeHtml(nombre)} Â· ${escapeHtml(b.TIPO || "")} Â· ${escapeHtml(b.TITULAR || "")}</option>`;
   });
   sel.innerHTML = html;
 }
@@ -2756,9 +2756,9 @@ function workerEstadoBadge(e){
 
 function workerResultadoClase(resultado){
   const t = normalizar(resultado || "");
-  if(t.includes("ALERTA") || t.includes("⚠")) return "warn";
+  if(t.includes("ALERTA") || t.includes("âš ")) return "warn";
   if(t.includes("ERROR") || t.includes("BLOQUEADO") || t.includes("RECHAZ")) return "danger";
-  if(t.includes("OK") || t.includes("✅")) return "ok";
+  if(t.includes("OK") || t.includes("âœ…")) return "ok";
   return "";
 }
 
@@ -2816,17 +2816,17 @@ async function crearWorkerJobManualDesdePanel(){
   const billetera = getWalletById(billeteraId);
 
   if(!usuario){
-    setBox("manualWorkerResultado", `<div class="err-box">Ingresá un usuario.</div>`);
+    setBox("manualWorkerResultado", `<div class="err-box">IngresÃ¡ un usuario.</div>`);
     return;
   }
 
   if(tipo !== "VALIDAR_USUARIO" && (!monto || monto <= 0)){
-    setBox("manualWorkerResultado", `<div class="err-box">Ingresá un monto válido.</div>`);
+    setBox("manualWorkerResultado", `<div class="err-box">IngresÃ¡ un monto vÃ¡lido.</div>`);
     return;
   }
 
   if(tipo !== "VALIDAR_USUARIO" && !billeteraId){
-    setBox("manualWorkerResultado", `<div class="err-box">Seleccioná la billetera que impacta esta operación.</div>`);
+    setBox("manualWorkerResultado", `<div class="err-box">SeleccionÃ¡ la billetera que impacta esta operaciÃ³n.</div>`);
     return;
   }
 
@@ -2961,13 +2961,13 @@ function renderWorkerJobs(){
 function abrirDetalleWorkerJob(jobId){
   const j = (workerJobs || []).find(x => String(x.id) === String(jobId));
   if(!j){
-    alert("No encontré el job en memoria. Actualizá worker.");
+    alert("No encontrÃ© el job en memoria. ActualizÃ¡ worker.");
     return;
   }
 
   abrirModal("Detalle worker #" + jobId, `
     <div class="verify-box">
-      <div class="verify-title">⚙️ Job del worker</div>
+      <div class="verify-title">âš™ï¸ Job del worker</div>
       <div class="verify-grid">
         ${verifyRow("Job", "#" + (j.id || "-"))}
         ${verifyRow("Solicitud", j.solicitud_id || "-")}
@@ -2987,7 +2987,7 @@ function abrirDetalleWorkerJob(jobId){
 }
 
 async function workerPanelReintentarJob(jobId){
-  if(!confirm("¿Reintentar job #" + jobId + "?")) return;
+  if(!confirm("Â¿Reintentar job #" + jobId + "?")) return;
 
   const { data, error } = await supabaseClient.rpc("admin_reintentar_worker_job", {
     p_job_id: Number(jobId)
@@ -3010,7 +3010,7 @@ async function workerPanelReintentarJob(jobId){
 }
 
 async function workerPanelCancelarJob(jobId){
-  const motivo = prompt("Motivo de cancelación:", "Cancelado desde panel operativo");
+  const motivo = prompt("Motivo de cancelaciÃ³n:", "Cancelado desde panel operativo");
   if(motivo === null) return;
 
   const { data, error } = await supabaseClient.rpc("admin_cancelar_worker_job", {
@@ -3035,12 +3035,12 @@ async function workerPanelCancelarJob(jobId){
 }
 
 async function workerPanelManualJob(jobId){
-  const motivo = prompt("Motivo para revisión manual:", "Requiere revisión manual desde panel operativo");
+  const motivo = prompt("Motivo para revisiÃ³n manual:", "Requiere revisiÃ³n manual desde panel operativo");
   if(motivo === null) return;
 
   const { data, error } = await supabaseClient.rpc("admin_marcar_worker_manual", {
     p_job_id: Number(jobId),
-    p_motivo: motivo || "Requiere revisión manual desde panel operativo"
+    p_motivo: motivo || "Requiere revisiÃ³n manual desde panel operativo"
   });
 
   if(error){
@@ -3066,7 +3066,7 @@ function verSolicitudInicio(id){
   const s = (solicitudes || []).find(x => String(x.ID || x.SOLICITUD_ID) === String(id));
 
   if(!s){
-    alert("No encontré la solicitud.");
+    alert("No encontrÃ© la solicitud.");
     return;
   }
 
@@ -3102,7 +3102,7 @@ function renderOpsKpis(){
   const bs=saldosOperativos?.billeteras||[];
   const total=bs.reduce((a,b)=>a+Number(b.saldo||0),0);
   setBox("opsKpis",`
-    <div class="ops-kpi"><div class="ops-kpi-title">Fichas agente</div><div class="ops-kpi-value">${money(fichas)}</div><div class="ops-kpi-sub">Carga resta · retiro suma</div></div>
+    <div class="ops-kpi"><div class="ops-kpi-title">Fichas agente</div><div class="ops-kpi-value">${money(fichas)}</div><div class="ops-kpi-sub">Carga resta Â· retiro suma</div></div>
     <div class="ops-kpi"><div class="ops-kpi-title">Total billeteras</div><div class="ops-kpi-value">${money(total)}</div><div class="ops-kpi-sub">${bs.length} billetera/s PC ${escapeHtml(pcOperativa||"")}</div></div>
     <div class="ops-kpi"><div class="ops-kpi-title">Pendientes landing</div><div class="ops-kpi-value">${pendientes.length}</div><div class="ops-kpi-sub">Solicitudes sin cerrar</div></div>
     <div class="ops-kpi"><div class="ops-kpi-title">Worker activo</div><div class="ops-kpi-value">${activos.length}</div><div class="ops-kpi-sub">${errores.length} error/reintento/manual</div></div>
@@ -3110,8 +3110,8 @@ function renderOpsKpis(){
 }
 function renderOpsWallets(){
   const lista=saldosOperativos?.billeteras||[];
-  if(!lista.length){setBox("opsWalletStrip",`<div class="ops-wallet"><div class="ops-wallet-name">Billeteras</div><div class="ops-wallet-meta">Sin saldos cargados todavía.</div></div>`);return;}
-  setBox("opsWalletStrip",lista.map(b=>`<div class="ops-wallet"><div class="ops-wallet-name">${escapeHtml(b.nombre_visible||"Billetera")}</div><div class="ops-wallet-saldo">${money(b.saldo||0)}</div><div class="ops-wallet-meta">${escapeHtml(b.banco||"")} · ${escapeHtml(b.titular||"")}<br>Alias: ${escapeHtml(b.alias||"-")}</div><div class="ops-wallet-actions"><button class="mini-btn gray" onclick="copiarTextoOperativo('${escapeAttr(b.alias||"")}','Alias')">Alias</button><button class="mini-btn gray" onclick="copiarTextoOperativo('${escapeAttr(b.cbu||"")}','CBU/CVU')">CBU</button><button class="mini-btn yellow" onclick="abrirAjusteBilletera('${escapeAttr(b.id)}')">Ajustar</button></div></div>`).join(""));
+  if(!lista.length){setBox("opsWalletStrip",`<div class="ops-wallet"><div class="ops-wallet-name">Billeteras</div><div class="ops-wallet-meta">Sin saldos cargados todavÃ­a.</div></div>`);return;}
+  setBox("opsWalletStrip",lista.map(b=>`<div class="ops-wallet"><div class="ops-wallet-name">${escapeHtml(b.nombre_visible||"Billetera")}</div><div class="ops-wallet-saldo">${money(b.saldo||0)}</div><div class="ops-wallet-meta">${escapeHtml(b.banco||"")} Â· ${escapeHtml(b.titular||"")}<br>Alias: ${escapeHtml(b.alias||"-")}</div><div class="ops-wallet-actions"><button class="mini-btn gray" onclick="copiarTextoOperativo('${escapeAttr(b.alias||"")}','Alias')">Alias</button><button class="mini-btn gray" onclick="copiarTextoOperativo('${escapeAttr(b.cbu||"")}','CBU/CVU')">CBU</button><button class="mini-btn yellow" onclick="abrirAjusteBilletera('${escapeAttr(b.id)}')">Ajustar</button></div></div>`).join(""));
 }
 function renderColaUnificada(){
   const texto = normalizar(val("opsFiltroTexto"));
@@ -3235,10 +3235,10 @@ function renderColaUnificada(){
   h += `</tbody></table></div>`;
   setBox("opsColaUnificada", h);
 }
-function renderWalletSelectWorkerInicio(){const sel=document.getElementById("manualWorkerBilleteraInicio");if(!sel)return;const tipo=val("manualWorkerTipoInicio");const lista=saldosOperativos?.billeteras||[];sel.innerHTML=`<option value="">${tipo==="VALIDAR_USUARIO"?"No aplica para validar":"Seleccionar billetera"}</option>`+lista.map(b=>`<option value="${escapeAttr(b.id)}">${escapeHtml(b.nombre_visible||"Billetera")} · ${escapeHtml(b.banco||"")} · ${money(b.saldo||0)}</option>`).join("");}
+function renderWalletSelectWorkerInicio(){const sel=document.getElementById("manualWorkerBilleteraInicio");if(!sel)return;const tipo=val("manualWorkerTipoInicio");const lista=saldosOperativos?.billeteras||[];sel.innerHTML=`<option value="">${tipo==="VALIDAR_USUARIO"?"No aplica para validar":"Seleccionar billetera"}</option>`+lista.map(b=>`<option value="${escapeAttr(b.id)}">${escapeHtml(b.nombre_visible||"Billetera")} Â· ${escapeHtml(b.banco||"")} Â· ${money(b.saldo||0)}</option>`).join("");}
 function ajustarMontoWorkerManualInicio(){const tipo=val("manualWorkerTipoInicio"),m=document.getElementById("manualWorkerMontoInicio"),w=document.getElementById("manualWorkerBilleteraInicio");if(tipo==="VALIDAR_USUARIO"){if(m){m.value="0";m.disabled=true}if(w){w.value="";w.disabled=true}}else{if(m)m.disabled=false;if(w)w.disabled=false}renderWalletSelectWorkerInicio();}
 async function crearWorkerJobManualInicio(){document.getElementById("manualWorkerUsuario").value=val("manualWorkerUsuarioInicio");document.getElementById("manualWorkerTipo").value=val("manualWorkerTipoInicio");document.getElementById("manualWorkerMonto").value=val("manualWorkerMontoInicio");document.getElementById("manualWorkerBilletera").value=val("manualWorkerBilleteraInicio");document.getElementById("manualWorkerObs").value=val("manualWorkerObsInicio");await crearWorkerJobManualDesdePanel();setBox("manualWorkerResultadoInicio",document.getElementById("manualWorkerResultado")?.innerHTML||"");await refrescarTodo(false);}
-function renderSelectsAjustes(){const sel=document.getElementById("ajusteBilleteraId");if(!sel)return;sel.innerHTML=(saldosOperativos?.billeteras||[]).map(b=>`<option value="${escapeAttr(b.id)}">${escapeHtml(b.nombre_visible||"Billetera")} · ${money(b.saldo||0)}</option>`).join("");}
+function renderSelectsAjustes(){const sel=document.getElementById("ajusteBilleteraId");if(!sel)return;sel.innerHTML=(saldosOperativos?.billeteras||[]).map(b=>`<option value="${escapeAttr(b.id)}">${escapeHtml(b.nombre_visible||"Billetera")} Â· ${money(b.saldo||0)}</option>`).join("");}
 function abrirAjusteFichas(){mostrarVista("ajustes");setTimeout(()=>document.getElementById("ajusteFichasMonto")?.focus(),100)}
 function abrirAjusteBilletera(id=""){mostrarVista("ajustes");setTimeout(()=>{if(id)document.getElementById("ajusteBilleteraId").value=id;document.getElementById("ajusteBilleteraMonto")?.focus()},100)}
 async function guardarAjusteFichas(){const monto=Number(val("ajusteFichasMonto")||0),signo=Number(val("ajusteFichasSigno")||0),motivo=val("ajusteFichasMotivo").trim(),usuario=val("ajusteFichasUsuario").trim();if(!monto||monto<=0||!motivo){setBox("ajusteFichasResultado",`<div class="err-box">Monto y motivo son obligatorios.</div>`);return;}const {error}=await supabaseClient.rpc("admin_registrar_fichas_movimiento",{p_session_token:requireSessionToken(),p_pc_codigo:pcOperativa,p_tipo_movimiento:signo===1?"AJUSTE_FICHAS_POSITIVO":"AJUSTE_FICHAS_NEGATIVO",p_monto:monto,p_signo:signo,p_motivo:motivo,p_origen:"PANEL_OPERATIVO_AJUSTE",p_usuario:usuario||null,p_solicitud_id:null,p_worker_job_id:null});if(error){setBox("ajusteFichasResultado",`<div class="err-box">${escapeHtml(error.message)}</div>`);return;}setBox("ajusteFichasResultado",`<div class="ok-box">Ajuste guardado.</div>`);await cargarSaldosOperativos(true);renderCentroOperativo();}
@@ -3281,7 +3281,7 @@ function transferCardTextoHumano(card){
   const cbu = card.cbu || card.CVU_CBU || card.CBU || "Consultar";
   const banco = card.banco || card.TIPO || card.BANCO || "Billetera";
 
-  return `💳 Datos para transferir
+  return `ðŸ’³ Datos para transferir
 
 Billetera: ${nombre}
 Titular: ${titular}
@@ -3289,7 +3289,7 @@ Alias: ${alias}
 CBU/CVU: ${cbu}
 Banco: ${banco}
 
-Cuando realices la transferencia, enviá el comprobante por acá.`;
+Cuando realices la transferencia, enviÃ¡ el comprobante por acÃ¡.`;
 }
 
 function renderTransferCardChat(card){
@@ -3301,7 +3301,7 @@ function renderTransferCardChat(card){
 
   if(!w){
     return `<div class="transfer-chat-card clean">
-      <div class="transfer-chat-title">💳 Datos de transferencia</div>
+      <div class="transfer-chat-title">ðŸ’³ Datos de transferencia</div>
       <div class="transfer-chat-row"><div class="transfer-chat-value">${escapeHtml(String(card || ""))}</div></div>
     </div>`;
   }
@@ -3314,12 +3314,12 @@ function renderTransferCardChat(card){
   const pc = w.pc_codigo || w.PC || "";
 
   return `<div class="transfer-chat-card clean">
-    <div class="transfer-chat-title">💳 ${escapeHtml(nombre)}</div>
+    <div class="transfer-chat-title">ðŸ’³ ${escapeHtml(nombre)}</div>
     <div class="transfer-chat-row"><div class="transfer-chat-label">Alias</div><div class="transfer-chat-value">${escapeHtml(alias)}</div></div>
     <div class="transfer-chat-row"><div class="transfer-chat-label">CBU / CVU</div><div class="transfer-chat-value">${escapeHtml(cbu)}</div></div>
     <div class="transfer-chat-row"><div class="transfer-chat-label">Titular</div><div class="transfer-chat-value">${escapeHtml(titular)}</div></div>
-    <div class="transfer-chat-row"><div class="transfer-chat-label">Banco</div><div class="transfer-chat-value">${escapeHtml(banco)} ${pc ? `· PC ${escapeHtml(pc)}` : ""}</div></div>
-    <div class="transfer-chat-note">Cuando realices la transferencia, enviá el comprobante por acá.</div>
+    <div class="transfer-chat-row"><div class="transfer-chat-label">Banco</div><div class="transfer-chat-value">${escapeHtml(banco)} ${pc ? `Â· PC ${escapeHtml(pc)}` : ""}</div></div>
+    <div class="transfer-chat-note">Cuando realices la transferencia, enviÃ¡ el comprobante por acÃ¡.</div>
   </div>`;
 }
 
@@ -3340,10 +3340,10 @@ async function cerrarSesion(){
 }
 
 /* =========================================================
-   OPERATIVO CHAT NOTIFY V8 · ESTABLE SIN REDECLARAR
+   OPERATIVO CHAT NOTIFY V8 Â· ESTABLE SIN REDECLARAR
    - Sin let/const globales duplicados.
-   - Sin recursión en mostrarVista.
-   - Badge lateral Chat suma mensajes nuevos aunque estés en Inicio.
+   - Sin recursiÃ³n en mostrarVista.
+   - Badge lateral Chat suma mensajes nuevos aunque estÃ©s en Inicio.
    - Chat se limpia solo al abrir/clickearel chat o al responder.
    - Carga mensajes desde RPC PC como fuente principal.
 ========================================================= */
@@ -3412,10 +3412,10 @@ async function cerrarSesion(){
   }
 
   function resumenPreview(texto, imagen){
-    if(imagen) return "📎 Imagen";
+    if(imagen) return "ðŸ“Ž Imagen";
     const t = String(texto || "").trim();
     if(!t) return "";
-    if(t.startsWith("TRANSFER_CARD:")) return "💳 Tarjeta de transferencia enviada";
+    if(t.startsWith("TRANSFER_CARD:")) return "ðŸ’³ Tarjeta de transferencia enviada";
     return t.length > 44 ? t.slice(0,44) + "..." : t;
   }
 
@@ -3519,7 +3519,7 @@ async function cerrarSesion(){
 
     if(nuevos > 0 && silencioso){
       try{
-        toast(`💬 ${nuevos} mensaje/s nuevo/s de usuario`, "blue");
+        toast(`ðŸ’¬ ${nuevos} mensaje/s nuevo/s de usuario`, "blue");
         if(typeof sonidoNotificacion === "function") sonidoNotificacion();
       }catch(e){}
     }
@@ -3568,8 +3568,8 @@ async function cerrarSesion(){
 
     setBox("chatTitulo", `
       <span>${escapeHtml(c.USUARIO || "Usuario")}</span>
-      <button class="chat-icon-btn" title="Copiar usuario" onclick="copiarTextoOperativo('${escapeAttr(c.USUARIO || "")}','Usuario')">📋</button>
-      <button class="chat-icon-btn" title="Info usuario" onclick="abrirInfoChatUsuario()">ℹ️</button>
+      <button class="chat-icon-btn" title="Copiar usuario" onclick="copiarTextoOperativo('${escapeAttr(c.USUARIO || "")}','Usuario')">ðŸ“‹</button>
+      <button class="chat-icon-btn" title="Info usuario" onclick="abrirInfoChatUsuario()">â„¹ï¸</button>
     `);
     setBox("chatSubtitulo", `${formatFecha(c.FECHA_ULTIMO || c.FECHA || "")}`);
     setBox("chatEstado", c.SOLICITUD_ID ? `Solicitud: ${escapeHtml(c.SOLICITUD_ID)}` : "-");
@@ -3589,7 +3589,7 @@ async function cerrarSesion(){
         p_session_token: requireSessionToken(),
         p_chat_id: chatActualId
       });
-    }catch(e){ console.warn("No se pudo marcar leído backend:", e); }
+    }catch(e){ console.warn("No se pudo marcar leÃ­do backend:", e); }
 
     renderChatList();
     verificarChats(true);
@@ -3600,7 +3600,7 @@ async function cerrarSesion(){
   window.cargarChatActual = async function(scroll=true){
     if(!chatActualId) return;
 
-    // Si está en Inicio u otra sección, NO cargamos/limpiamos el chat abierto anterior.
+    // Si estÃ¡ en Inicio u otra secciÃ³n, NO cargamos/limpiamos el chat abierto anterior.
     if(!isChatVisible()) return;
 
     const mensajes = await loadMensajesPc();
@@ -3618,7 +3618,7 @@ async function cerrarSesion(){
     window.chatMensajes = chatMensajes = ms || [];
     renderChatMensajes();
 
-    // No limpia badge automáticamente acá. Solo abrirChat o enviarChat.
+    // No limpia badge automÃ¡ticamente acÃ¡. Solo abrirChat o enviarChat.
     renderChatList();
     verificarChats(true);
     renderInicio();
@@ -3635,7 +3635,7 @@ async function cerrarSesion(){
     if(!body) return;
 
     if(!chatMensajes || !chatMensajes.length){
-      body.innerHTML = `<div class="alert-box">Sin mensajes todavía.</div>`;
+      body.innerHTML = `<div class="alert-box">Sin mensajes todavÃ­a.</div>`;
       return;
     }
 
@@ -3682,10 +3682,10 @@ async function cerrarSesion(){
     setBox("statSolicitudesTotalPc",`Total PC: ${solicitudes.length}`);
     setBox("statChats",unread);
     setBox("statBilletera",bil.NOMBRE_VISIBLE||bil.BILLETERA_NOMBRE||"-");
-    setBox("statBilleteraTipo",bil.TIPO?`${bil.TIPO} · ${bil.PC||pcOperativa}`:"-");
+    setBox("statBilleteraTipo",bil.TIPO?`${bil.TIPO} Â· ${bil.PC||pcOperativa}`:"-");
     setBox("alertas",`
-      ${pendientes.length?`<div class="alert-box">🔔 Hay ${pendientes.length} solicitud/es pendiente/s.</div>`:""}
-      ${unread?`<div class="alert-box">💬 Hay ${unread} mensaje/s de chat sin leer.</div>`:""}
+      ${pendientes.length?`<div class="alert-box">ðŸ”” Hay ${pendientes.length} solicitud/es pendiente/s.</div>`:""}
+      ${unread?`<div class="alert-box">ðŸ’¬ Hay ${unread} mensaje/s de chat sin leer.</div>`:""}
     `);
     setBox("resumenTurnosOperativo",resumenTurnosOperativoHTML(solicitudes));
     setBox("tablaSolicitudesInicio",tablaSolicitudesHTML(pendientes.slice(0,40)));
@@ -3700,10 +3700,10 @@ async function cerrarSesion(){
 
     abrirModal("Info del chat", `
       <div class="verify-box">
-        <div class="verify-title">👤 Usuario</div>
+        <div class="verify-title">ðŸ‘¤ Usuario</div>
         <div class="verify-grid">
           ${verifyRow("Usuario", c.USUARIO || "-", "", true)}
-          ${verifyRow("Teléfono", c.TELEFONO || "-", "", true)}
+          ${verifyRow("TelÃ©fono", c.TELEFONO || "-", "", true)}
           ${verifyRow("Nombre", c.NOMBRE_COMPLETO || "-", "", false)}
           ${verifyRow("PC", c.PC || pcOperativa || "-")}
           ${verifyRow("Solicitud", c.SOLICITUD_ID || "-")}
@@ -3756,8 +3756,8 @@ async function cerrarSesion(){
 <script>
 /* =========================================================
    NODO FINAL OPERATIVO CHAT FIX V3
-   - Sesión operativa persiste hasta cierre manual.
-   - El chat abierto queda leído en cada actualización.
+   - SesiÃ³n operativa persiste hasta cierre manual.
+   - El chat abierto queda leÃ­do en cada actualizaciÃ³n.
    - No vuelven badges sin leer al refrescar chats.
 ========================================================= */
 (function(){
@@ -3821,10 +3821,10 @@ async function cerrarSesion(){
 })();
 
 /* =========================================================
-   OPERATIVO CHAT NOTIFY V8 · ESTABLE SIN REDECLARAR
+   OPERATIVO CHAT NOTIFY V8 Â· ESTABLE SIN REDECLARAR
    - Sin let/const globales duplicados.
-   - Sin recursión en mostrarVista.
-   - Badge lateral Chat suma mensajes nuevos aunque estés en Inicio.
+   - Sin recursiÃ³n en mostrarVista.
+   - Badge lateral Chat suma mensajes nuevos aunque estÃ©s en Inicio.
    - Chat se limpia solo al abrir/clickearel chat o al responder.
    - Carga mensajes desde RPC PC como fuente principal.
 ========================================================= */
@@ -3893,10 +3893,10 @@ async function cerrarSesion(){
   }
 
   function resumenPreview(texto, imagen){
-    if(imagen) return "📎 Imagen";
+    if(imagen) return "ðŸ“Ž Imagen";
     const t = String(texto || "").trim();
     if(!t) return "";
-    if(t.startsWith("TRANSFER_CARD:")) return "💳 Tarjeta de transferencia enviada";
+    if(t.startsWith("TRANSFER_CARD:")) return "ðŸ’³ Tarjeta de transferencia enviada";
     return t.length > 44 ? t.slice(0,44) + "..." : t;
   }
 
@@ -4000,7 +4000,7 @@ async function cerrarSesion(){
 
     if(nuevos > 0 && silencioso){
       try{
-        toast(`💬 ${nuevos} mensaje/s nuevo/s de usuario`, "blue");
+        toast(`ðŸ’¬ ${nuevos} mensaje/s nuevo/s de usuario`, "blue");
         if(typeof sonidoNotificacion === "function") sonidoNotificacion();
       }catch(e){}
     }
@@ -4049,8 +4049,8 @@ async function cerrarSesion(){
 
     setBox("chatTitulo", `
       <span>${escapeHtml(c.USUARIO || "Usuario")}</span>
-      <button class="chat-icon-btn" title="Copiar usuario" onclick="copiarTextoOperativo('${escapeAttr(c.USUARIO || "")}','Usuario')">📋</button>
-      <button class="chat-icon-btn" title="Info usuario" onclick="abrirInfoChatUsuario()">ℹ️</button>
+      <button class="chat-icon-btn" title="Copiar usuario" onclick="copiarTextoOperativo('${escapeAttr(c.USUARIO || "")}','Usuario')">ðŸ“‹</button>
+      <button class="chat-icon-btn" title="Info usuario" onclick="abrirInfoChatUsuario()">â„¹ï¸</button>
     `);
     setBox("chatSubtitulo", `${formatFecha(c.FECHA_ULTIMO || c.FECHA || "")}`);
     setBox("chatEstado", c.SOLICITUD_ID ? `Solicitud: ${escapeHtml(c.SOLICITUD_ID)}` : "-");
@@ -4070,7 +4070,7 @@ async function cerrarSesion(){
         p_session_token: requireSessionToken(),
         p_chat_id: chatActualId
       });
-    }catch(e){ console.warn("No se pudo marcar leído backend:", e); }
+    }catch(e){ console.warn("No se pudo marcar leÃ­do backend:", e); }
 
     renderChatList();
     verificarChats(true);
@@ -4081,7 +4081,7 @@ async function cerrarSesion(){
   window.cargarChatActual = async function(scroll=true){
     if(!chatActualId) return;
 
-    // Si está en Inicio u otra sección, NO cargamos/limpiamos el chat abierto anterior.
+    // Si estÃ¡ en Inicio u otra secciÃ³n, NO cargamos/limpiamos el chat abierto anterior.
     if(!isChatVisible()) return;
 
     const mensajes = await loadMensajesPc();
@@ -4099,7 +4099,7 @@ async function cerrarSesion(){
     window.chatMensajes = chatMensajes = ms || [];
     renderChatMensajes();
 
-    // No limpia badge automáticamente acá. Solo abrirChat o enviarChat.
+    // No limpia badge automÃ¡ticamente acÃ¡. Solo abrirChat o enviarChat.
     renderChatList();
     verificarChats(true);
     renderInicio();
@@ -4116,7 +4116,7 @@ async function cerrarSesion(){
     if(!body) return;
 
     if(!chatMensajes || !chatMensajes.length){
-      body.innerHTML = `<div class="alert-box">Sin mensajes todavía.</div>`;
+      body.innerHTML = `<div class="alert-box">Sin mensajes todavÃ­a.</div>`;
       return;
     }
 
@@ -4163,10 +4163,10 @@ async function cerrarSesion(){
     setBox("statSolicitudesTotalPc",`Total PC: ${solicitudes.length}`);
     setBox("statChats",unread);
     setBox("statBilletera",bil.NOMBRE_VISIBLE||bil.BILLETERA_NOMBRE||"-");
-    setBox("statBilleteraTipo",bil.TIPO?`${bil.TIPO} · ${bil.PC||pcOperativa}`:"-");
+    setBox("statBilleteraTipo",bil.TIPO?`${bil.TIPO} Â· ${bil.PC||pcOperativa}`:"-");
     setBox("alertas",`
-      ${pendientes.length?`<div class="alert-box">🔔 Hay ${pendientes.length} solicitud/es pendiente/s.</div>`:""}
-      ${unread?`<div class="alert-box">💬 Hay ${unread} mensaje/s de chat sin leer.</div>`:""}
+      ${pendientes.length?`<div class="alert-box">ðŸ”” Hay ${pendientes.length} solicitud/es pendiente/s.</div>`:""}
+      ${unread?`<div class="alert-box">ðŸ’¬ Hay ${unread} mensaje/s de chat sin leer.</div>`:""}
     `);
     setBox("resumenTurnosOperativo",resumenTurnosOperativoHTML(solicitudes));
     setBox("tablaSolicitudesInicio",tablaSolicitudesHTML(pendientes.slice(0,40)));
@@ -4181,10 +4181,10 @@ async function cerrarSesion(){
 
     abrirModal("Info del chat", `
       <div class="verify-box">
-        <div class="verify-title">👤 Usuario</div>
+        <div class="verify-title">ðŸ‘¤ Usuario</div>
         <div class="verify-grid">
           ${verifyRow("Usuario", c.USUARIO || "-", "", true)}
-          ${verifyRow("Teléfono", c.TELEFONO || "-", "", true)}
+          ${verifyRow("TelÃ©fono", c.TELEFONO || "-", "", true)}
           ${verifyRow("Nombre", c.NOMBRE_COMPLETO || "-", "", false)}
           ${verifyRow("PC", c.PC || pcOperativa || "-")}
           ${verifyRow("Solicitud", c.SOLICITUD_ID || "-")}
@@ -4241,7 +4241,7 @@ async function cerrarSesion(){
 </style>
 <script>
 /* =========================================================
-   NODO OPERATIVO · FIX FINAL CHAT + TARJETAS + ACCIÓN RÁPIDA
+   NODO OPERATIVO Â· FIX FINAL CHAT + TARJETAS + ACCIÃ“N RÃPIDA
 ========================================================= */
 (function(){
   function norm(v){return String(v||'').trim().toUpperCase();}
@@ -4267,30 +4267,30 @@ async function cerrarSesion(){
     const nombre=card.nombre_visible||card.NOMBRE_VISIBLE||card.BILLETERA_NOMBRE||card.nombre||'Datos para transferir';
     const titular=card.titular||card.TITULAR||''; const alias=card.alias||card.ALIAS||''; const cbu=card.cbu||card.CVU_CBU||card.CBU||''; const banco=card.banco||card.TIPO||card.BANCO||'';
     const aid='a_'+Math.random().toString(36).slice(2), cid='c_'+Math.random().toString(36).slice(2);
-    return `<div class="transfer-chat-card clean"><div class="transfer-chat-title">💳 ${esc(nombre)}</div>
+    return `<div class="transfer-chat-card clean"><div class="transfer-chat-title">ðŸ’³ ${esc(nombre)}</div>
       ${alias?`<div class="transfer-chat-row"><div class="transfer-chat-label">Alias</div><div class="transfer-chat-value" id="${aid}">${esc(alias)}</div><button class="transfer-copy-btn" onclick="event.stopPropagation();copiarTextoOperativo(document.getElementById('${aid}').innerText,'Alias')">Copiar alias</button></div>`:''}
       ${cbu?`<div class="transfer-chat-row"><div class="transfer-chat-label">CBU / CVU</div><div class="transfer-chat-value" id="${cid}">${esc(cbu)}</div><button class="transfer-copy-btn" onclick="event.stopPropagation();copiarTextoOperativo(document.getElementById('${cid}').innerText,'CBU/CVU')">Copiar CBU/CVU</button></div>`:''}
       ${titular?`<div class="transfer-chat-row"><div class="transfer-chat-label">Titular</div><div class="transfer-chat-value">${esc(titular)}</div></div>`:''}
       ${banco?`<div class="transfer-chat-note">Banco: ${esc(banco)}</div>`:''}
-      <div class="transfer-chat-note">Cuando realices la transferencia, enviá el comprobante por acá.</div></div>`;
+      <div class="transfer-chat-note">Cuando realices la transferencia, enviÃ¡ el comprobante por acÃ¡.</div></div>`;
   }
   window.renderMensajeChatContenidoSeguro=function(mensaje){const card=parseTransferAny(mensaje); if(card)return renderTransferCopyCard(card); return esc(mensaje||'').replace(/\n/g,'<br>');};
   window.transferCardTextoHumano=function(card){return '::TRANSFER_CARD::'+JSON.stringify(card||{});};
-  window.resumenMensajeChatPreview=function(texto,img){return parseTransferAny(texto)?'📄 Tarjeta de transferencia enviada':(texto||img||'');};
+  window.resumenMensajeChatPreview=function(texto,img){return parseTransferAny(texto)?'ðŸ“„ Tarjeta de transferencia enviada':(texto||img||'');};
 
   function idWallet(b){return String(b.ID_BILLETERA||b.id||b.billetera_id||'');}
   function activeWallets(){
     const all=(billeterasTodas&&billeterasTodas.length?billeterasTodas:billeteras)||[];
     return all.filter(b=>String(b.PC||b.pc_codigo||pcOperativa).toUpperCase()===String(pcOperativa).toUpperCase() && (norm(b.ACTIVA)==='SI'||b.activa===true||norm(b.ESTADO)==='ACTIVA'||norm(b.estado)==='ACTIVA'));
   }
-  window.renderWalletSelectWorkerInicio=function(){const sel=document.getElementById('manualWorkerBilleteraInicio'); if(!sel)return; const tipo=val('manualWorkerTipoInicio'); const lista=activeWallets(); sel.innerHTML=`<option value="">${tipo==='VALIDAR_USUARIO'?'No aplica para validar':'Seleccionar billetera'}</option>`+lista.map(b=>`<option value="${attr(idWallet(b))}">${esc(b.NOMBRE_VISIBLE||b.BILLETERA_NOMBRE||b.nombre_visible||'Billetera')} · ${esc(b.TIPO||b.BANCO||b.banco||'')} ${b.saldo!==undefined?'· '+money(b.saldo):''}</option>`).join('');};
+  window.renderWalletSelectWorkerInicio=function(){const sel=document.getElementById('manualWorkerBilleteraInicio'); if(!sel)return; const tipo=val('manualWorkerTipoInicio'); const lista=activeWallets(); sel.innerHTML=`<option value="">${tipo==='VALIDAR_USUARIO'?'No aplica para validar':'Seleccionar billetera'}</option>`+lista.map(b=>`<option value="${attr(idWallet(b))}">${esc(b.NOMBRE_VISIBLE||b.BILLETERA_NOMBRE||b.nombre_visible||'Billetera')} Â· ${esc(b.TIPO||b.BANCO||b.banco||'')} ${b.saldo!==undefined?'Â· '+money(b.saldo):''}</option>`).join('');};
   window.ajustarMontoWorkerManualInicio=function(){const tipo=val('manualWorkerTipoInicio'),m=document.getElementById('manualWorkerMontoInicio'),w=document.getElementById('manualWorkerBilleteraInicio'); if(tipo==='VALIDAR_USUARIO'){if(m){m.value='0';m.disabled=true} if(w){w.value='';w.disabled=true;w.classList.remove('wallet-required')}}else{if(m)m.disabled=false;if(w)w.disabled=false} renderWalletSelectWorkerInicio();};
   window.crearWorkerJobManualInicio=async function(){
     const tipo=val('manualWorkerTipoInicio'), usuario=val('manualWorkerUsuarioInicio').trim(), monto=Number(val('manualWorkerMontoInicio')||0), wid=val('manualWorkerBilleteraInicio');
     const out='manualWorkerResultadoInicio';
-    if(!usuario){setBox(out,'<div class="err-box">Ingresá usuario.</div>');return;}
-    if(tipo!=='VALIDAR_USUARIO' && (!monto||monto<=0)){setBox(out,'<div class="err-box">Ingresá un monto válido.</div>');return;}
-    if(tipo!=='VALIDAR_USUARIO' && !wid){document.getElementById('manualWorkerBilleteraInicio')?.classList.add('wallet-required');setBox(out,'<div class="err-box">Seleccioná la billetera que impacta esta operación. No se envió nada.</div>');return;}
+    if(!usuario){setBox(out,'<div class="err-box">IngresÃ¡ usuario.</div>');return;}
+    if(tipo!=='VALIDAR_USUARIO' && (!monto||monto<=0)){setBox(out,'<div class="err-box">IngresÃ¡ un monto vÃ¡lido.</div>');return;}
+    if(tipo!=='VALIDAR_USUARIO' && !wid){document.getElementById('manualWorkerBilleteraInicio')?.classList.add('wallet-required');setBox(out,'<div class="err-box">SeleccionÃ¡ la billetera que impacta esta operaciÃ³n. No se enviÃ³ nada.</div>');return;}
     document.getElementById('manualWorkerBilleteraInicio')?.classList.remove('wallet-required');
     document.getElementById('manualWorkerUsuario').value=usuario; document.getElementById('manualWorkerTipo').value=tipo; document.getElementById('manualWorkerMonto').value=String(monto||0); document.getElementById('manualWorkerBilletera').value=wid; document.getElementById('manualWorkerObs').value=val('manualWorkerObsInicio');
     await crearWorkerJobManualDesdePanel(); setBox(out,document.getElementById('manualWorkerResultado')?.innerHTML||''); await refrescarTodo(false);
@@ -4302,7 +4302,7 @@ async function cerrarSesion(){
     const ajustes=document.getElementById('viewAjustes'); if(!ajustes)return;
     if(!box){box=document.createElement('div');box.id='movimientosBilleteraBox';box.className='ops-panel movements-box';ajustes.appendChild(box);}
     const movs=(saldosOperativos?.movimientos_billetera||saldosOperativos?.movimientos||[]).slice(0,25);
-    box.innerHTML=`<div class="ops-panel-title">📒 Movimientos de billetera</div>${movs.length?movs.map(m=>`<div class="mov-row"><div>${esc((m.created_at||m.fecha||'').slice(0,16))}</div><div>${esc(m.billetera_nombre||m.nombre_visible||m.motivo||m.tipo_movimiento||'-')}</div><div class="${Number(m.signo||0)>=0?'mov-pos':'mov-neg'}">${Number(m.signo||0)>=0?'+':'-'} ${money(Math.abs(Number(m.monto||0)))}</div></div>`).join(''):'<div class="alert-box">Sin movimientos visibles. Si no aparece historial, falta ejecutar el SQL/RPC de movimientos.</div>'}`;
+    box.innerHTML=`<div class="ops-panel-title">ðŸ“’ Movimientos de billetera</div>${movs.length?movs.map(m=>`<div class="mov-row"><div>${esc((m.created_at||m.fecha||'').slice(0,16))}</div><div>${esc(m.billetera_nombre||m.nombre_visible||m.motivo||m.tipo_movimiento||'-')}</div><div class="${Number(m.signo||0)>=0?'mov-pos':'mov-neg'}">${Number(m.signo||0)>=0?'+':'-'} ${money(Math.abs(Number(m.monto||0)))}</div></div>`).join(''):'<div class="alert-box">Sin movimientos visibles. Si no aparece historial, falta ejecutar el SQL/RPC de movimientos.</div>'}`;
   };
   setTimeout(()=>{try{renderWalletSelectWorkerInicio();renderSelectsAjustes()}catch(e){}},800);
 })();
@@ -4311,12 +4311,12 @@ async function cerrarSesion(){
 
 <script>
 /* =========================================================
-   PANEL OPERATIVO V19 · REALTIME FIRME + ACCIÓN SEGURA
+   PANEL OPERATIVO V19 Â· REALTIME FIRME + ACCIÃ“N SEGURA
    - Supabase Realtime para solicitudes, worker, chat y saldo agente.
    - Sin polling agresivo.
    - Saldo del agente en vivo.
-   - Acción rápida usa operativo_accion_rapida_segura.
-   - Chat: marcar leído real + tarjeta transferible copiable.
+   - AcciÃ³n rÃ¡pida usa operativo_accion_rapida_segura.
+   - Chat: marcar leÃ­do real + tarjeta transferible copiable.
 ========================================================= */
 (function(){
   if(window.__NODO_PANEL_RT_V19_INSTALLED__) return;
@@ -4409,8 +4409,8 @@ async function cerrarSesion(){
       card.innerHTML = `
         <div class="agent-rt-left">
           <div class="agent-rt-title">Saldo agente en vivo</div>
-          <div class="agent-rt-value">Sin dato todavía</div>
-          <div class="agent-rt-sub">El worker lo actualizará al finalizar carga/retiro/validación.</div>
+          <div class="agent-rt-value">Sin dato todavÃ­a</div>
+          <div class="agent-rt-sub">El worker lo actualizarÃ¡ al finalizar carga/retiro/validaciÃ³n.</div>
         </div>
         <div class="agent-rt-status off">ESPERANDO</div>
       `;
@@ -4422,11 +4422,11 @@ async function cerrarSesion(){
     const last = s.updated_at || s.created_at || "";
     card.innerHTML = `
       <div class="agent-rt-left">
-        <div class="agent-rt-title">Saldo agente en vivo · ${h(s.pc_codigo || pcActual())}</div>
+        <div class="agent-rt-title">Saldo agente en vivo Â· ${h(s.pc_codigo || pcActual())}</div>
         <div class="agent-rt-value">${pesos(s.saldo_agente || 0)}</div>
         <div class="agent-rt-sub">
-          Última actualización: ${h(fecha(last))}<br>
-          Último: ${h(s.ultimo_tipo || "-")} · ${h(s.ultimo_usuario || "-")}
+          Ãšltima actualizaciÃ³n: ${h(fecha(last))}<br>
+          Ãšltimo: ${h(s.ultimo_tipo || "-")} Â· ${h(s.ultimo_usuario || "-")}
           ${s.error ? `<br><span class="agent-rt-error">${h(s.error)}</span>` : ""}
         </div>
       </div>
@@ -4494,8 +4494,8 @@ async function cerrarSesion(){
   function refreshSaldo(payload){
     try{
       console.log("Realtime saldo recibido", payload);
-      // Siempre consultamos por RPC para traer la última fila real de la PC,
-      // incluso si hay más de un worker_id para la misma oficina.
+      // Siempre consultamos por RPC para traer la Ãºltima fila real de la PC,
+      // incluso si hay mÃ¡s de un worker_id para la misma oficina.
       cargarSaldoAgenteRealtime();
       setTimeout(cargarSaldoAgenteRealtime, 700);
       if(typeof renderInicio === "function") renderInicio();
@@ -4607,7 +4607,7 @@ async function cerrarSesion(){
 
   try{ finalizarLogin = window.finalizarLogin; }catch(e){}
 
-  // Acción rápida segura usando la RPC nueva.
+  // AcciÃ³n rÃ¡pida segura usando la RPC nueva.
   async function accionRapidaSegura(usuario, tipo, monto, billeteraId, obs, outId){
     usuario = String(usuario || "").trim();
     tipo = String(tipo || "").trim();
@@ -4615,19 +4615,19 @@ async function cerrarSesion(){
     billeteraId = String(billeteraId || "").trim();
 
     if(!usuario){
-      box(outId, `<div class="err-box">Ingresá un usuario.</div>`);
+      box(outId, `<div class="err-box">IngresÃ¡ un usuario.</div>`);
       return false;
     }
     if(tipo !== "VALIDAR_USUARIO" && (!monto || monto <= 0)){
-      box(outId, `<div class="err-box">Ingresá un monto válido.</div>`);
+      box(outId, `<div class="err-box">IngresÃ¡ un monto vÃ¡lido.</div>`);
       return false;
     }
     if(tipo !== "VALIDAR_USUARIO" && !billeteraId){
-      box(outId, `<div class="err-box">Seleccioná la billetera impactada. No se envió nada.</div>`);
+      box(outId, `<div class="err-box">SeleccionÃ¡ la billetera impactada. No se enviÃ³ nada.</div>`);
       return false;
     }
 
-    box(outId, `<div class="alert-box">Enviando acción segura al worker...</div>`);
+    box(outId, `<div class="alert-box">Enviando acciÃ³n segura al worker...</div>`);
 
     const {data,error} = await supabaseClient.rpc("operativo_accion_rapida_segura", {
       p_pc_codigo: pcActual(),
@@ -4651,7 +4651,7 @@ async function cerrarSesion(){
     }
 
     const jobId = r?.job?.job_id || r?.job_id || "-";
-    box(outId, `<div class="ok-box">${h(r.mensaje || "Acción enviada al worker.")} Job: <b>${h(jobId)}</b></div>`);
+    box(outId, `<div class="ok-box">${h(r.mensaje || "AcciÃ³n enviada al worker.")} Job: <b>${h(jobId)}</b></div>`);
     notify("Orden enviada al worker", "green");
     refreshWorker();
     return true;
@@ -4714,7 +4714,7 @@ async function cerrarSesion(){
     const banco = d.banco || d.BANCO || d.nombre_visible || d.NOMBRE_VISIBLE || "Billetera";
     return `
       <div class="transfer-chat-card clean">
-        <div class="transfer-chat-title">💳 Datos para transferir</div>
+        <div class="transfer-chat-title">ðŸ’³ Datos para transferir</div>
         <div class="transfer-chat-row">
           <div class="transfer-chat-label">Billetera</div>
           <div class="transfer-chat-value">${h(banco)}</div>
@@ -4733,14 +4733,14 @@ async function cerrarSesion(){
           <div class="transfer-chat-label">Titular</div>
           <div class="transfer-chat-value">${h(titular || "-")}</div>
         </div>
-        <div class="transfer-chat-note">Enviá el comprobante por este chat cuando termines.</div>
+        <div class="transfer-chat-note">EnviÃ¡ el comprobante por este chat cuando termines.</div>
       </div>
     `;
   };
 
   window.enviarTarjetaTransferencia = async function(){
     if(!chatActualId){
-      alert("Seleccioná un chat primero.");
+      alert("SeleccionÃ¡ un chat primero.");
       return;
     }
 
@@ -4748,7 +4748,7 @@ async function cerrarSesion(){
     const wallet = typeof getWalletById === "function" ? getWalletById(id) : null;
 
     if(!wallet){
-      alert("Seleccioná una billetera.");
+      alert("SeleccionÃ¡ una billetera.");
       return;
     }
 
@@ -4780,7 +4780,7 @@ async function cerrarSesion(){
     refreshChats();
   };
 
-  // Abrir chat = marcado leído real en DB y en local.
+  // Abrir chat = marcado leÃ­do real en DB y en local.
   const abrirChatAnterior = window.abrirChat;
   window.abrirChat = async function(id){
     if(typeof abrirChatAnterior === "function"){
@@ -4820,7 +4820,7 @@ async function cerrarSesion(){
 
     const movs=(saldosOperativos?.movimientos_billetera || saldosOperativos?.movimientos || []).slice(0,40);
     boxEl.innerHTML = `
-      <div class="ops-panel-title">📒 Movimientos de billetera</div>
+      <div class="ops-panel-title">ðŸ“’ Movimientos de billetera</div>
       ${movs.length ? movs.map(m=>`
         <div class="mov-row">
           <div>${h(fecha(m.created_at || m.fecha || ""))}</div>
@@ -4829,7 +4829,7 @@ async function cerrarSesion(){
             ${Number(m.signo||0)>=0 ? "+" : "-"} ${pesos(Math.abs(Number(m.monto||0)))}
           </div>
         </div>
-      `).join("") : `<div class="alert-box">Sin movimientos visibles. Cuando el SQL/RPC de movimientos esté activo, aparecerán acá.</div>`}
+      `).join("") : `<div class="alert-box">Sin movimientos visibles. Cuando el SQL/RPC de movimientos estÃ© activo, aparecerÃ¡n acÃ¡.</div>`}
     `;
   };
 
@@ -4875,10 +4875,10 @@ async function cerrarSesion(){
 
 <script>
 /* =========================================================
-   NODO PANEL · SYNC INTELIGENTE SIN INTERRUMPIR ACCIÓN RÁPIDA
+   NODO PANEL Â· SYNC INTELIGENTE SIN INTERRUMPIR ACCIÃ“N RÃPIDA
    - Evita refrescos pesados mientras el operador escribe/selecciona.
    - Aplica throttle a cargas que los timers viejos llaman muy seguido.
-   - Realtime sigue activo, pero si estás editando cola actualizaciones.
+   - Realtime sigue activo, pero si estÃ¡s editando cola actualizaciones.
    - El saldo agente se puede actualizar liviano sin tocar formularios.
 ========================================================= */
 (function(){
@@ -4938,7 +4938,7 @@ async function cerrarSesion(){
   function markEditing(){
     st.editing = true;
     st.lastInputAt = now();
-    setSyncChip('Sync pausado mientras escribís', 'pause');
+    setSyncChip('Sync pausado mientras escribÃ­s', 'pause');
   }
 
   function markMaybeDone(){
@@ -5049,7 +5049,7 @@ async function cerrarSesion(){
     };
   }
 
-  // En Realtime: si estás escribiendo, no renderiza la cola encima del operador: deja pendiente.
+  // En Realtime: si estÃ¡s escribiendo, no renderiza la cola encima del operador: deja pendiente.
   const prevRefreshWorker = window.refreshWorker;
   if(typeof prevRefreshWorker === 'function'){
     window.refreshWorker = function(...args){
@@ -5058,7 +5058,7 @@ async function cerrarSesion(){
     };
   }
 
-  // Botón Actualizar: siempre fuerza. Timers viejos quedan amortiguados por throttles.
+  // BotÃ³n Actualizar: siempre fuerza. Timers viejos quedan amortiguados por throttles.
   if(typeof window.refrescarTodo === 'function'){
     const oldRefresh = window.refrescarTodo;
     window.__orig_refrescarTodo = window.__orig_refrescarTodo || oldRefresh;
@@ -5069,7 +5069,7 @@ async function cerrarSesion(){
         return {ok:true, skipped:true};
       }
       try{
-        // Forzamos fechas para que no bloquee el throttle si el usuario tocó Actualizar.
+        // Forzamos fechas para que no bloquee el throttle si el usuario tocÃ³ Actualizar.
         if(manual){ st.lastRun = {}; }
         const r = await oldRefresh.apply(this, arguments);
         try{ await window.__orig_cargarSaldoAgenteRealtime?.(); }catch(e){}
@@ -5078,7 +5078,7 @@ async function cerrarSesion(){
     };
   }
 
-  // Acción rápida: durante el envío se bloquean refrescos pesados; al terminar hace refresh controlado.
+  // AcciÃ³n rÃ¡pida: durante el envÃ­o se bloquean refrescos pesados; al terminar hace refresh controlado.
   async function wrapAction(fnName){
     const old = window[fnName];
     if(typeof old !== 'function') return;
@@ -5103,7 +5103,7 @@ async function cerrarSesion(){
   wrapAction('crearWorkerJobManualInicio');
   wrapAction('crearWorkerJobManualDesdePanel');
 
-  // Instala un refresco inteligente propio, más suave, por si el socket no avisa.
+  // Instala un refresco inteligente propio, mÃ¡s suave, por si el socket no avisa.
   if(!window.__NODO_SMART_SYNC_TIMER__){
     window.__NODO_SMART_SYNC_TIMER__ = setInterval(()=>{
       if(isUserEditing()) return queueLightRefresh('smart_timer_editing');
@@ -5119,7 +5119,7 @@ async function cerrarSesion(){
 
 <script>
 /* =========================================================
-   NODO OPERATIVO · FINAL SYNC + MOVIMIENTOS V1
+   NODO OPERATIVO Â· FINAL SYNC + MOVIMIENTOS V1
    - Realtime real: solicitudes, worker_jobs, chat_sesiones, chat_mensajes,
      worker_agent_saldos_estado y movimientos/saldos si existen.
    - Sync inteligente: no pisa formularios mientras el operador escribe.
@@ -5189,7 +5189,7 @@ async function cerrarSesion(){
   function editing(){
     return isEditable(document.activeElement) || Date.now() < S.editingUntil;
   }
-  function touchEditing(){ S.editingUntil = Date.now() + 2600; setSyncStatus("Sync pausado mientras escribís","pause"); }
+  function touchEditing(){ S.editingUntil = Date.now() + 2600; setSyncStatus("Sync pausado mientras escribÃ­s","pause"); }
   ["focusin","input","keydown","change"].forEach(ev=>{
     document.addEventListener(ev, e=>{ if(isEditable(e.target)) touchEditing(); }, true);
   });
@@ -5285,7 +5285,7 @@ async function cerrarSesion(){
   async function flushHeavy(reason="manual"){
     if(editing()){
       S.pendingHeavy=true;
-      setSyncStatus("Cambios recibidos · esperando fin de edición","pause");
+      setSyncStatus("Cambios recibidos Â· esperando fin de ediciÃ³n","pause");
       clearTimeout(S.timers.heavy);
       S.timers.heavy=setTimeout(()=>flushHeavy(reason), 1200);
       return;
@@ -5353,7 +5353,7 @@ async function cerrarSesion(){
       refreshChat(false);
     });
 
-    // Si estas tablas existen y están publicadas, refresca billeteras/movimientos.
+    // Si estas tablas existen y estÃ¡n publicadas, refresca billeteras/movimientos.
     ["billeteras","billetera_movimientos","movimientos_billetera","fichas_movimientos"].forEach(tbl=>{
       try{
         ch.on("postgres_changes",{event:"*",schema:"public",table:tbl},()=>{
@@ -5385,7 +5385,7 @@ async function cerrarSesion(){
 
   function optsWallet(selected=""){
     const rows=walletList();
-    return rows.map(b=>`<option value="${attr(b.id)}" ${String(selected)===String(b.id)?"selected":""}>${esc(b.nombre)}${b.tipo?" · "+esc(b.tipo):""} · ${pesos(b.saldo)}</option>`).join("");
+    return rows.map(b=>`<option value="${attr(b.id)}" ${String(selected)===String(b.id)?"selected":""}>${esc(b.nombre)}${b.tipo?" Â· "+esc(b.tipo):""} Â· ${pesos(b.saldo)}</option>`).join("");
   }
 
   window.renderSelectsAjustesFinal = function(){
@@ -5418,7 +5418,7 @@ async function cerrarSesion(){
     }
     const movs=(saldosOperativos?.movimientos_billetera || saldosOperativos?.movimientos || saldosOperativos?.ultimos_movimientos || []).slice(0,50);
     el.innerHTML=`
-      <div class="ops-panel-title">📒 Historial de movimientos</div>
+      <div class="ops-panel-title">ðŸ“’ Historial de movimientos</div>
       ${movs.length ? `<div class="table-wrap" style="max-height:360px"><table><thead><tr><th>Fecha</th><th>Billetera</th><th>Tipo</th><th>Monto</th><th>Motivo</th></tr></thead><tbody>
         ${movs.map(m=>{
           const signo=Number(m.signo || m.SIGNO || 0);
@@ -5431,7 +5431,7 @@ async function cerrarSesion(){
             <td>${esc(m.motivo || m.observacion || m.MOTIVO || "-")}</td>
           </tr>`;
         }).join("")}
-      </tbody></table></div>` : `<div class="alert-box">Sin movimientos visibles todavía.</div>`}
+      </tbody></table></div>` : `<div class="alert-box">Sin movimientos visibles todavÃ­a.</div>`}
     `;
   };
 
@@ -5500,7 +5500,7 @@ async function cerrarSesion(){
   };
   try{ guardarAjusteFichas = window.guardarAjusteFichas; }catch(e){}
 
-  // Refresh manual final: fuerza todo, pero respeta edición si no es botón manual.
+  // Refresh manual final: fuerza todo, pero respeta ediciÃ³n si no es botÃ³n manual.
   const oldRefresh=window.refrescarTodo;
   window.refrescarTodo = async function(showToast=true){
     if(editing() && showToast!==true){
@@ -5516,7 +5516,7 @@ async function cerrarSesion(){
   };
   try{ refrescarTodo = window.refrescarTodo; }catch(e){}
 
-  // Finalizar login: conserva lógica vieja y agrega Realtime final.
+  // Finalizar login: conserva lÃ³gica vieja y agrega Realtime final.
   const oldFinalizar=window.finalizarLogin;
   window.finalizarLogin = function(...args){
     const r = typeof oldFinalizar==="function" ? oldFinalizar.apply(this,args) : null;
@@ -5557,13 +5557,13 @@ async function cerrarSesion(){
 </script>
 
 <!-- =========================================================
-  PATCH FINO OPERATIVO · UX SIN ROMPER FUNCIONES ESTABLES
-  - Acción rápida limpia usuario/monto/obs y conserva tipo+billetera.
-  - Chat con panel fijo e imágenes ampliables con zoom.
-  - Layout compacto para ventanas angostas: acción rápida no se pierde.
+  PATCH FINO OPERATIVO Â· UX SIN ROMPER FUNCIONES ESTABLES
+  - AcciÃ³n rÃ¡pida limpia usuario/monto/obs y conserva tipo+billetera.
+  - Chat con panel fijo e imÃ¡genes ampliables con zoom.
+  - Layout compacto para ventanas angostas: acciÃ³n rÃ¡pida no se pierde.
 ========================================================= -->
 <style>
-/* Compactación general para pantallas de oficina no fullscreen */
+/* CompactaciÃ³n general para pantallas de oficina no fullscreen */
 @media (max-width: 1360px){
   .layout{grid-template-columns:230px minmax(0,1fr)!important;}
   .sidebar{padding:12px!important;}
@@ -5602,7 +5602,7 @@ async function cerrarSesion(){
   .ops-grid > div:nth-child(2){position:relative!important;top:auto!important;}
 }
 
-/* Chat: lista y conversación independientes. El chat abierto queda quieto aunque bajes por chats viejos. */
+/* Chat: lista y conversaciÃ³n independientes. El chat abierto queda quieto aunque bajes por chats viejos. */
 #viewChat .chat-layout{
   height:calc(100vh - 92px)!important;
   min-height:0!important;
@@ -5660,7 +5660,7 @@ async function cerrarSesion(){
     if(value && [...el.options].some(o=>String(o.value)===String(value))) el.value = value;
   }
 
-  // Preservar selección de billetera al re-renderizar selects.
+  // Preservar selecciÃ³n de billetera al re-renderizar selects.
   const oldRenderInicioWallet = window.renderWalletSelectWorkerInicio;
   window.renderWalletSelectWorkerInicio = function(){
     const prev = safeVal("manualWorkerBilleteraInicio");
@@ -5679,7 +5679,7 @@ async function cerrarSesion(){
   };
   try{ renderWalletSelectWorkerManual = window.renderWalletSelectWorkerManual; }catch(e){}
 
-  // Acción manual del módulo Worker: al enviar bien, limpia usuario/monto/obs y conserva tipo+billetera.
+  // AcciÃ³n manual del mÃ³dulo Worker: al enviar bien, limpia usuario/monto/obs y conserva tipo+billetera.
   const oldCrearWorkerPanel = window.crearWorkerJobManualDesdePanel;
   window.crearWorkerJobManualDesdePanel = async function(){
     const tipo = safeVal("manualWorkerTipo");
@@ -5701,7 +5701,7 @@ async function cerrarSesion(){
   };
   try{ crearWorkerJobManualDesdePanel = window.crearWorkerJobManualDesdePanel; }catch(e){}
 
-  // Acción rápida del Inicio: misma regla, sin borrar tipo ni billetera elegida.
+  // AcciÃ³n rÃ¡pida del Inicio: misma regla, sin borrar tipo ni billetera elegida.
   window.crearWorkerJobManualInicio = async function(){
     const tipo = safeVal("manualWorkerTipoInicio");
     const billetera = safeVal("manualWorkerBilleteraInicio");
@@ -5736,7 +5736,7 @@ async function cerrarSesion(){
   };
   try{ crearWorkerJobManualInicio = window.crearWorkerJobManualInicio; }catch(e){}
 
-  // Zoom de imágenes de chat: sirve para comprobantes recibidos o enviados.
+  // Zoom de imÃ¡genes de chat: sirve para comprobantes recibidos o enviados.
   function ensureImageZoom(){
     if($("imageZoomOverlay")) return;
     const div=document.createElement("div");
@@ -5745,7 +5745,7 @@ async function cerrarSesion(){
       <div id="imageZoomContent">
         <img id="imageZoomImg" src="" alt="Imagen ampliada">
         <div id="imageZoomToolbar">
-          <button type="button" onclick="window.__zoomChatImg(-0.25)">−</button>
+          <button type="button" onclick="window.__zoomChatImg(-0.25)">âˆ’</button>
           <button type="button" onclick="window.__zoomChatImg(0.25)">+</button>
           <button type="button" onclick="window.__zoomChatReset()">100%</button>
           <button type="button" class="yellow" onclick="window.__closeChatZoom()">Cerrar</button>
@@ -5776,7 +5776,7 @@ async function cerrarSesion(){
   });
   document.addEventListener("keydown", function(ev){ if(ev.key === "Escape") window.__closeChatZoom(); });
 
-  // Si el render viejo no marca imágenes, el click delegado igual funciona; esto solo agrega pista visual.
+  // Si el render viejo no marca imÃ¡genes, el click delegado igual funciona; esto solo agrega pista visual.
   const oldRenderChat = window.renderChatMensajes;
   window.renderChatMensajes = function(){
     const res = typeof oldRenderChat === "function" ? oldRenderChat.apply(this, arguments) : undefined;
@@ -5785,7 +5785,7 @@ async function cerrarSesion(){
   };
   try{ renderChatMensajes = window.renderChatMensajes; }catch(e){}
 
-  // Asegura layout compacto al entrar a Inicio/Chat sin tocar lógica de datos.
+  // Asegura layout compacto al entrar a Inicio/Chat sin tocar lÃ³gica de datos.
   const oldMostrarVista = window.mostrarVista;
   window.mostrarVista = function(vista){
     const r = typeof oldMostrarVista === "function" ? oldMostrarVista.apply(this, arguments) : undefined;
@@ -5799,8 +5799,8 @@ async function cerrarSesion(){
 
 
 <!-- =========================================================
-     NODO OPERATIVO · MP DETECTADOS + WORKER LIVE PATCH V20
-     - No toca acción rápida ni flujo estable.
+     NODO OPERATIVO Â· MP DETECTADOS + WORKER LIVE PATCH V20
+     - No toca acciÃ³n rÃ¡pida ni flujo estable.
      - Agrega vista Pagos MP detectados.
      - Confirma / descarta match MP con operador humano.
      - Refresca worker directo cada 1.5s y por Realtime sin esperar F5.
@@ -5858,7 +5858,7 @@ async function cerrarSesion(){
     const e=norm(estado);
     if(e==='CONFIRMADO') return `<span class="mp-pill info">CONFIRMADO</span>`;
     if(e==='MATCH_ALTO') return `<span class="mp-pill ok">MATCH ALTO</span>`;
-    if(e==='REVISION') return `<span class="mp-pill warn">REVISIÓN</span>`;
+    if(e==='REVISION') return `<span class="mp-pill warn">REVISIÃ“N</span>`;
     if(e==='SUGERIDO') return `<span class="mp-pill warn">SUGERIDO</span>`;
     return `<span class="mp-pill off">${esc(estado||'-')}</span>`;
   }
@@ -5906,7 +5906,7 @@ async function cerrarSesion(){
         .order('pago_match_at', {ascending:false, nullsFirst:false})
         .limit(80);
       if(error){
-        console.warn('Pagos MP no disponibles todavía:', error.message || error);
+        console.warn('Pagos MP no disponibles todavÃ­a:', error.message || error);
         S.pagos = [];
       }else{
         S.pagos = (data || []).map(normalizePagoRow);
@@ -5946,18 +5946,18 @@ async function cerrarSesion(){
       <div class="mp-card-top">
         <div>
           ${estadoMpBadge(p.pago_match_estado)}
-          <div class="mp-meta" style="margin-top:6px">Solicitud #${esc(p.solicitud_id)} · ${fecha2(p.solicitud_created_at)}</div>
+          <div class="mp-meta" style="margin-top:6px">Solicitud #${esc(p.solicitud_id)} Â· ${fecha2(p.solicitud_created_at)}</div>
         </div>
         <div class="mp-score ${sc}">${esc(p.pago_match_score||0)}</div>
       </div>
       <div><b>${esc(p.usuario || 'Usuario')}</b> <span class="mp-meta">${esc(p.nombre_completo||'')}</span></div>
       <div class="mp-amount">${money2(p.monto || p.monto_neto)}</div>
       <div class="mp-meta">
-        Detectado: <b>${money2(p.monto_neto)}</b> · ${fecha2(p.fecha_movimiento)}<br>
-        Titular declarado: ${esc(p.titular_transferencia || '-')} ${p.dni_transferencia?`· DNI ${esc(p.dni_transferencia)}`:''}<br>
+        Detectado: <b>${money2(p.monto_neto)}</b> Â· ${fecha2(p.fecha_movimiento)}<br>
+        Titular declarado: ${esc(p.titular_transferencia || '-')} ${p.dni_transferencia?`Â· DNI ${esc(p.dni_transferencia)}`:''}<br>
         Medio declarado: ${esc(p.medio_transferencia || '-')}<br>
-        Titular MP: ${esc(p.origen_nombre || '-')} ${p.origen_documento?`· Doc ${esc(p.origen_documento)}`:''}<br>
-        Billetera: ${esc(p.billetera_nombre || '-')} · Alias ${esc(p.billetera_alias || '-')}
+        Titular MP: ${esc(p.origen_nombre || '-')} ${p.origen_documento?`Â· Doc ${esc(p.origen_documento)}`:''}<br>
+        Billetera: ${esc(p.billetera_nombre || '-')} Â· Alias ${esc(p.billetera_alias || '-')}
         ${compact?'':`<br>Motivo: ${esc(p.pago_match_motivo || '-')}`}
       </div>
       <div class="mp-actions">
@@ -5975,7 +5975,7 @@ async function cerrarSesion(){
     if(!pend.length){ box.innerHTML=''; return; }
     box.innerHTML=`<div class="mp-detect-panel mp-detect-compact-v11">
       <div class="mp-detect-head compact">
-        <div><div class="mp-detect-title">💚 Pagos MP</div></div>
+        <div><div class="mp-detect-title">ðŸ’š Pagos MP</div></div>
         <button class="mini-btn blue" onclick="cargarPagosMp(false)">Actualizar MP</button>
       </div>
       <div class="mp-compact-list">
@@ -5983,9 +5983,9 @@ async function cerrarSesion(){
           const confirmado=norm(p.pago_match_estado)==='CONFIRMADO';
           return `<div class="mp-compact-row">
             <div class="mp-compact-main">
-              <b>#${esc(p.solicitud_id)}</b> · ${esc(p.usuario||'Usuario')} · <b>${money2(p.monto||p.monto_neto)}</b>
+              <b>#${esc(p.solicitud_id)}</b> Â· ${esc(p.usuario||'Usuario')} Â· <b>${money2(p.monto||p.monto_neto)}</b>
               <span class="mp-compact-score">${esc(p.pago_match_score||0)}</span>
-              <div class="mp-compact-sub">${esc(p.titular_transferencia||p.origen_nombre||'-')} · ${esc(p.billetera_nombre||'-')}</div>
+              <div class="mp-compact-sub">${esc(p.titular_transferencia||p.origen_nombre||'-')} Â· ${esc(p.billetera_nombre||'-')}</div>
             </div>
             <div class="mp-actions mp-actions-compact">
               <button class="mini-btn blue" onclick="verDetallePagoMp('${attr(p.solicitud_id)}')">Ver</button>
@@ -6014,10 +6014,10 @@ async function cerrarSesion(){
 
   window.verDetallePagoMp=function(solicitudId){
     const p=(S.pagos||[]).find(x=>String(x.solicitud_id)===String(solicitudId));
-    if(!p){ alert('No encontré el pago detectado.'); return; }
+    if(!p){ alert('No encontrÃ© el pago detectado.'); return; }
     abrirModal('Pago MP detectado', `
       <div class="verify-box ${Number(p.pago_match_score)>=90?'good':'warn'}">
-        <div class="verify-title">Mercado Pago · ${esc(p.pago_match_estado)} · score ${esc(p.pago_match_score)}</div>
+        <div class="verify-title">Mercado Pago Â· ${esc(p.pago_match_estado)} Â· score ${esc(p.pago_match_score)}</div>
         <div class="verify-grid">
           ${verifyRow('Solicitud', '#'+p.solicitud_id)}
           ${verifyRow('Usuario plataforma', p.usuario || '-', '', true)}
@@ -6041,7 +6041,7 @@ async function cerrarSesion(){
 
   window.confirmarPagoMp=async function(matchId){
     if(!matchId){ alert('No hay match_id.'); return; }
-    if(!confirm('¿Confirmar este pago de Mercado Pago? La solicitud queda lista para que el operador la envíe al worker.')) return;
+    if(!confirm('Â¿Confirmar este pago de Mercado Pago? La solicitud queda lista para que el operador la envÃ­e al worker.')) return;
     const {data,error}=await supabaseClient.rpc('mp_confirmar_match',{p_match_id:Number(matchId),p_confirmado_por:currentOperator()});
     if(error){ alert('Error confirmando pago MP: '+error.message); return; }
     const r=Array.isArray(data)?data[0]:data;
@@ -6109,7 +6109,7 @@ async function cerrarSesion(){
     if(S.installed) return;
     const navSol=byId('navSolicitudes');
     if(navSol && !byId('navMp')){
-      navSol.insertAdjacentHTML('afterend', `<button id="navMp" class="nav-btn" onclick="mostrarVista('mp')">💚 Pagos MP <span id="badgeMp" class="badge-alert hidden">0</span></button>`);
+      navSol.insertAdjacentHTML('afterend', `<button id="navMp" class="nav-btn" onclick="mostrarVista('mp')">ðŸ’š Pagos MP <span id="badgeMp" class="badge-alert hidden">0</span></button>`);
     }
     const main=document.querySelector('main.main');
     if(main && !byId('viewMp')){
@@ -6118,11 +6118,11 @@ async function cerrarSesion(){
       sec.className='hidden';
       sec.innerHTML=`<div class="card">
         <div style="display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:12px">
-          <div><h2 class="card-title" style="margin-bottom:3px">💚 Pagos Mercado Pago detectados</h2><div class="small">Confirmación humana. Detecta y sugiere, pero no acredita fichas solo.</div></div>
-          <button class="mini-btn blue" onclick="cargarPagosMp(false)">🔄 Actualizar MP</button>
+          <div><h2 class="card-title" style="margin-bottom:3px">ðŸ’š Pagos Mercado Pago detectados</h2><div class="small">ConfirmaciÃ³n humana. Detecta y sugiere, pero no acredita fichas solo.</div></div>
+          <button class="mini-btn blue" onclick="cargarPagosMp(false)">ðŸ”„ Actualizar MP</button>
         </div>
         <div class="filters">
-          <select id="mpFiltroEstado" onchange="renderPagosMp()"><option value="">Todos</option><option value="MATCH_ALTO">Match alto</option><option value="REVISION">Revisión</option><option value="SUGERIDO">Sugerido</option><option value="CONFIRMADO">Confirmado</option></select>
+          <select id="mpFiltroEstado" onchange="renderPagosMp()"><option value="">Todos</option><option value="MATCH_ALTO">Match alto</option><option value="REVISION">RevisiÃ³n</option><option value="SUGERIDO">Sugerido</option><option value="CONFIRMADO">Confirmado</option></select>
           <input id="mpFiltroTexto" placeholder="Buscar usuario, titular, billetera, motivo..." oninput="renderPagosMp()">
         </div>
         <div id="mpPagosBody"></div>
@@ -6216,16 +6216,16 @@ async function cerrarSesion(){
 
 
 <!-- =========================================================
-     NODO OPERATIVO P4 · UX SAFE PATCH
+     NODO OPERATIVO P4 Â· UX SAFE PATCH
      - Scroll estable sin saltos al refrescar
-     - Billeteras robustas P1/P2/P3/P4/P5 con campos mayúsc/minúsc
+     - Billeteras robustas P1/P2/P3/P4/P5 con campos mayÃºsc/minÃºsc
      - Scroll independiente Inicio/Solicitudes/Worker
-     - Zoom real para imágenes/comprobantes del chat
-     - Acción rápida intuitiva: 0/vacío valida, + carga, - retira
-     - No modifica worker, Agentes, SQL ni RPC de ejecución
+     - Zoom real para imÃ¡genes/comprobantes del chat
+     - AcciÃ³n rÃ¡pida intuitiva: 0/vacÃ­o valida, + carga, - retira
+     - No modifica worker, Agentes, SQL ni RPC de ejecuciÃ³n
 ========================================================= -->
 <style>
-/* Scroll de panel: evita que una actualización mande toda la pantalla arriba */
+/* Scroll de panel: evita que una actualizaciÃ³n mande toda la pantalla arriba */
 body.nodo-ux-safe{overflow:hidden}
 body.nodo-ux-safe .layout{height:100vh;overflow:hidden}
 body.nodo-ux-safe .main{height:100vh;overflow:hidden;padding:12px 14px}
@@ -6251,7 +6251,7 @@ body.nodo-ux-safe .ops-wallet{padding:10px;border-radius:14px}
 body.nodo-ux-safe .ops-wallet-saldo{font-size:18px}
 body.nodo-ux-safe .ops-main-table td,body.nodo-ux-safe .ops-main-table th{font-size:11px;padding:7px}
 
-/* Modo acción intuitiva */
+/* Modo acciÃ³n intuitiva */
 .nodo-auto-action-note{border:1px solid rgba(61,90,254,.35);background:rgba(61,90,254,.10);color:#dbe4ff;border-radius:12px;padding:9px 10px;font-size:12px;line-height:1.35;margin:5px 0 8px}
 .nodo-auto-action-preview{border-radius:999px;padding:5px 8px;font-weight:900;font-size:11px;display:inline-block;margin-top:5px}
 .nodo-auto-action-preview.valida{background:#16235f;color:#cbd5ff}
@@ -6343,12 +6343,12 @@ body.nodo-ux-safe .ops-main-table td,body.nodo-ux-safe .ops-main-table th{font-s
     const raw = pick(w,['ACTIVA','activa','activo','ACTIVO','estado','ESTADO'], '');
     if(raw === true) return true;
     const x = norm(raw);
-    return ['SI','SÍ','TRUE','1','ACTIVA','ACTIVO','DISPONIBLE','OK'].includes(x);
+    return ['SI','SÃ','TRUE','1','ACTIVA','ACTIVO','DISPONIBLE','OK'].includes(x);
   }
   function walletIsManual(w){
     const raw = pick(w,['SELECCIONADA_MANUAL','seleccionada_manual','manual','en_landing'], '');
     if(raw === true) return true;
-    return ['SI','SÍ','TRUE','1','MANUAL','EN LANDING'].includes(norm(raw));
+    return ['SI','SÃ','TRUE','1','MANUAL','EN LANDING'].includes(norm(raw));
   }
   function normWallet(w){
     const id = String(pick(w,['ID_BILLETERA','id','billetera_id','ID'], '') || '');
@@ -6384,12 +6384,12 @@ body.nodo-ux-safe .ops-main-table td,body.nodo-ux-safe .ops-main-table th{font-s
   window.renderBilleteras = renderBilleteras = function(){
     const list = listaWalletsBase();
     if(!list.length){
-      setBox('walletsGrid', `<div class="alert-box">No hay billeteras visibles para esta PC. Si existen en admin, tocá Actualizar o revisá que tengan pc_codigo ${esc(pcOperativa||'')}.</div>`);
+      setBox('walletsGrid', `<div class="alert-box">No hay billeteras visibles para esta PC. Si existen en admin, tocÃ¡ Actualizar o revisÃ¡ que tengan pc_codigo ${esc(pcOperativa||'')}.</div>`);
       return;
     }
     const html = list.map(b=>`<div class="wallet-card ${b.activa?'ok':'paused'} ${b.manual?'selected':''}">
-      <div class="wallet-name">💳 ${esc(b.nombre || b.id || 'Billetera')}</div>
-      <div class="wallet-type">${esc(b.banco || '')} · ${esc(b.pc || pcOperativa || '')}</div>
+      <div class="wallet-name">ðŸ’³ ${esc(b.nombre || b.id || 'Billetera')}</div>
+      <div class="wallet-type">${esc(b.banco || '')} Â· ${esc(b.pc || pcOperativa || '')}</div>
       <div class="small" style="margin-top:8px;line-height:1.45">
         Titular: <b>${esc(b.titular || '-')}</b><br>
         Alias: <b>${esc(b.alias || '-')}</b><br>
@@ -6438,7 +6438,7 @@ body.nodo-ux-safe .ops-main-table td,body.nodo-ux-safe .ops-main-table th{font-s
     const sel = $(selectId); if(!sel) return;
     const previous = sel.value || readLastWallet();
     const list = listaWalletsBase().filter(w => w.activa || w.saldo !== 0);
-    sel.innerHTML = `<option value="">${esc(allowBlankText || 'Seleccionar billetera')}</option>` + list.map(w=>`<option value="${attr(w.id)}">${esc(w.nombre)} · ${esc(w.banco)}${w.saldo?(' · '+moneySafe(w.saldo)):''}</option>`).join('');
+    sel.innerHTML = `<option value="">${esc(allowBlankText || 'Seleccionar billetera')}</option>` + list.map(w=>`<option value="${attr(w.id)}">${esc(w.nombre)} Â· ${esc(w.banco)}${w.saldo?(' Â· '+moneySafe(w.saldo)):''}</option>`).join('');
     restoreLastWallet(selectId, previous);
   }
   window.renderWalletSelectWorkerManual = renderWalletSelectWorkerManual = function(){ renderWalletOptions('manualWorkerBilletera','No aplica / seleccionar billetera'); };
@@ -6452,10 +6452,10 @@ body.nodo-ux-safe .ops-main-table td,body.nodo-ux-safe .ops-main-table th{font-s
     const so = window.saldosOperativos || (typeof saldosOperativos !== 'undefined' ? saldosOperativos : null);
     const list = ((so && Array.isArray(so.billeteras) && so.billeteras.length) ? so.billeteras.map(normWallet) : listaWalletsBase());
     if(!list.length){ setBox('opsWalletStrip', `<div class="ops-wallet"><div class="ops-wallet-name">Billeteras</div><div class="ops-wallet-meta">Sin billeteras visibles para esta PC.</div></div>`); return; }
-    setBox('opsWalletStrip', list.map(b=>`<div class="ops-wallet"><div class="ops-wallet-name">${esc(b.nombre||'Billetera')}</div><div class="ops-wallet-saldo">${moneySafe(b.saldo||0)}</div><div class="ops-wallet-meta">${esc(b.banco||'')} · ${esc(b.titular||'')}<br>Alias: ${esc(b.alias||'-')}</div><div class="ops-wallet-actions"><button class="mini-btn gray" onclick="copiarTextoOperativo('${attr(b.alias||'')}','Alias')">Alias</button><button class="mini-btn gray" onclick="copiarTextoOperativo('${attr(b.cbu||'')}','CBU/CVU')">CBU</button><button class="mini-btn yellow" onclick="abrirAjusteBilletera('${attr(b.id)}')">Ajustar</button></div></div>`).join(''));
+    setBox('opsWalletStrip', list.map(b=>`<div class="ops-wallet"><div class="ops-wallet-name">${esc(b.nombre||'Billetera')}</div><div class="ops-wallet-saldo">${moneySafe(b.saldo||0)}</div><div class="ops-wallet-meta">${esc(b.banco||'')} Â· ${esc(b.titular||'')}<br>Alias: ${esc(b.alias||'-')}</div><div class="ops-wallet-actions"><button class="mini-btn gray" onclick="copiarTextoOperativo('${attr(b.alias||'')}','Alias')">Alias</button><button class="mini-btn gray" onclick="copiarTextoOperativo('${attr(b.cbu||'')}','CBU/CVU')">CBU</button><button class="mini-btn yellow" onclick="abrirAjusteBilletera('${attr(b.id)}')">Ajustar</button></div></div>`).join(''));
   };
 
-  /* ---------- Acción rápida intuitiva ---------- */
+  /* ---------- AcciÃ³n rÃ¡pida intuitiva ---------- */
   function inferAction(rawMonto){
     const raw = String(rawMonto ?? '').trim();
     if(raw === '') return {tipo:'VALIDAR_USUARIO', monto:0, cls:'valida', label:'Validar usuario'};
@@ -6467,11 +6467,11 @@ body.nodo-ux-safe .ops-main-table td,body.nodo-ux-safe .ops-main-table th{font-s
   function updatePreview(montoId, previewId, walletId){
     const r = inferAction($(montoId)?.value || '');
     const p = $(previewId);
-    if(p) p.innerHTML = `<span class="nodo-auto-action-preview ${r.cls}">${esc(r.label)}${r.monto?(' · '+moneySafe(r.monto)):''}</span>`;
+    if(p) p.innerHTML = `<span class="nodo-auto-action-preview ${r.cls}">${esc(r.label)}${r.monto?(' Â· '+moneySafe(r.monto)):''}</span>`;
     const wallet = $(walletId);
     if(wallet){
-      // No borrar la billetera cuando el monto está vacío/0.
-      // La dejamos deshabilitada en VALIDAR_USUARIO, pero conservada para la próxima carga/retiro.
+      // No borrar la billetera cuando el monto estÃ¡ vacÃ­o/0.
+      // La dejamos deshabilitada en VALIDAR_USUARIO, pero conservada para la prÃ³xima carga/retiro.
       restoreLastWallet(walletId);
       wallet.disabled = r.tipo === 'VALIDAR_USUARIO';
       if(r.tipo !== 'VALIDAR_USUARIO') restoreLastWallet(walletId);
@@ -6492,9 +6492,9 @@ body.nodo-ux-safe .ops-main-table td,body.nodo-ux-safe .ops-main-table th{font-s
     ];
     configs.forEach(c=>{
       const m=$(c.m); if(!m) return;
-      m.placeholder = '0/vacío valida · positivo carga · negativo retira';
+      m.placeholder = '0/vacÃ­o valida Â· positivo carga Â· negativo retira';
       if(!$(c.p)){
-        const note=document.createElement('div'); note.className='nodo-auto-action-note'; note.innerHTML='Modo automático: <b>monto vacío/0 valida usuario</b>, <b>monto positivo carga</b>, <b>monto negativo retira</b>. <span id="'+c.p+'"></span>';
+        const note=document.createElement('div'); note.className='nodo-auto-action-note'; note.innerHTML='Modo automÃ¡tico: <b>monto vacÃ­o/0 valida usuario</b>, <b>monto positivo carga</b>, <b>monto negativo retira</b>. <span id="'+c.p+'"></span>';
         const target=$(c.before)?.closest('div') || m.closest('div');
         if(target && target.parentElement) target.parentElement.insertBefore(note, target);
       }
@@ -6511,8 +6511,8 @@ body.nodo-ux-safe .ops-main-table td,body.nodo-ux-safe .ops-main-table th{font-s
     const out = cfg.out;
     const billetera = billeteraId ? getWalletById(billeteraId) : null;
 
-    if(!usuario){ setBox(out, `<div class="err-box">Ingresá un usuario.</div>`); return; }
-    if(inf.tipo !== 'VALIDAR_USUARIO' && !billeteraId){ setBox(out, `<div class="err-box">Seleccioná la billetera impactada.</div>`); return; }
+    if(!usuario){ setBox(out, `<div class="err-box">IngresÃ¡ un usuario.</div>`); return; }
+    if(inf.tipo !== 'VALIDAR_USUARIO' && !billeteraId){ setBox(out, `<div class="err-box">SeleccionÃ¡ la billetera impactada.</div>`); return; }
     if(billeteraId) rememberLastWallet(billeteraId);
 
     if($('manualWorkerTipo')) $('manualWorkerTipo').value = inf.tipo;
@@ -6529,7 +6529,7 @@ body.nodo-ux-safe .ops-main-table td,body.nodo-ux-safe .ops-main-table th{font-s
       p_billetera_id: billeteraId ? Number(billeteraId) : null,
       p_observacion: [
         obs || '',
-        `Modo automático: ${inf.label}`,
+        `Modo automÃ¡tico: ${inf.label}`,
         billetera ? `Billetera: ${billetera.NOMBRE_VISIBLE || billetera.nombre_visible || billetera.BILLETERA_NOMBRE || ''} (${billetera.TIPO || billetera.banco || ''})` : '',
         billeteraId ? `billetera_id=${billeteraId}` : ''
       ].filter(Boolean).join(' | ')
@@ -6541,7 +6541,7 @@ body.nodo-ux-safe .ops-main-table td,body.nodo-ux-safe .ops-main-table th{font-s
     if(r && r.ok === false){ setBox(out, `<div class="err-box">${esc(r.error || r.mensaje || 'No se pudo crear el job.')}</div>`); return; }
     setBox(out, `<div class="ok-box">${esc(inf.label)} enviada al worker. Job: <b>${esc(r?.job_id || r?.id || '-')}</b></div>`);
 
-    // Agiliza siguiente movimiento: limpia usuario/monto/obs, conserva la última billetera usada.
+    // Agiliza siguiente movimiento: limpia usuario/monto/obs, conserva la Ãºltima billetera usada.
     const walletToKeep = billeteraId || readLastWallet();
     if(walletToKeep) rememberLastWallet(walletToKeep);
     if($(cfg.usuario)) $(cfg.usuario).value = '';
@@ -6561,20 +6561,20 @@ body.nodo-ux-safe .ops-main-table td,body.nodo-ux-safe .ops-main-table th{font-s
   window.ajustarMontoWorkerManualInicio = ajustarMontoWorkerManualInicio = function(){ updatePreview('manualWorkerMontoInicio','nodoPreviewInicio','manualWorkerBilleteraInicio'); renderWalletSelectWorkerInicio(); };
   window.ajustarMontoWorkerManual = ajustarMontoWorkerManual = function(){ updatePreview('manualWorkerMonto','nodoPreviewWorker','manualWorkerBilletera'); renderWalletSelectWorkerManual(); };
 
-  /* ---------- Zoom real de imágenes/comprobantes ---------- */
+  /* ---------- Zoom real de imÃ¡genes/comprobantes ---------- */
   let viewerState = {scale:1, x:0, y:0, rot:0, dragging:false, sx:0, sy:0, ox:0, oy:0, src:''};
   function ensureViewer(){
     if($('nodoImageViewer')) return;
     const div=document.createElement('div');
     div.id='nodoImageViewer';
     div.innerHTML=`<div class="nodo-viewer-toolbar">
-      <button type="button" data-act="minus">−</button>
+      <button type="button" data-act="minus">âˆ’</button>
       <button type="button" data-act="plus">+</button>
       <button type="button" data-act="fit">Ajustar</button>
       <button type="button" data-act="rot">Rotar</button>
       <button type="button" data-act="open">Abrir</button>
       <button type="button" class="danger" data-act="close">Cerrar</button>
-    </div><img id="nodoImageViewerImg" alt="Comprobante"><div class="nodo-viewer-help">Rueda = zoom · Arrastrá para mover · Esc para cerrar</div>`;
+    </div><img id="nodoImageViewerImg" alt="Comprobante"><div class="nodo-viewer-help">Rueda = zoom Â· ArrastrÃ¡ para mover Â· Esc para cerrar</div>`;
     document.body.appendChild(div);
     div.addEventListener('click',e=>{ if(e.target.id==='nodoImageViewer') closeViewer(); });
     div.querySelector('.nodo-viewer-toolbar').addEventListener('click',e=>{
@@ -6630,11 +6630,11 @@ body.nodo-ux-safe .ops-main-table td,body.nodo-ux-safe .ops-main-table th{font-s
 /* =========================================================
 <style>
 /* =========================================================
-   NODO V16 · Base limpia operativa
+   NODO V16 Â· Base limpia operativa
    - Sin restauradores agresivos de scroll.
    - Centro Operativo unificado.
-   - Acción rápida por monto: 0 valida, + carga, - retiro.
-   - MP fuera del Inicio; queda en su sección.
+   - AcciÃ³n rÃ¡pida por monto: 0 valida, + carga, - retiro.
+   - MP fuera del Inicio; queda en su secciÃ³n.
 ========================================================= */
 html, body { height:100%; overflow:hidden!important; }
 .layout{height:100vh!important; overflow:hidden!important;}
@@ -6684,7 +6684,7 @@ html, body { height:100%; overflow:hidden!important; }
 
 <script>
 /* =========================================================
-   NODO V16 · Lógica limpia final
+   NODO V16 Â· LÃ³gica limpia final
 ========================================================= */
 (function(){
   if(window.__NODO_V16_CLEAN_OPERATIVO__) return;
@@ -6745,12 +6745,12 @@ html, body { height:100%; overflow:hidden!important; }
     const oldObs = val('manualWorkerObsInicio');
     const wallets = (window.saldosOperativos?.billeteras || saldosOperativos?.billeteras || []);
     const html = `<div class="nodo-v16-quick">
-      <div class="nodo-v16-quick-title">⚡ Acción rápida</div>
+      <div class="nodo-v16-quick-title">âš¡ AcciÃ³n rÃ¡pida</div>
       <div class="nodo-v16-quick-grid">
         <div><label>Usuario</label><input id="manualWorkerUsuarioInicio" placeholder="ej: pruebaxx" value="${attr(oldUser)}"></div>
-        <div><label>Monto</label><input id="manualWorkerMontoInicio" placeholder="0 valida · + carga · - retiro" value="${attr(oldMonto)}" oninput="nodoV16PreviewAccion()"></div>
-        <div><label>Acción</label><div id="nodoV16Preview" class="nodo-v16-preview">Monto 0: validar usuario</div></div>
-        <div><label>Billetera impactada</label><select id="manualWorkerBilleteraInicio" onchange="localStorage.setItem('${LS_WALLET}', this.value)"><option value="">No aplica / seleccionar</option>${wallets.map(b=>`<option value="${attr(b.id)}" ${String(b.id)===String(oldWallet)?'selected':''}>${esc(b.nombre_visible||'Billetera')} · ${esc(b.banco||'')} · ${pesos(b.saldo||0)}</option>`).join('')}</select></div>
+        <div><label>Monto</label><input id="manualWorkerMontoInicio" placeholder="0 valida Â· + carga Â· - retiro" value="${attr(oldMonto)}" oninput="nodoV16PreviewAccion()"></div>
+        <div><label>AcciÃ³n</label><div id="nodoV16Preview" class="nodo-v16-preview">Monto 0: validar usuario</div></div>
+        <div><label>Billetera impactada</label><select id="manualWorkerBilleteraInicio" onchange="localStorage.setItem('${LS_WALLET}', this.value)"><option value="">No aplica / seleccionar</option>${wallets.map(b=>`<option value="${attr(b.id)}" ${String(b.id)===String(oldWallet)?'selected':''}>${esc(b.nombre_visible||'Billetera')} Â· ${esc(b.banco||'')} Â· ${pesos(b.saldo||0)}</option>`).join('')}</select></div>
         <div><label>&nbsp;</label><button class="btn btn-green" style="height:38px;margin:0;padding:0 12px" onclick="crearWorkerJobManualInicio()">Enviar</button></div>
       </div>
       <input id="manualWorkerObsInicio" type="hidden" value="${attr(oldObs)}">
@@ -6764,7 +6764,7 @@ html, body { height:100%; overflow:hidden!important; }
     const box=byId('nodoV16Preview'); if(!box) return;
     const n=parseMonto(val('manualWorkerMontoInicio'));
     box.className='nodo-v16-preview';
-    if(!Number.isFinite(n)){ box.classList.add('err'); box.textContent='Monto inválido'; return; }
+    if(!Number.isFinite(n)){ box.classList.add('err'); box.textContent='Monto invÃ¡lido'; return; }
     if(n===0){ box.classList.add('warn'); box.textContent='Validar usuario'; return; }
     if(n>0){ box.classList.add('ok'); box.textContent='Cargar fichas: ' + pesos(n); return; }
     box.classList.add('warn'); box.textContent='Retirar fichas: ' + pesos(Math.abs(n));
@@ -6775,11 +6775,11 @@ html, body { height:100%; overflow:hidden!important; }
     const montoRaw=parseMonto(val('manualWorkerMontoInicio'));
     const billeteraId=txt(val('manualWorkerBilleteraInicio')).trim();
     const out='manualWorkerResultadoInicio';
-    if(!usuario){ set(out, '<div class="err-box">Ingresá un usuario.</div>'); return; }
-    if(!Number.isFinite(montoRaw)){ set(out, '<div class="err-box">El monto no es válido.</div>'); return; }
+    if(!usuario){ set(out, '<div class="err-box">IngresÃ¡ un usuario.</div>'); return; }
+    if(!Number.isFinite(montoRaw)){ set(out, '<div class="err-box">El monto no es vÃ¡lido.</div>'); return; }
     const tipo = montoRaw === 0 ? 'VALIDAR_USUARIO' : (montoRaw > 0 ? 'CARGAR_FICHAS' : 'PROCESAR_RETIRO');
     const monto = Math.abs(montoRaw);
-    if(tipo !== 'VALIDAR_USUARIO' && !billeteraId){ set(out, '<div class="err-box">Seleccioná la billetera impactada.</div>'); return; }
+    if(tipo !== 'VALIDAR_USUARIO' && !billeteraId){ set(out, '<div class="err-box">SeleccionÃ¡ la billetera impactada.</div>'); return; }
     if(billeteraId) localStorage.setItem(LS_WALLET, billeteraId);
     set(out, '<div class="alert-box">Enviando al worker...</div>');
     try{
@@ -6790,7 +6790,7 @@ html, body { height:100%; overflow:hidden!important; }
         p_monto: monto,
         p_origen: 'PANEL_OPERATIVO',
         p_billetera_id: billeteraId ? Number(billeteraId) : null,
-        p_observacion: `Acción rápida automática · ${tipo}`
+        p_observacion: `AcciÃ³n rÃ¡pida automÃ¡tica Â· ${tipo}`
       });
       if(error) throw error;
       const r=Array.isArray(data)?data[0]:data;
@@ -6807,9 +6807,9 @@ html, body { height:100%; overflow:hidden!important; }
 
   function workerResultCompact(resultado, error){
     const t=txt(resultado || error || '');
-    if(error) return '<span class="nodo-v16-result-error">⚠️ Error</span>';
-    if(/OK|operación correcta|operacion correcta|CARGA OK|RETIRO OK|VALIDAR USUARIO OK/i.test(t)) return '<span class="nodo-v16-result-ok">✅ OK</span>';
-    return t ? '<span class="nodo-v16-result-ok">✅ OK</span>' : '-';
+    if(error) return '<span class="nodo-v16-result-error">âš ï¸ Error</span>';
+    if(/OK|operaciÃ³n correcta|operacion correcta|CARGA OK|RETIRO OK|VALIDAR USUARIO OK/i.test(t)) return '<span class="nodo-v16-result-ok">âœ… OK</span>';
+    return t ? '<span class="nodo-v16-result-ok">âœ… OK</span>' : '-';
   }
 
   function renderOpsKpisV16(){
@@ -6819,10 +6819,10 @@ html, body { height:100%; overflow:hidden!important; }
     const fichas=Number((saldosOperativos?.fichas||{}).saldo || 0);
     const saldoRow=readSaldoCache();
     const saldoAgente=saldoRow ? Number(saldoRow.saldo_agente || 0) : null;
-    const saldoSub=saldoRow ? `Último: ${esc(saldoRow.ultimo_tipo || '-')} · ${esc(saldoRow.ultimo_usuario || '-')}` : 'Se actualiza cuando trabaja el worker';
+    const saldoSub=saldoRow ? `Ãšltimo: ${esc(saldoRow.ultimo_tipo || '-')} Â· ${esc(saldoRow.ultimo_usuario || '-')}` : 'Se actualiza cuando trabaja el worker';
     const html=`
       <div class="ops-kpi"><div class="ops-kpi-title">Saldo agente real</div><div class="ops-kpi-value">${saldoAgente===null?'Sin dato':pesos(saldoAgente)}</div><div class="ops-kpi-sub">${saldoSub}</div></div>
-      <div class="ops-kpi"><div class="ops-kpi-title">Fichas netas</div><div class="ops-kpi-value">${pesos(fichas)}</div><div class="ops-kpi-sub">Carga resta · retiro suma</div></div>
+      <div class="ops-kpi"><div class="ops-kpi-title">Fichas netas</div><div class="ops-kpi-value">${pesos(fichas)}</div><div class="ops-kpi-sub">Carga resta Â· retiro suma</div></div>
       <div class="ops-kpi"><div class="ops-kpi-title">Pendientes</div><div class="ops-kpi-value">${pendientes}</div><div class="ops-kpi-sub">Solicitudes sin cerrar</div></div>
       <div class="ops-kpi"><div class="ops-kpi-title">Worker</div><div class="ops-kpi-value">${workerActivos}</div><div class="ops-kpi-sub">Activos/reintentos</div></div>
       <div class="ops-kpi"><div class="ops-kpi-title">Chat</div><div class="ops-kpi-value">${unread}</div><div class="ops-kpi-sub">Sin leer</div></div>`;
@@ -6922,11 +6922,11 @@ html, body { height:100%; overflow:hidden!important; }
 
 
 <!-- =========================================================
-     NODO V17 · Ajuste fino sin empanchar
+     NODO V17 Â· Ajuste fino sin empanchar
      - Sidebar icon-only para ganar ancho.
      - Inicio/Solicitudes/Worker unificados en Centro Operativo.
-     - Acción rápida no se refresca mientras se escribe.
-     - Acción rápida por monto: 0 valida, + carga, - retiro.
+     - AcciÃ³n rÃ¡pida no se refresca mientras se escribe.
+     - AcciÃ³n rÃ¡pida por monto: 0 valida, + carga, - retiro.
      - Layout responsive: se acomoda al achicar ventana.
 ========================================================= -->
 <style id="nodo-v17-clean-ui">
@@ -7019,14 +7019,14 @@ html, body { height:100%; overflow:hidden!important; }
   function installSidebar(){
     document.body.classList.add('nodo-v17');
     const buttons = [
-      ['navInicio','🏠','Centro Operativo'],
-      ['navBilleteras','💳','Billeteras'],
-      ['navChat','💬','Chat'],
-      ['navAjustes','🧾','Ajustes']
+      ['navInicio','ðŸ ','Centro Operativo'],
+      ['navBilleteras','ðŸ’³','Billeteras'],
+      ['navChat','ðŸ’¬','Chat'],
+      ['navAjustes','ðŸ§¾','Ajustes']
     ];
     buttons.forEach(([id,emoji,title])=>{ const b=byId(id); if(b){ const badge=b.querySelector('.badge-alert'); b.innerHTML=emoji; if(badge) b.appendChild(badge); b.title=title; } });
-    const salir=[...document.querySelectorAll('.sidebar .nav-btn')].find(b=>/Cerrar sesión|🚪/.test(b.textContent||''));
-    if(salir){ salir.innerHTML='🚪'; salir.title='Cerrar sesión'; }
+    const salir=[...document.querySelectorAll('.sidebar .nav-btn')].find(b=>/Cerrar sesiÃ³n|ðŸšª/.test(b.textContent||''));
+    if(salir){ salir.innerHTML='ðŸšª'; salir.title='Cerrar sesiÃ³n'; }
     const ns=byId('navSolicitudes'); if(ns) ns.style.display='none';
     const nw=byId('navWorker'); if(nw) nw.style.display='none';
   }
@@ -7044,7 +7044,7 @@ html, body { height:100%; overflow:hidden!important; }
     const box=byId('nodoV17Preview'); if(!box) return;
     const n=parseMonto(val('manualWorkerMontoInicio'));
     box.className='nodo-v17-preview';
-    if(!Number.isFinite(n)){ box.classList.add('err'); box.textContent='Monto inválido'; return; }
+    if(!Number.isFinite(n)){ box.classList.add('err'); box.textContent='Monto invÃ¡lido'; return; }
     if(n===0){ box.classList.add('valida'); box.textContent='Validar usuario'; return; }
     if(n>0){ box.classList.add('carga'); box.textContent='Cargar fichas: '+moneyLocal(n); return; }
     box.classList.add('retiro'); box.textContent='Retirar fichas: '+moneyLocal(Math.abs(n));
@@ -7058,12 +7058,12 @@ html, body { height:100%; overflow:hidden!important; }
     const oldMonto = val('manualWorkerMontoInicio');
     const wallets = (window.saldosOperativos?.billeteras || window.billeteras || []).filter(Boolean);
     const html = `<div class="nodo-v17-quick">
-      <div class="nodo-v17-quick-title">⚡ Acción rápida</div>
+      <div class="nodo-v17-quick-title">âš¡ AcciÃ³n rÃ¡pida</div>
       <div class="nodo-v17-quick-grid">
         <div><label>Usuario</label><input id="manualWorkerUsuarioInicio" placeholder="ej: pruebaxx" value="${attr(oldUser)}" autocomplete="off"></div>
-        <div><label>Monto</label><input id="manualWorkerMontoInicio" placeholder="0 valida · + carga · - retiro" value="${attr(oldMonto)}" autocomplete="off" oninput="nodoV17PreviewAccion()"></div>
-        <div><label>Acción</label><div id="nodoV17Preview" class="nodo-v17-preview valida">Validar usuario</div></div>
-        <div><label>Billetera impactada</label><select id="manualWorkerBilleteraInicio" onchange="localStorage.setItem('${LS_WALLET_V17}', this.value);localStorage.setItem('nodoUltimaBilleteraImpactada', this.value)"><option value="">No aplica / seleccionar</option>${wallets.map(b=>{const id=b.id||b.billetera_id||b.ID; const nom=b.nombre_visible||b.NOMBRE_VISIBLE||b.nombre||'Billetera'; const banco=b.banco||b.BANCO||''; const saldo=b.saldo||b.SALDO||0; return `<option value="${attr(id)}" ${String(id)===String(oldWallet)?'selected':''}>${esc(nom)} · ${esc(banco)} · ${moneyLocal(saldo)}</option>`;}).join('')}</select></div>
+        <div><label>Monto</label><input id="manualWorkerMontoInicio" placeholder="0 valida Â· + carga Â· - retiro" value="${attr(oldMonto)}" autocomplete="off" oninput="nodoV17PreviewAccion()"></div>
+        <div><label>AcciÃ³n</label><div id="nodoV17Preview" class="nodo-v17-preview valida">Validar usuario</div></div>
+        <div><label>Billetera impactada</label><select id="manualWorkerBilleteraInicio" onchange="localStorage.setItem('${LS_WALLET_V17}', this.value);localStorage.setItem('nodoUltimaBilleteraImpactada', this.value)"><option value="">No aplica / seleccionar</option>${wallets.map(b=>{const id=b.id||b.billetera_id||b.ID; const nom=b.nombre_visible||b.NOMBRE_VISIBLE||b.nombre||'Billetera'; const banco=b.banco||b.BANCO||''; const saldo=b.saldo||b.SALDO||0; return `<option value="${attr(id)}" ${String(id)===String(oldWallet)?'selected':''}>${esc(nom)} Â· ${esc(banco)} Â· ${moneyLocal(saldo)}</option>`;}).join('')}</select></div>
         <div class="send-col"><label>&nbsp;</label><button class="btn btn-green" style="height:38px;margin:0;padding:0 12px" onclick="crearWorkerJobManualInicio()">Enviar</button></div>
       </div>
       <input id="manualWorkerObsInicio" type="hidden" value="">
@@ -7081,11 +7081,11 @@ html, body { height:100%; overflow:hidden!important; }
     const montoRaw=parseMonto(val('manualWorkerMontoInicio'));
     const billeteraId=str(val('manualWorkerBilleteraInicio')).trim();
     const out='manualWorkerResultadoInicio';
-    if(!usuario){ setBoxSafe(out,'<div class="err-box">Ingresá un usuario.</div>'); return; }
-    if(!Number.isFinite(montoRaw)){ setBoxSafe(out,'<div class="err-box">El monto no es válido.</div>'); return; }
+    if(!usuario){ setBoxSafe(out,'<div class="err-box">IngresÃ¡ un usuario.</div>'); return; }
+    if(!Number.isFinite(montoRaw)){ setBoxSafe(out,'<div class="err-box">El monto no es vÃ¡lido.</div>'); return; }
     const tipo = montoRaw === 0 ? 'VALIDAR_USUARIO' : (montoRaw > 0 ? 'CARGAR_FICHAS' : 'PROCESAR_RETIRO');
     const monto = Math.abs(montoRaw);
-    if(tipo !== 'VALIDAR_USUARIO' && !billeteraId){ setBoxSafe(out,'<div class="err-box">Seleccioná la billetera impactada.</div>'); return; }
+    if(tipo !== 'VALIDAR_USUARIO' && !billeteraId){ setBoxSafe(out,'<div class="err-box">SeleccionÃ¡ la billetera impactada.</div>'); return; }
     if(billeteraId){ localStorage.setItem(LS_WALLET_V17,billeteraId); localStorage.setItem('nodoUltimaBilleteraImpactada',billeteraId); }
     S.editing=true;
     setBoxSafe(out,'<div class="alert-box">Enviando al worker...</div>');
@@ -7097,7 +7097,7 @@ html, body { height:100%; overflow:hidden!important; }
         p_monto: monto,
         p_origen: 'PANEL_OPERATIVO',
         p_billetera_id: billeteraId ? Number(billeteraId) : null,
-        p_observacion: `Acción rápida · ${tipo}`
+        p_observacion: `AcciÃ³n rÃ¡pida Â· ${tipo}`
       });
       if(error) throw error;
       const r=Array.isArray(data)?data[0]:data;
@@ -7159,12 +7159,12 @@ html, body { height:100%; overflow:hidden!important; }
 
 
 <!-- =========================================================
-     NODO V18 · Limpio operativo
-     - MP como lista en su sección, no tarjetas en inicio.
-     - Chat refresca rápido sin pisar acción rápida.
-     - Acción rápida con + / - / 0, conserva billetera y guarda operador.
+     NODO V18 Â· Limpio operativo
+     - MP como lista en su secciÃ³n, no tarjetas en inicio.
+     - Chat refresca rÃ¡pido sin pisar acciÃ³n rÃ¡pida.
+     - AcciÃ³n rÃ¡pida con + / - / 0, conserva billetera y guarda operador.
      - Operaciones muestran billetera y operador.
-     - Conciliación de movimientos tras worker para actualizar saldos.
+     - ConciliaciÃ³n de movimientos tras worker para actualizar saldos.
 ========================================================= -->
 <style id="nodo-v18-operativo-clean">
   body.nodo-v18 #mpPagosInicio{display:none!important}
@@ -7299,10 +7299,10 @@ html, body { height:100%; overflow:hidden!important; }
 
   function resultCompact(resultado,error){
     const t = str(resultado||error||'');
-    if(error) return '<span class="nodo-v16-result-error">⚠️ Error</span>';
+    if(error) return '<span class="nodo-v16-result-error">âš ï¸ Error</span>';
     if(!t.trim()) return '-';
-    if(/OK|operaci[oó]n correcta|CARGA OK|RETIRO OK|VALIDAR USUARIO OK/i.test(t)) return '<span class="nodo-v16-result-ok">✅ OK</span>';
-    return '<span class="nodo-v16-result-ok">✅ OK</span>';
+    if(/OK|operaci[oÃ³]n correcta|CARGA OK|RETIRO OK|VALIDAR USUARIO OK/i.test(t)) return '<span class="nodo-v16-result-ok">âœ… OK</span>';
+    return '<span class="nodo-v16-result-ok">âœ… OK</span>';
   }
 
   async function conciliarMovimientosWorker(){
@@ -7330,7 +7330,7 @@ html, body { height:100%; overflow:hidden!important; }
     const oldUser = val('manualWorkerUsuarioInicio');
     const oldMonto = val('manualWorkerMontoInicio');
     const html = `<div class="nodo-v18-quick">
-      <div class="nodo-v18-quick-title">⚡ Acción rápida</div>
+      <div class="nodo-v18-quick-title">âš¡ AcciÃ³n rÃ¡pida</div>
       <div class="nodo-v18-quick-grid">
         <div class="wallet-cell"><label>Billetera impactada</label><select id="manualWorkerBilleteraInicio" onchange="localStorage.setItem('nodo_last_wallet_v18_${attr(pc())}', this.value);localStorage.setItem('nodoUltimaBilleteraImpactada', this.value)"><option value="">No aplica / seleccionar</option>${wallets().map(w=>{const id=walletId(w); const nom=w.nombre_visible||w.NOMBRE_VISIBLE||w.nombre||w.BILLETERA_NOMBRE||'Billetera'; const banco=w.banco||w.BANCO||w.tipo||w.TIPO||''; const saldo=w.saldo||w.SALDO||0; return `<option value="${attr(id)}" ${str(id)===str(oldWallet)?'selected':''}>${esc(nom)} - ${esc(banco)} - ${moneyLocal(saldo)}</option>`}).join('')}</select></div>
         <div><label>Usuario</label><input id="manualWorkerUsuarioInicio" placeholder="ej: pruebaxx" value="${attr(oldUser)}" autocomplete="off"></div>
@@ -7347,7 +7347,7 @@ html, body { height:100%; overflow:hidden!important; }
     const box=$('nodoV18Preview'); if(!box) return;
     const n=parseMonto(val('manualWorkerMontoInicio'));
     box.className='nodo-v18-preview';
-    if(!Number.isFinite(n)){box.classList.add('err'); box.textContent='Monto inválido'; return;}
+    if(!Number.isFinite(n)){box.classList.add('err'); box.textContent='Monto invÃ¡lido'; return;}
     if(n===0){box.classList.add('valida'); box.textContent='Validar usuario'; return;}
     if(n>0){box.classList.add('carga'); box.textContent='Cargar fichas: '+moneyLocal(n); return;}
     box.classList.add('retiro'); box.textContent='Retirar fichas: '+moneyLocal(Math.abs(n));
@@ -7358,21 +7358,21 @@ html, body { height:100%; overflow:hidden!important; }
     const montoRaw=parseMonto(val('manualWorkerMontoInicio'));
     const billeteraId=str(val('manualWorkerBilleteraInicio')).trim();
     const out='manualWorkerResultadoInicio';
-    if(!usuario){set(out,'<div class="err-box">Ingresá un usuario.</div>'); return;}
-    if(!Number.isFinite(montoRaw)){set(out,'<div class="err-box">El monto no es válido.</div>'); return;}
+    if(!usuario){set(out,'<div class="err-box">IngresÃ¡ un usuario.</div>'); return;}
+    if(!Number.isFinite(montoRaw)){set(out,'<div class="err-box">El monto no es vÃ¡lido.</div>'); return;}
     const tipo = montoRaw===0 ? 'VALIDAR_USUARIO' : (montoRaw>0 ? 'CARGAR_FICHAS' : 'PROCESAR_RETIRO');
     const monto = Math.abs(montoRaw);
-    if(tipo!=='VALIDAR_USUARIO' && !billeteraId){set(out,'<div class="err-box">Seleccioná la billetera impactada.</div>'); return;}
+    if(tipo!=='VALIDAR_USUARIO' && !billeteraId){set(out,'<div class="err-box">SeleccionÃ¡ la billetera impactada.</div>'); return;}
     if(billeteraId){localStorage.setItem('nodo_last_wallet_v18_'+pc(),billeteraId);localStorage.setItem('nodoUltimaBilleteraImpactada',billeteraId);}
     set(out,'<div class="alert-box">Enviando al worker...</div>');
     markEditing();
     try{
       let data,error;
       try{
-        ({data,error}=await supabaseClient.rpc('operativo_accion_rapida_segura',{p_pc_codigo:pc(),p_operador:op(),p_usuario:usuario,p_tipo_accion:tipo,p_monto:tipo==='VALIDAR_USUARIO'?0:monto,p_billetera_id:tipo==='VALIDAR_USUARIO'?null:Number(billeteraId),p_observacion:`Acción rápida · operador=${op()} · billetera_id=${billeteraId || ''}`}));
+        ({data,error}=await supabaseClient.rpc('operativo_accion_rapida_segura',{p_pc_codigo:pc(),p_operador:op(),p_usuario:usuario,p_tipo_accion:tipo,p_monto:tipo==='VALIDAR_USUARIO'?0:monto,p_billetera_id:tipo==='VALIDAR_USUARIO'?null:Number(billeteraId),p_observacion:`AcciÃ³n rÃ¡pida Â· operador=${op()} Â· billetera_id=${billeteraId || ''}`}));
       }catch(e){ error=e; }
       if(error){
-        ({data,error}=await supabaseClient.rpc('operativo_crear_worker_job_manual_v2',{p_pc_codigo:pc(),p_usuario:usuario,p_tipo_accion:tipo,p_monto:tipo==='VALIDAR_USUARIO'?0:monto,p_origen:'PANEL_OPERATIVO',p_billetera_id:billeteraId?Number(billeteraId):null,p_observacion:`Acción rápida · operador=${op()} · billetera_id=${billeteraId || ''}`}));
+        ({data,error}=await supabaseClient.rpc('operativo_crear_worker_job_manual_v2',{p_pc_codigo:pc(),p_usuario:usuario,p_tipo_accion:tipo,p_monto:tipo==='VALIDAR_USUARIO'?0:monto,p_origen:'PANEL_OPERATIVO',p_billetera_id:billeteraId?Number(billeteraId):null,p_observacion:`AcciÃ³n rÃ¡pida Â· operador=${op()} Â· billetera_id=${billeteraId || ''}`}));
       }
       if(error) throw error;
       const r=Array.isArray(data)?data[0]:data;
@@ -7524,7 +7524,7 @@ html, body { height:100%; overflow:hidden!important; }
 
 <style id="nodo-v20-clean">
 /* =========================================================
-   NODO V20 · Limpieza operativa + auditoría
+   NODO V20 Â· Limpieza operativa + auditorÃ­a
 ========================================================= */
 body.nodo-v20 .ops-kpis{grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:9px}
 body.nodo-v20 .ops-kpi{padding:11px;border-radius:15px;background:#141b28;border-color:#30384a}
@@ -7554,12 +7554,12 @@ body.nodo-v20 #alertas .alert-box{padding:8px 10px;font-size:12px;margin-bottom:
 
 <script id="nodo-v20-clean-js">
 /* =========================================================
-   NODO V20 · Base limpia sobre HTML operativo actual
+   NODO V20 Â· Base limpia sobre HTML operativo actual
    - KPI operaciones por turno
    - billeteras compactas
    - ajustes + / - separados
    - transferencia interna
-   - corrección auditada de billetera de job/manual
+   - correcciÃ³n auditada de billetera de job/manual
 ========================================================= */
 (function(){
   const V20 = window.NODO_V20 = window.NODO_V20 || {ops:null,lastOpsLoad:0,lastKpiHtml:'',lastWalletHtml:''};
@@ -7618,19 +7618,19 @@ body.nodo-v20 #alertas .alert-box{padding:8px 10px;font-size:12px;margin-bottom:
     let saldoAgente=null, saldoSub='Se actualiza cuando trabaja el worker';
     try{
       const row=typeof readSaldoCache==='function' ? readSaldoCache() : null;
-      if(row){ saldoAgente=n(row.saldo_agente); saldoSub=`Último: ${esc(row.ultimo_tipo||'-')} · ${esc(row.ultimo_usuario||'-')}`; }
+      if(row){ saldoAgente=n(row.saldo_agente); saldoSub=`Ãšltimo: ${esc(row.ultimo_tipo||'-')} Â· ${esc(row.ultimo_usuario||'-')}`; }
     }catch(e){}
     const chatTotal = typeof window.updateBadgeChatLateralV8==='function' ? window.updateBadgeChatLateralV8() : 0;
     const html=`
       <div class="ops-kpi v20-main"><div class="ops-kpi-title">Saldo agente real</div><div class="ops-kpi-value">${saldoAgente===null?'Sin dato':pesos(saldoAgente)}</div><div class="ops-kpi-sub">${saldoSub}</div></div>
-      <div class="ops-kpi"><div class="ops-kpi-title">Fichas netas</div><div class="ops-kpi-value">${pesos(fichas)}</div><div class="ops-kpi-sub">Carga resta · retiro suma</div></div>
-      <div class="ops-kpi v20-turno"><div class="ops-kpi-title">Operaciones hoy</div><div class="ops-kpi-value">${n(ops.total_hoy)}</div><div class="ops-kpi-sub">Cargas ${n(ops.cargas_hoy)} · Retiros ${n(ops.retiros_hoy)}</div></div>
-      <div class="ops-kpi v20-turno"><div class="ops-kpi-title">Turno actual ${esc(ops.turno_actual||'-')}</div><div class="ops-kpi-value">${n(ops.turno_actual_total)}</div><div class="ops-kpi-sub">TM ${n(ops.tm)} · TT ${n(ops.tt)} · TN ${n(ops.tn)}</div></div>
+      <div class="ops-kpi"><div class="ops-kpi-title">Fichas netas</div><div class="ops-kpi-value">${pesos(fichas)}</div><div class="ops-kpi-sub">Carga resta Â· retiro suma</div></div>
+      <div class="ops-kpi v20-turno"><div class="ops-kpi-title">Operaciones hoy</div><div class="ops-kpi-value">${n(ops.total_hoy)}</div><div class="ops-kpi-sub">Cargas ${n(ops.cargas_hoy)} Â· Retiros ${n(ops.retiros_hoy)}</div></div>
+      <div class="ops-kpi v20-turno"><div class="ops-kpi-title">Turno actual ${esc(ops.turno_actual||'-')}</div><div class="ops-kpi-value">${n(ops.turno_actual_total)}</div><div class="ops-kpi-sub">TM ${n(ops.tm)} Â· TT ${n(ops.tt)} Â· TN ${n(ops.tn)}</div></div>
       <div class="ops-kpi"><div class="ops-kpi-title">Pendientes</div><div class="ops-kpi-value">${pendientes}</div><div class="ops-kpi-sub">Solicitudes sin cerrar</div></div>
       <div class="ops-kpi"><div class="ops-kpi-title">Worker</div><div class="ops-kpi-value">${activos}</div><div class="ops-kpi-sub">${errores} error/reintento/manual</div></div>`;
     if(V20.lastKpiHtml!==html){ V20.lastKpiHtml=html; set('opsKpis',html); }
     const alertas=[];
-    if(chatTotal>0) alertas.push(`<div class="alert-box">💬 Chat: ${chatTotal} sin leer <button class="mini-btn gray" style="width:auto;margin-left:8px" onclick="v20MarcarChatVistoLocal()">Marcar visto local</button></div>`);
+    if(chatTotal>0) alertas.push(`<div class="alert-box">ðŸ’¬ Chat: ${chatTotal} sin leer <button class="mini-btn gray" style="width:auto;margin-left:8px" onclick="v20MarcarChatVistoLocal()">Marcar visto local</button></div>`);
     set('alertas',alertas.join(''));
   };
 
@@ -7646,13 +7646,13 @@ body.nodo-v20 #alertas .alert-box{padding:8px 10px;font-size:12px;margin-bottom:
 
   window.renderOpsWallets = function(){
     const lista=billeterasSaldo();
-    if(!lista.length){ set('opsWalletStrip','<div class="ops-wallet"><div class="ops-wallet-name">Billeteras</div><div class="ops-wallet-meta">Sin saldos cargados todavía.</div></div>'); return; }
+    if(!lista.length){ set('opsWalletStrip','<div class="ops-wallet"><div class="ops-wallet-name">Billeteras</div><div class="ops-wallet-meta">Sin saldos cargados todavÃ­a.</div></div>'); return; }
     const html=lista.map(b=>{
       const id=billeteraId(b), saldo=n(b.saldo), neg=saldo<0;
       return `<div class="ops-wallet ${neg?'v20-wallet-neg':''}">
         <div class="ops-wallet-name" title="${attr(billeteraNombre(b))}">${esc(billeteraNombre(b))}</div>
         <div class="ops-wallet-saldo ${neg?'balance-negative':'balance-positive'}">${pesos(saldo)}</div>
-        <div class="ops-wallet-meta">${esc(b.banco||b.tipo||'')} · ${esc(b.titular||'')}<br>Alias: ${esc(b.alias||'-')}</div>
+        <div class="ops-wallet-meta">${esc(b.banco||b.tipo||'')} Â· ${esc(b.titular||'')}<br>Alias: ${esc(b.alias||'-')}</div>
         <div class="ops-wallet-actions">
           <button class="mini-btn gray" onclick="copiarTextoOperativo('${attr(b.alias||'')}','Alias')">Alias</button>
           <button class="mini-btn gray" onclick="copiarTextoOperativo('${attr(b.cbu||b.CVU_CBU||'')}','CBU/CVU')">CBU</button>
@@ -7665,7 +7665,7 @@ body.nodo-v20 #alertas .alert-box{padding:8px 10px;font-size:12px;margin-bottom:
 
   function walletOptions(selected=''){
     const sel=String(selected||'');
-    return `<option value="">Seleccionar billetera</option>` + billeterasSaldo().map(b=>`<option value="${attr(billeteraId(b))}" ${billeteraId(b)===sel?'selected':''}>${esc(billeteraNombre(b))} · ${esc(b.banco||b.tipo||'')} · ${pesos(b.saldo||0)}</option>`).join('');
+    return `<option value="">Seleccionar billetera</option>` + billeterasSaldo().map(b=>`<option value="${attr(billeteraId(b))}" ${billeteraId(b)===sel?'selected':''}>${esc(billeteraNombre(b))} Â· ${esc(b.banco||b.tipo||'')} Â· ${pesos(b.saldo||0)}</option>`).join('');
   }
 
   window.renderSelectsAjustes = function(){
@@ -7676,10 +7676,10 @@ body.nodo-v20 #alertas .alert-box{padding:8px 10px;font-size:12px;margin-bottom:
     const cont=$('viewAjustes'); if(!cont || cont.dataset.v20==='1') return;
     cont.dataset.v20='1';
     cont.innerHTML = `
-      <div class="ops-head"><div><div class="ops-title">Ajustes y auditoría</div><div class="ops-sub">Correcciones limpias: fichas, billeteras, transferencias internas y trazabilidad.</div></div><button class="mini-btn blue" onclick="refrescarTodo(true)">🔄 Actualizar</button></div>
+      <div class="ops-head"><div><div class="ops-title">Ajustes y auditorÃ­a</div><div class="ops-sub">Correcciones limpias: fichas, billeteras, transferencias internas y trazabilidad.</div></div><button class="mini-btn blue" onclick="refrescarTodo(true)">ðŸ”„ Actualizar</button></div>
       <div class="v20-ajustes-grid">
         <div class="v20-panel">
-          <div class="v20-panel-title">🎰 Ajuste de fichas</div><div class="v20-help">Corrige fichas netas del agente. No toca billeteras.</div>
+          <div class="v20-panel-title">ðŸŽ° Ajuste de fichas</div><div class="v20-help">Corrige fichas netas del agente. No toca billeteras.</div>
           <label>Tipo</label><select id="ajusteFichasSigno"><option value="1">Sumar fichas al agente</option><option value="-1">Restar fichas al agente</option></select>
           <label>Monto</label><input id="ajusteFichasMonto" type="number" min="1" placeholder="ej: 10000">
           <label>Usuario relacionado</label><input id="ajusteFichasUsuario" placeholder="opcional">
@@ -7687,7 +7687,7 @@ body.nodo-v20 #alertas .alert-box{padding:8px 10px;font-size:12px;margin-bottom:
           <button class="btn btn-primary" onclick="guardarAjusteFichas()">Guardar ajuste de fichas</button><div id="ajusteFichasResultado" style="margin-top:12px"></div>
         </div>
         <div class="v20-panel good">
-          <div class="v20-panel-title">💳 Ajuste billetera +</div><div class="v20-help">Suma saldo a una billetera seleccionada.</div>
+          <div class="v20-panel-title">ðŸ’³ Ajuste billetera +</div><div class="v20-help">Suma saldo a una billetera seleccionada.</div>
           <label>Billetera</label><select id="ajusteBilleteraMasId"></select>
           <label>Monto</label><input id="ajusteBilleteraMasMonto" type="number" min="1" placeholder="ej: 10000">
           <label>Usuario relacionado</label><input id="ajusteBilleteraMasUsuario" placeholder="opcional">
@@ -7695,7 +7695,7 @@ body.nodo-v20 #alertas .alert-box{padding:8px 10px;font-size:12px;margin-bottom:
           <button class="btn btn-green" onclick="guardarAjusteBilleteraV20(1)">Sumar a billetera</button><div id="ajusteBilleteraMasResultado" style="margin-top:12px"></div>
         </div>
         <div class="v20-panel danger">
-          <div class="v20-panel-title">💳 Ajuste billetera -</div><div class="v20-help">Resta saldo de una billetera seleccionada.</div>
+          <div class="v20-panel-title">ðŸ’³ Ajuste billetera -</div><div class="v20-help">Resta saldo de una billetera seleccionada.</div>
           <label>Billetera</label><select id="ajusteBilleteraMenosId"></select>
           <label>Monto</label><input id="ajusteBilleteraMenosMonto" type="number" min="1" placeholder="ej: 10000">
           <label>Usuario relacionado</label><input id="ajusteBilleteraMenosUsuario" placeholder="opcional">
@@ -7703,7 +7703,7 @@ body.nodo-v20 #alertas .alert-box{padding:8px 10px;font-size:12px;margin-bottom:
           <button class="btn btn-red" onclick="guardarAjusteBilleteraV20(-1)">Restar de billetera</button><div id="ajusteBilleteraMenosResultado" style="margin-top:12px"></div>
         </div>
         <div class="v20-panel warn">
-          <div class="v20-panel-title">🔁 Movimiento entre billeteras</div><div class="v20-help">Mueve saldo interno: egreso en origen + ingreso en destino. No genera job de Agentes.</div>
+          <div class="v20-panel-title">ðŸ” Movimiento entre billeteras</div><div class="v20-help">Mueve saldo interno: egreso en origen + ingreso en destino. No genera job de Agentes.</div>
           <label>Desde billetera</label><select id="transferBilleteraOrigen"></select>
           <label>Hacia billetera</label><select id="transferBilleteraDestino"></select>
           <label>Monto</label><input id="transferBilleteraMonto" type="number" min="1" placeholder="ej: 10000">
@@ -7711,7 +7711,7 @@ body.nodo-v20 #alertas .alert-box{padding:8px 10px;font-size:12px;margin-bottom:
           <button class="btn btn-yellow" onclick="guardarTransferenciaBilletera()">Mover saldo</button><div id="transferBilleteraResultado" style="margin-top:12px"></div>
         </div>
       </div>
-      <div class="v20-panel"><div class="v20-panel-title">🧾 Últimos movimientos de billetera</div><div id="v20MovimientosBilletera"></div></div>`;
+      <div class="v20-panel"><div class="v20-panel-title">ðŸ§¾ Ãšltimos movimientos de billetera</div><div id="v20MovimientosBilletera"></div></div>`;
     renderSelectsAjustes();
     renderMovimientosBilleteraV20();
   };
@@ -7778,15 +7778,15 @@ body.nodo-v20 #alertas .alert-box{padding:8px 10px;font-size:12px;margin-bottom:
 
   window.abrirEditarBilleteraJobV20 = function(jobId){
     const job=(window.workerJobs||workerJobs||[]).find(j=>String(j.id||'')===String(jobId||''));
-    if(!job){ alert('No encontré el job.'); return; }
+    if(!job){ alert('No encontrÃ© el job.'); return; }
     const actual=walletIdFromJob(job);
     const html=`<div class="v20-edit-wallet-box">
       <div><b>Job #${esc(job.id)}</b></div>
-      <div class="small">Usuario: ${esc(job.usuario||'-')} · Monto: ${pesos(job.monto||0)} · Tipo: ${esc(job.tipo_accion||'-')}</div>
+      <div class="small">Usuario: ${esc(job.usuario||'-')} Â· Monto: ${pesos(job.monto||0)} Â· Tipo: ${esc(job.tipo_accion||'-')}</div>
       <br><label>Billetera actual</label><div class="v20-chip">${actual ? esc((billeteraById(actual)&&billeteraNombre(billeteraById(actual))) || ('#'+actual)) : 'Sin billetera'}</div>
       <label style="margin-top:10px;display:block">Nueva billetera</label><select id="v20EditJobWallet">${walletOptions(actual)}</select>
-      <label>Motivo de corrección</label><input id="v20EditJobMotivo" placeholder="obligatorio: ej. operador eligió mal la billetera">
-      <div class="small">Esto corrige la imputación/auditoría de la operación. No mueve saldo entre billeteras.</div>
+      <label>Motivo de correcciÃ³n</label><input id="v20EditJobMotivo" placeholder="obligatorio: ej. operador eligiÃ³ mal la billetera">
+      <div class="small">Esto corrige la imputaciÃ³n/auditorÃ­a de la operaciÃ³n. No mueve saldo entre billeteras.</div>
     </div>`;
     abrirModal('Editar billetera asociada', html, async()=>{
       const nueva=n($('v20EditJobWallet')?.value), motivo=s($('v20EditJobMotivo')?.value);
@@ -7795,7 +7795,7 @@ body.nodo-v20 #alertas .alert-box{padding:8px 10px;font-size:12px;margin-bottom:
       if(error){ alert('Error: '+error.message); return; }
       const r=Array.isArray(data)?data[0]:data; if(r && r.ok===false){ alert(r.error||'No se pudo corregir.'); return; }
       cerrarModal(); toast('Billetera corregida y auditada','green'); await refrescarTodo(false);
-    }, 'Guardar corrección');
+    }, 'Guardar correcciÃ³n');
   };
 
   window.renderColaUnificada = function(){
@@ -7864,7 +7864,7 @@ body.nodo-v20 #alertas .alert-box{padding:8px 10px;font-size:12px;margin-bottom:
 
 <style id="nodo-v21-final-retiro-readonly-style">
 /* =========================================================
-   NODO V21 FINAL · Control retiros 24 hs solo lectura
+   NODO V21 FINAL Â· Control retiros 24 hs solo lectura
    - Importaciones quedan para Admin/Encargado.
    - Operativo solo consulta y permite continuar con motivo obligatorio.
 ========================================================= */
@@ -7876,7 +7876,7 @@ body.nodo-v20 #alertas .alert-box{padding:8px 10px;font-size:12px;margin-bottom:
 
 <script id="nodo-v21-final-retiro-readonly-js">
 /* =========================================================
-   NODO V21 FINAL · Retiro 24 hs operativo solo lectura
+   NODO V21 FINAL Â· Retiro 24 hs operativo solo lectura
    - NO importa CSV desde panel operativo.
    - Antes de crear PROCESAR_RETIRO consulta panel_controlar_retiro_24h_v21.
    - Si hay retiro <24h: permite continuar solo con motivo obligatorio.
@@ -7910,18 +7910,18 @@ body.nodo-v20 #alertas .alert-box{padding:8px 10px;font-size:12px;margin-bottom:
 
   function renderResultado(check){
     if(!check || check.ok===false){
-      return `<div class="v21-final-alert"><b>⚠️ No se pudo validar retiro 24 hs</b><br>${esc(check?.error || 'Sin respuesta del control.')}</div>`;
+      return `<div class="v21-final-alert"><b>âš ï¸ No se pudo validar retiro 24 hs</b><br>${esc(check?.error || 'Sin respuesta del control.')}</div>`;
     }
     const base = `<div><b>Usuario:</b> ${esc(check.usuario || '-')}</div>
       <div><b>Titular:</b> ${esc(check.titular || '-')}</div>
-      <div><b>Teléfono:</b> ${esc(check.telefono || '-')}</div>`;
+      <div><b>TelÃ©fono:</b> ${esc(check.telefono || '-')}</div>`;
     if(check.bloqueado){
-      return `<div class="v21-final-block"><b>⚠️ Retiro reciente detectado</b><br>${base}<br>
-        <b>Último retiro:</b> ${esc(check.ultimo_retiro_at_fmt || check.ultimo_retiro_at || '-')}<br>
-        <b>Monto:</b> ${pesos(check.ultimo_monto || 0)} · <b>Hace:</b> ${esc(check.horas_desde_ultimo ?? '-')} hs
+      return `<div class="v21-final-block"><b>âš ï¸ Retiro reciente detectado</b><br>${base}<br>
+        <b>Ãšltimo retiro:</b> ${esc(check.ultimo_retiro_at_fmt || check.ultimo_retiro_at || '-')}<br>
+        <b>Monto:</b> ${pesos(check.ultimo_monto || 0)} Â· <b>Hace:</b> ${esc(check.horas_desde_ultimo ?? '-')} hs
       </div>`;
     }
-    return `<div class="v21-final-ok"><b>✅ Sin retiro detectado en las últimas 24 hs</b><br>${base}</div>`;
+    return `<div class="v21-final-ok"><b>âœ… Sin retiro detectado en las Ãºltimas 24 hs</b><br>${base}</div>`;
   }
 
   async function auditarOverride(usuario,monto,motivo,check){
@@ -7943,8 +7943,8 @@ body.nodo-v20 #alertas .alert-box{padding:8px 10px;font-size:12px;margin-bottom:
     abrirModal('Control retiro 24 hs', `
       ${renderResultado(check)}
       <label>Motivo para continuar igualmente</label>
-      <input id="v21MotivoRetiro24h" placeholder="obligatorio: autorizado por encargado / revisión manual / excepción">
-      <div class="v21-final-muted">El retiro se puede continuar, pero quedará auditado con operador, PC, usuario, monto, motivo y resultado del control 24 hs.</div>
+      <input id="v21MotivoRetiro24h" placeholder="obligatorio: autorizado por encargado / revisiÃ³n manual / excepciÃ³n">
+      <div class="v21-final-muted">El retiro se puede continuar, pero quedarÃ¡ auditado con operador, PC, usuario, monto, motivo y resultado del control 24 hs.</div>
     `, async()=>{
       const motivo=s($('v21MotivoRetiro24h')?.value);
       if(!motivo){ alert('El motivo es obligatorio para continuar el retiro.'); return; }
@@ -7958,10 +7958,10 @@ body.nodo-v20 #alertas .alert-box{padding:8px 10px;font-size:12px;margin-bottom:
 
   function modalSinControl(error, originalFn, ctx, args){
     abrirModal('Control retiro 24 hs no disponible', `
-      <div class="v21-final-alert"><b>⚠️ No pude consultar el control 24 hs</b><br>${esc(error?.message || error || 'Error desconocido')}</div>
+      <div class="v21-final-alert"><b>âš ï¸ No pude consultar el control 24 hs</b><br>${esc(error?.message || error || 'Error desconocido')}</div>
       <label>Motivo para continuar</label>
       <input id="v21MotivoRetiro24h" placeholder="obligatorio">
-      <div class="v21-final-muted">Si continuás, queda auditado como retiro autorizado sin control disponible.</div>
+      <div class="v21-final-muted">Si continuÃ¡s, queda auditado como retiro autorizado sin control disponible.</div>
     `, async()=>{
       const motivo=s($('v21MotivoRetiro24h')?.value);
       if(!motivo){ alert('El motivo es obligatorio.'); return; }
@@ -8039,7 +8039,7 @@ body.nodo-v20 #alertas .alert-box{padding:8px 10px;font-size:12px;margin-bottom:
   function doneKey(id){return 'nodo_agent_user_done_'+id;}
   function isDone(id){try{return sessionStorage.getItem(doneKey(id))==='1';}catch(e){return false;}}
   function markDone(id){try{sessionStorage.setItem(doneKey(id),'1');}catch(e){}}
-  function mensajeUsuario(usuario){return ['Datos de acceso a la plataforma:','Usuario: '+usuario,'Clave: '+DEFAULT_PASS,'Link: '+PLATFORM_LINK,'','Podés cambiar la clave desde la plataforma si querés.'].join('\n');}
+  function mensajeUsuario(usuario){return ['Datos de acceso a la plataforma:','Usuario: '+usuario,'Clave: '+DEFAULT_PASS,'Link: '+PLATFORM_LINK,'','PodÃ©s cambiar la clave desde la plataforma si querÃ©s.'].join('\n');}
   window.nodoCopiarUsuarioCreado=function(usuario){const msg=mensajeUsuario(usuario); if(typeof copiarTextoOperativo==='function') copiarTextoOperativo(msg,'datos de usuario'); else navigator.clipboard?.writeText(msg).catch(()=>{});};
   function modalUsuario(usuario, jobId){
     if(!usuario||!jobId||isDone(jobId)) return;
@@ -8067,18 +8067,18 @@ body.nodo-v20 #alertas .alert-box{padding:8px 10px;font-size:12px;margin-bottom:
       if(!getPending()?.jobId||Date.now()-started>90000){stopPoll();return;}
       try{await (window.cargarWorkerJobs||cargarWorkerJobs)?.(false);}catch(e){}
       checkPending();
-    },1800);
+    },6000);
   }
   function stopPoll(){if(pollTimer){clearInterval(pollTimer);pollTimer=null;}}
   function ensureAgentUserActions(){
     if($('agentUserActionsBox')) return;
     const result=$('manualWorkerResultadoInicio'); if(!result) return;
-    result.insertAdjacentHTML('beforebegin',`<div id="agentUserActionsBox" style="margin-top:12px;border-top:1px solid #273142;padding-top:12px"><div class="ops-panel-title" style="font-size:15px;margin-bottom:8px">Usuario Agentes</div><div class="ops-manual-grid nodo-agent-user-grid"><div><label>Clave</label><input id="agentUserClaveInicio" type="password" autocomplete="new-password" value="${DEFAULT_PASS}" placeholder="${DEFAULT_PASS}"></div><div><label>Accion</label><select id="agentUserTipoInicio"><option value="CREAR_USUARIO">Crear usuario</option><option value="CAMBIAR_CLAVE">Cambiar clave</option></select></div><div><label>&nbsp;</label><button class="btn btn-primary" type="button" style="height:38px;margin:0;padding:0 12px" onclick="crearJobUsuarioAgentesInicio()">Enviar accion</button></div></div><div class="small">Para crear usuario se usa la clave genérica ${DEFAULT_PASS}. Luego el usuario puede cambiarla desde la plataforma.</div></div>`);
+    result.insertAdjacentHTML('beforebegin',`<div id="agentUserActionsBox" style="margin-top:12px;border-top:1px solid #273142;padding-top:12px"><div class="ops-panel-title" style="font-size:15px;margin-bottom:8px">Usuario Agentes</div><div class="ops-manual-grid nodo-agent-user-grid"><div><label>Clave</label><input id="agentUserClaveInicio" type="password" autocomplete="new-password" value="${DEFAULT_PASS}" placeholder="${DEFAULT_PASS}"></div><div><label>Accion</label><select id="agentUserTipoInicio"><option value="CREAR_USUARIO">Crear usuario</option><option value="CAMBIAR_CLAVE">Cambiar clave</option></select></div><div><label>&nbsp;</label><button class="btn btn-primary" type="button" style="height:38px;margin:0;padding:0 12px" onclick="crearJobUsuarioAgentesInicio()">Enviar accion</button></div></div><div class="small">Para crear usuario se usa la clave genÃ©rica ${DEFAULT_PASS}. Luego el usuario puede cambiarla desde la plataforma.</div></div>`);
   }
   window.crearJobUsuarioAgentesInicio=async function(){
     const usuario=val('manualWorkerUsuarioInicio'); const tipo=val('agentUserTipoInicio')||'CREAR_USUARIO'; const clave=tipo==='CREAR_USUARIO'?DEFAULT_PASS:(val('agentUserClaveInicio')||DEFAULT_PASS);
-    if(!usuario){set('manualWorkerResultadoInicio','<div class="err-box">Ingresa el usuario en Acción rápida.</div>');return;}
-    set('manualWorkerResultadoInicio',`<div class="alert-box">Enviando ${tipo==='CREAR_USUARIO'?'creación de usuario':'cambio de clave'} al worker...</div>`);
+    if(!usuario){set('manualWorkerResultadoInicio','<div class="err-box">Ingresa el usuario en AcciÃ³n rÃ¡pida.</div>');return;}
+    set('manualWorkerResultadoInicio',`<div class="alert-box">Enviando ${tipo==='CREAR_USUARIO'?'creaciÃ³n de usuario':'cambio de clave'} al worker...</div>`);
     const {data,error}=await supabaseClient.rpc('operativo_crear_worker_job_usuario_clave_v1',{p_session_token:token(),p_pc_codigo:pc(),p_usuario:usuario,p_tipo_accion:tipo,p_clave:clave,p_observacion:''});
     if(error){set('manualWorkerResultadoInicio',`<div class="err-box">${esc(error.message||error)}</div>`);return;}
     const row=Array.isArray(data)?data[0]:data; if(row?.ok===false){set('manualWorkerResultadoInicio',`<div class="err-box">${esc(row.mensaje||row.error||'No se pudo crear el job.')}</div>`);return;}
@@ -8090,10 +8090,10 @@ body.nodo-v20 #alertas .alert-box{padding:8px 10px;font-size:12px;margin-bottom:
     const id=Number(jobId), usuario=String(alias||'').trim(); if(!id||!usuario)return;
     set('manualWorkerResultadoInicio',`<div class="alert-box">Reintentando job #${esc(id)} con alias <b>${esc(usuario)}</b>...</div>`);
     const {data,error}=await supabaseClient.rpc('operativo_reintentar_worker_job_usuario_v1',{p_session_token:token(),p_worker_job_id:id,p_usuario:usuario,p_clave:DEFAULT_PASS});
-    if(error){set('manualWorkerResultadoInicio',`<div class="err-box">No se pudo reintentar el mismo job. Ejecutá el SQL sql_worker_usuario_reintento_alias_v1.sql si todavía no está aplicado. ${esc(error.message||error)}</div>`);return;}
+    if(error){set('manualWorkerResultadoInicio',`<div class="err-box">No se pudo reintentar el mismo job. EjecutÃ¡ el SQL sql_worker_usuario_reintento_alias_v1.sql si todavÃ­a no estÃ¡ aplicado. ${esc(error.message||error)}</div>`);return;}
     const row=Array.isArray(data)?data[0]:data; if(row?.ok===false){set('manualWorkerResultadoInicio',`<div class="err-box">${esc(row.error||row.mensaje||'No se pudo reintentar.')}</div>`);return;}
     setPending({jobId:id,usuario,tipo:'CREAR_USUARIO',ts:Date.now()}); try{cerrarModal?.();}catch(e){}
-    set('manualWorkerResultadoInicio',`<div class="ok-box">Job #${esc(id)} reintentado con alias <b>${esc(usuario)}</b>. No se creó una solicitud nueva.</div>`);
+    set('manualWorkerResultadoInicio',`<div class="ok-box">Job #${esc(id)} reintentado con alias <b>${esc(usuario)}</b>. No se creÃ³ una solicitud nueva.</div>`);
     try{await (window.cargarWorkerJobs||cargarWorkerJobs)?.(true);}catch(e){}
   };
   window.nodoTomarAliasSugerido=function(alias){ const i=$('manualWorkerUsuarioInicio'); if(i){i.value=String(alias||''); i.focus();} };
@@ -8929,8 +8929,8 @@ body.nodo-v20 #alertas .alert-box{padding:8px 10px;font-size:12px;margin-bottom:
       let actions='<div class="ops-compact-actions">';
       if(r.sid&&typeof verSolicitudInicio==='function') actions+=`<button class="nodo-action-icon info" title="Ver solicitud" onclick="verSolicitudInicio('${attr(r.sid)}')">i</button>`;
       if(r.job) actions+=`<button class="nodo-action-icon info" title="Logs e info del worker" onclick="abrirWorkerLogs('${attr(r.job)}')">i</button>`;
-      if(r.job&&typeof abrirEditarBilleteraJobV20==='function') actions+=`<button class="nodo-action-icon edit" title="Editar billetera del job" onclick="abrirEditarBilleteraJobV20('${attr(r.job)}')">✎</button>`;
-      else if(r.job&&typeof abrirCorregirBilleteraJob==='function') actions+=`<button class="nodo-action-icon edit" title="Editar billetera del job" onclick="abrirCorregirBilleteraJob('${attr(r.job)}')">✎</button>`;
+      if(r.job&&typeof abrirEditarBilleteraJobV20==='function') actions+=`<button class="nodo-action-icon edit" title="Editar billetera del job" onclick="abrirEditarBilleteraJobV20('${attr(r.job)}')">âœŽ</button>`;
+      else if(r.job&&typeof abrirCorregirBilleteraJob==='function') actions+=`<button class="nodo-action-icon edit" title="Editar billetera del job" onclick="abrirCorregirBilleteraJob('${attr(r.job)}')">âœŽ</button>`;
       actions+='</div>';
       const mp=(norm(r.tipo)==='CARGA'&&r.sid)?' <span class="mp-pill info">MP</span>':'';
       html+=`<tr><td>${fecha(r.fecha)}</td><td><span class="ops-origin ${r.origen==='LANDING'?'landing':'manual'}">${esc(r.origen)}</span></td><td><b>${esc(r.usuario)}</b>${r.sub?`<br><span class="small">${esc(r.sub)}</span>`:''}</td><td>${esc(r.billetera||'-')}</td><td>${esc(r.tipo||'-')}${mp}</td><td>${money(r.monto||0)}</td><td>${resultSignal(r)}</td><td>${statusSignal(r.estado||'-')}</td><td>${r.job?`#${esc(r.job)}<br>`:''}${statusSignal(r.worker||'SIN_WORKER')}</td><td>${actions}</td></tr>`;
@@ -9315,8 +9315,8 @@ body.nodo-v20 #alertas .alert-box{padding:8px 10px;font-size:12px;margin-bottom:
       let actions = '<div class="ops-compact-actions">';
       if(r.sid && typeof verSolicitudInicio === 'function') actions += `<button class="nodo-v5-action info" title="Ver solicitud" onclick="verSolicitudInicio('${attr(r.sid)}')">i</button>`;
       if(r.job) actions += `<button class="nodo-v5-action info" title="Detalles, reintento o cancelacion" onclick="abrirWorkerLogs('${attr(r.job)}')">i</button>`;
-      if(r.job && typeof abrirEditarBilleteraJobV20 === 'function') actions += `<button class="nodo-v5-action edit" title="Editar billetera del job" onclick="abrirEditarBilleteraJobV20('${attr(r.job)}')">✎</button>`;
-      else if(r.job && typeof abrirCorregirBilleteraJob === 'function') actions += `<button class="nodo-v5-action edit" title="Editar billetera del job" onclick="abrirCorregirBilleteraJob('${attr(r.job)}')">✎</button>`;
+      if(r.job && typeof abrirEditarBilleteraJobV20 === 'function') actions += `<button class="nodo-v5-action edit" title="Editar billetera del job" onclick="abrirEditarBilleteraJobV20('${attr(r.job)}')">âœŽ</button>`;
+      else if(r.job && typeof abrirCorregirBilleteraJob === 'function') actions += `<button class="nodo-v5-action edit" title="Editar billetera del job" onclick="abrirCorregirBilleteraJob('${attr(r.job)}')">âœŽ</button>`;
       actions += '</div>';
       html += `<tr>
         <td>${fechaFmt(r.fecha)}</td>
@@ -9406,7 +9406,7 @@ body.nodo-v20 #alertas .alert-box{padding:8px 10px;font-size:12px;margin-bottom:
   window.nodoV5ReintentarJob = async function(jobId){
     const id = Number(jobId);
     if(!id) return;
-    if(!confirm('¿Reintentar este mismo job?')) return;
+    if(!confirm('Â¿Reintentar este mismo job?')) return;
     try{
       if(typeof workerPanelReintentarJob === 'function') await workerPanelReintentarJob(id);
       else if(typeof reintentarWorker === 'function') await reintentarWorker(id);
@@ -9417,7 +9417,7 @@ body.nodo-v20 #alertas .alert-box{padding:8px 10px;font-size:12px;margin-bottom:
   window.nodoV5CancelarJob = async function(jobId){
     const id = Number(jobId);
     if(!id) return;
-    if(!confirm('¿Cancelar esta operacion?')) return;
+    if(!confirm('Â¿Cancelar esta operacion?')) return;
     try{
       if(typeof workerPanelCancelarJob === 'function') await workerPanelCancelarJob(id);
       cerrarModal();
@@ -9618,9 +9618,110 @@ body.nodo-v20 #alertas .alert-box{padding:8px 10px;font-size:12px;margin-bottom:
   }
   document.addEventListener('DOMContentLoaded',()=>setTimeout(()=>{ ensureAgentUserActions(); checkWatchedJobs(); renderQueue(true); attachScroll(tableWrap()); }, 700));
   window.addEventListener('load',()=>setTimeout(()=>{ ensureAgentUserActions(); checkWatchedJobs(); renderQueue(true); }, 1000));
-  setInterval(()=>{ if(!document.hidden){ checkWatchedJobs(); renderQueue(false); } }, 6500);
+  setInterval(()=>{ if(false){ checkWatchedJobs(); renderQueue(false); } }, 60000);
   setTimeout(()=>{ ensureAgentUserActions(); renderQueue(true); }, 900);
+})();
+</script>
+<style id="nodo-v23-static-ops-css">
+  body.nodo-v23-static-ops #opsQuickTop, body.nodo-v23-static-ops #opsColaUnificada{contain:layout paint;}
+  body.nodo-v23-static-ops .nodo-v23-quick{background:#191d27;border:1px solid #2c3140;border-radius:14px;padding:12px;margin-bottom:12px;}
+  body.nodo-v23-static-ops .nodo-v23-title{font-size:15px;font-weight:900;margin-bottom:9px;}
+  body.nodo-v23-static-ops .nodo-v23-grid{display:grid;grid-template-columns:minmax(210px,1.2fr) minmax(160px,1fr) minmax(120px,.65fr) minmax(150px,.8fr) minmax(88px,.4fr);gap:8px;align-items:end;}
+  body.nodo-v23-static-ops .nodo-v23-agent{margin-top:12px;border-top:1px solid #273142;padding-top:12px;}
+  body.nodo-v23-static-ops .nodo-v23-agent-grid{display:grid;grid-template-columns:minmax(160px,1fr) minmax(160px,1fr) auto;gap:8px;align-items:end;}
+  body.nodo-v23-static-ops .nodo-v23-preview{min-height:38px;display:flex;align-items:center;padding:8px 10px;border-radius:10px;border:1px solid #334155;background:#111827;color:#d1d5db;font-weight:800;}
+  body.nodo-v23-static-ops .nodo-v23-preview.carga{background:rgba(18,183,106,.14);color:#b9f7cb;border-color:rgba(18,183,106,.35)}
+  body.nodo-v23-static-ops .nodo-v23-preview.retiro{background:rgba(251,191,36,.14);color:#ffe2a2;border-color:rgba(251,191,36,.35)}
+  body.nodo-v23-static-ops .nodo-v23-preview.valida{background:rgba(61,90,254,.12);color:#dbeafe;border-color:rgba(61,90,254,.35)}
+  body.nodo-v23-static-ops .ops-main-table th, body.nodo-v23-static-ops .ops-main-table td{white-space:nowrap;}
+  body.nodo-v23-static-ops .ops-main-table td:nth-child(3){white-space:normal;min-width:150px;}
+  body.nodo-v23-static-ops .ops-main-table td:nth-child(10){position:sticky;right:0;background:#101722;z-index:4;}
+  @media(max-width:1200px){body.nodo-v23-static-ops .nodo-v23-grid,body.nodo-v23-static-ops .nodo-v23-agent-grid{grid-template-columns:1fr 1fr;} body.nodo-v23-static-ops .nodo-v23-send{grid-column:1 / -1;}}
+</style>
+<script id="nodo-v23-static-ops-js">
+(function(){
+  if(window.__NODO_V23_STATIC_OPS__) return;
+  window.__NODO_V23_STATIC_OPS__ = true;
+  document.body.classList.add('nodo-v23-static-ops');
+
+  const DEFAULT_PASS='12345a';
+  const PLATFORM_LINK='http://bet-300.pw/';
+  const $=id=>document.getElementById(id);
+  const esc=v=>String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+  const attr=v=>esc(v).replace(/`/g,'&#96;');
+  const norm=v=>{try{return String(v??'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toUpperCase().trim();}catch(e){return String(v??'').toUpperCase().trim();}};
+  const val=id=>String($(id)?.value??'').trim();
+  const pc=()=>{try{return String(window.pcOperativa||pcOperativa||'P1').trim().toUpperCase();}catch(e){return 'P1';}};
+  const token=()=>typeof requireSessionToken==='function'?requireSessionToken():(window.panelSessionToken||'');
+  const money=v=>{const fn=window.moneyLocal||window.money||window.pesos;if(typeof fn==='function'){try{return fn(v||0);}catch(e){}}return '$ '+Number(v||0).toLocaleString('es-AR');};
+  const fecha=v=>{const fn=window.fechaLocal||window.formatFecha;if(typeof fn==='function'){try{return fn(v||'');}catch(e){}}return String(v||'-');};
+  const jobs=()=>{try{return window.workerJobs||workerJobs||[];}catch(e){return window.workerJobs||[];}};
+  const solicitudes=()=>{try{return window.solicitudes||solicitudes||[];}catch(e){return window.solicitudes||[];}};
+  const wallets=()=>{try{return window.saldosOperativos?.billeteras||(typeof saldosOperativos!=='undefined'?saldosOperativos?.billeteras:[])||window.billeteras||billeteras||[];}catch(e){return window.billeteras||[];}};
+  const walletId=w=>String(w?.id??w?.billetera_id??w?.ID_BILLETERA??w?.ID??'').trim();
+  const walletName=w=>String(w?.nombre_visible||w?.NOMBRE_VISIBLE||w?.BILLETERA_NOMBRE||w?.nombre||w?.NOMBRE||'Billetera').trim();
+
+  function setHtmlIfChanged(el, html, key){ if(!el) return false; if(el.dataset[key] === html) return false; el.dataset[key] = html; el.innerHTML = html; return true; }
+  function stateKind(row){ const joined=norm(`${row?.worker||''} ${row?.estado||''}`); if(/\b(CANCELADO|CANCELADA|RECHAZADA)\b/.test(joined)) return 'cancel'; if(/\b(COMPLETADO|ACREDITADA|APROBADA|APROBADA_MANUAL|APROBADA_MANUAL_OK|PAGADA|DONE|OK)\b/.test(joined)) return 'ok'; return 'pend'; }
+  function pill(kind,text,title){return `<span class="nodo-v5-pill ${kind}" title="${attr(title||text||'')}">${esc(text||'-')}</span>`;}
+  function estado(row){const k=stateKind(row); if(k==='ok')return pill('ok','COMPLETO',`${row.estado||''} ${row.worker||''}`); if(k==='cancel')return pill('cancel','CANCELADO',`${row.estado||''} ${row.worker||''}`); return pill('pend','PENDIENTE',`${row.estado||''} ${row.worker||''}`);}
+  function resultado(row){const txt=String(row.error||row.resultado||'').trim(); const raw=norm(`${row.error||''} ${row.resultado||''} ${row.estado||''} ${row.worker||''}`); if(row.error||/\b(ERROR|ERROR_JOB|ERROR_WORKER|REQUIERE_MANUAL|FALLO|FAILED)\b/.test(raw))return pill('err','ERROR',txt||raw); if(row.resultado||/\b(COMPLETADO|OK|DONE|ACREDITADA|APROBADA|PAGADA)\b/.test(raw))return pill('ok','OK',txt||raw); return pill('muted','-','Sin resultado todavia');}
+  function tipo(tipo){const x=norm(tipo); if(['CARGAR_FICHAS','PROCESAR_CARGA','CARGA','CARGAS_FICHAS'].includes(x))return 'CARGA'; if(['PROCESAR_RETIRO','RETIRO'].includes(x))return 'RETIRO'; if(x==='CREAR_USUARIO')return 'CREAR USUARIO'; if(x==='CAMBIAR_CLAVE')return 'CAMBIAR CLAVE'; if(x==='VALIDAR_USUARIO')return 'VALIDAR'; return String(tipo||'-').replaceAll('_',' ');}
+  function payloadOf(j){const p=j?.payload; if(!p)return {}; if(typeof p==='object')return p; try{return JSON.parse(String(p));}catch(e){return {};}}
+  function walletNameById(id){const sid=String(id||'').trim(); if(!sid)return ''; const w=wallets().find(x=>walletId(x)===sid); return w?walletName(w):'';}
+  function jobWallet(j){if(!j)return '-'; const p=payloadOf(j); const direct=j.billetera_nombre||j.BILLETERA_NOMBRE||j.wallet_nombre||j.nombre_billetera||p.billetera_nombre||p.wallet_nombre||p.billetera?.nombre||''; if(direct)return String(direct); const id=j.billetera_id||j.ID_BILLETERA||j.wallet_id||p.billetera_id||p.wallet_id||''; return id?(walletNameById(id)||('#'+id)):'-';}
+  function operador(row,j){return row.OPERADOR||row.operador||row.operador_usuario||row.aprobada_por||row.confirmado_por||row.tomada_por||row.creado_por||j?.operador||j?.creado_por||j?.created_by||j?.locked_by||j?.worker_id||'-';}
+
+  function renderQuickStable(force=false){
+    const box=$('opsQuickTop'); if(!box) return;
+    const active=document.activeElement;
+    const editing=active && box.contains(active);
+    if(editing && !force) return;
+    if(!box.querySelector('#manualWorkerUsuarioInicio') || force){
+      const oldUser=val('manualWorkerUsuarioInicio');
+      const oldMonto=val('manualWorkerMontoInicio');
+      const oldWallet=val('manualWorkerBilleteraInicio')||localStorage.getItem('nodo_last_wallet_v23_'+pc())||localStorage.getItem('nodoUltimaBilleteraImpactada')||'';
+      const result=$('manualWorkerResultadoInicio')?.innerHTML||'';
+      box.innerHTML=`<div class="nodo-v23-quick"><div class="nodo-v23-title">Accion rapida</div><div class="nodo-v23-grid"><div><label>Billetera impactada</label><select id="manualWorkerBilleteraInicio"></select></div><div><label>Usuario</label><input id="manualWorkerUsuarioInicio" placeholder="ej: pruebaxx" autocomplete="off" value="${attr(oldUser)}"></div><div><label>Monto</label><input id="manualWorkerMontoInicio" placeholder="0 valida | + carga | - retiro" autocomplete="off" value="${attr(oldMonto)}"></div><div><label>Accion</label><div id="nodoV23Preview" class="nodo-v23-preview valida">Validar usuario</div></div><div class="nodo-v23-send"><label>&nbsp;</label><button class="btn btn-green" type="button" onclick="crearWorkerJobManualInicio()">Enviar</button></div></div><div id="agentUserActionsBox" style="display:none!important"></div><div id="agentUserActionsBoxV5" style="display:none!important"></div><div id="agentUserActionsBoxV23" class="nodo-v23-agent"><div class="nodo-v23-title">Usuario Agentes</div><div class="nodo-v23-agent-grid"><div><label>Clave</label><input id="agentUserClaveInicioV23" type="password" autocomplete="new-password" value="${DEFAULT_PASS}" placeholder="${DEFAULT_PASS}"></div><div><label>Accion</label><select id="agentUserTipoInicioV23"><option value="CREAR_USUARIO">Crear usuario</option><option value="CAMBIAR_CLAVE">Cambiar clave</option></select></div><div><label>&nbsp;</label><button class="btn btn-primary" type="button" onclick="crearJobUsuarioAgentesInicioV23()">Enviar accion</button></div></div><div class="small" style="margin-top:7px">Crear usuario usa la clave generica ${DEFAULT_PASS}. Cambio de clave usa la clave indicada arriba.</div></div><div id="manualWorkerResultadoInicio" style="margin-top:12px">${result}</div></div>`;
+      const wallet=$('manualWorkerBilleteraInicio');
+      if(wallet){ wallet.dataset.keepValue=oldWallet; wallet.addEventListener('change',()=>{localStorage.setItem('nodo_last_wallet_v23_'+pc(),wallet.value);localStorage.setItem('nodoUltimaBilleteraImpactada',wallet.value);}); }
+      const monto=$('manualWorkerMontoInicio'); if(monto) monto.addEventListener('input',updatePreview);
+    }
+    updateWalletOptionsStable(); updatePreview();
+  }
+  function updateWalletOptionsStable(){
+    const sel=$('manualWorkerBilleteraInicio'); if(!sel || document.activeElement===sel) return;
+    const desired=wallets().map(w=>({id:walletId(w), label:`${walletName(w)} - ${w.banco||w.BANCO||w.tipo||w.TIPO||''} - ${money(w.saldo||w.SALDO||0)}`})).filter(w=>w.id);
+    const hash=JSON.stringify(desired); if(sel.dataset.walletHash===hash) return;
+    const current=sel.value||sel.dataset.keepValue||localStorage.getItem('nodo_last_wallet_v23_'+pc())||localStorage.getItem('nodoUltimaBilleteraImpactada')||'';
+    sel.dataset.walletHash=hash; sel.innerHTML='<option value="">No aplica / seleccionar</option>'+desired.map(w=>`<option value="${attr(w.id)}">${esc(w.label)}</option>`).join(''); if(current) sel.value=current;
+  }
+  function updatePreview(){ const box=$('nodoV23Preview'); if(!box) return; const n=Number(String(val('manualWorkerMontoInicio')||'0').replace(',','.')); box.className='nodo-v23-preview '+(n>0?'carga':(n<0?'retiro':'valida')); box.textContent=n>0?'Carga '+money(n):(n<0?'Retiro '+money(Math.abs(n)):'Validar usuario'); }
+
+  function rows(){ const js=jobs(); const out=[]; solicitudes().forEach(s=>{const sid=s.ID||s.SOLICITUD_ID||s.id||''; const jobId=s.WORKER_JOB_ID||s.worker_job_id||s.ultimo_job_id||''; const j=js.find(x=>String(x.id||x.job_id)===String(jobId))||{}; out.push({origen:'LANDING',fecha:s.FECHA_CREACION||s.FECHA||s.created_at||s.solicitud_created_at,usuario:s.USUARIO||s.usuario||s.USUARIO_JUGADOR||'',sub:s.TITULAR_TRANSFERENCIA||s.titular_transferencia||s.NOMBRE_COMPLETO||s.nombre_completo||'',billetera:s.BILLETERA_NOMBRE||s.billetera_nombre||jobWallet(j)||walletNameById(s.ID_BILLETERA||s.billetera_id)||'-',tipo:s.TIPO_SOLICITUD||s.TIPO||s.tipo||'',monto:s.MONTO_DECLARADO||s.MONTO_REAL||s.monto||0,estado:s.ESTADO||s.estado||'',worker:j.estado||s.ESTADO_WORKER||'',job:jobId,resultado:j.resultado||s.WORKER_RESULTADO||'',error:s.WORKER_ERROR||j.error_mensaje||'',sid,operador:operador(s,j)});}); js.filter(j=>!j.solicitud_id).forEach(j=>out.push({origen:'MANUAL',fecha:j.created_at||j.updated_at,usuario:j.usuario||'',sub:'',billetera:jobWallet(j),tipo:j.tipo_accion||'',monto:j.monto||0,estado:j.estado||'',worker:j.estado||'',job:j.id||j.job_id||'',resultado:j.resultado||'',error:j.error_mensaje||'',sid:'',operador:operador(j,j)})); return out; }
+  function renderQueueStable(force=false){
+    const box=$('opsColaUnificada'); if(!box) return; const wrap=box.querySelector('.ops-table-wrap'); const saved={top:wrap?.scrollTop||0,left:wrap?.scrollLeft||0};
+    let list=rows(); const q=norm(val('opsFiltroTexto')); const f=norm(val('opsFiltroEstado')); list.sort((a,b)=>new Date(b.fecha||0)-new Date(a.fecha||0));
+    if(f) list=list.filter(r=>norm(stateKind(r)==='ok'?'COMPLETADO COMPLETO':stateKind(r)==='cancel'?'CANCELADO':'PENDIENTE').includes(f));
+    if(q) list=list.filter(r=>norm(`${r.usuario} ${r.sub} ${r.tipo} ${r.estado} ${r.worker} ${r.error} ${r.job} ${r.sid} ${r.billetera} ${r.operador}`).includes(q));
+    list=list.slice(0,100); if(!list.length){setHtmlIfChanged(box,'<div class="alert-box">No hay operaciones para mostrar.</div>','queueHash'); return;}
+    let html='<div class="ops-table-wrap"><table class="ops-main-table"><thead><tr><th>Hora</th><th>Origen</th><th>Usuario</th><th>Billetera</th><th>Tipo</th><th>Monto</th><th>Resultado</th><th>Estado</th><th>Operador</th><th>Acciones</th></tr></thead><tbody>';
+    list.forEach(r=>{let actions='<div class="ops-compact-actions">'; if(r.sid&&typeof verSolicitudInicio==='function')actions+=`<button class="nodo-v5-action info" title="Ver solicitud" onclick="verSolicitudInicio('${attr(r.sid)}')">i</button>`; if(r.job)actions+=`<button class="nodo-v5-action info" title="Detalles" onclick="abrirWorkerLogs('${attr(r.job)}')">i</button>`; if(r.job&&typeof abrirEditarBilleteraJobV20==='function')actions+=`<button class="nodo-v5-action edit" title="Editar billetera" onclick="abrirEditarBilleteraJobV20('${attr(r.job)}')">Editar</button>`; actions+='</div>'; html+=`<tr><td>${fecha(r.fecha)}</td><td><span class="ops-origin ${r.origen==='LANDING'?'landing':'manual'}">${esc(r.origen)}</span></td><td><b>${esc(r.usuario||'-')}</b>${r.sub?`<br><span class="small">${esc(r.sub)}</span>`:''}</td><td>${esc(r.billetera||'-')}</td><td>${esc(tipo(r.tipo))}</td><td>${money(r.monto||0)}</td><td>${resultado(r)}</td><td>${estado(r)}</td><td>${stateKind(r)==='pend'&&r.job?`<button class="nodo-v5-action info" title="Abrir pendiente" onclick="abrirWorkerLogs('${attr(r.job)}')">${esc(r.operador||'Pendiente')}</button>`:esc(r.operador||'-')}</td><td>${actions}</td></tr>`;}); html+='</tbody></table></div>';
+    setHtmlIfChanged(box,html,'queueHash'); const next=box.querySelector('.ops-table-wrap'); if(next){next.scrollTop=saved.top; next.scrollLeft=saved.left;}
+  }
+
+  async function refreshOpsStable(force=false){ try{ if(typeof window.cargarWorkerJobs==='function') await window.cargarWorkerJobs(false); }catch(e){} try{ if(force&&typeof window.cargarSolicitudes==='function') await window.cargarSolicitudes(false); }catch(e){} renderQuickStable(false); renderQueueStable(force); }
+  window.renderQuickV18=renderQuickStable; window.renderWalletSelectWorkerInicio=()=>updateWalletOptionsStable(); window.renderColaUnificada=renderQueueStable; window.renderColaFinalOperativa=renderQueueStable;
+  try{renderColaUnificada=renderQueueStable;}catch(e){} try{renderWalletSelectWorkerInicio=window.renderWalletSelectWorkerInicio;}catch(e){}
+  window.renderCentroOperativo=function(){ try{ if(typeof renderOpsKpis==='function') renderOpsKpis(); }catch(e){} try{ if(typeof renderOpsWallets==='function') renderOpsWallets(); }catch(e){} try{ if(typeof renderWalletSelects==='function') renderWalletSelects(); }catch(e){} renderQuickStable(false); renderQueueStable(false); };
+  try{renderCentroOperativo=window.renderCentroOperativo;}catch(e){}
+  const oldWorker=window.cargarWorkerJobs||(typeof cargarWorkerJobs!=='undefined'?cargarWorkerJobs:null); if(typeof oldWorker==='function'){ window.cargarWorkerJobs=async function(){const r=await oldWorker.apply(this,arguments); renderQueueStable(false); return r;}; try{cargarWorkerJobs=window.cargarWorkerJobs;}catch(e){} }
+  const oldSol=window.cargarSolicitudes||(typeof cargarSolicitudes!=='undefined'?cargarSolicitudes:null); if(typeof oldSol==='function'){ window.cargarSolicitudes=async function(){const r=await oldSol.apply(this,arguments); renderQueueStable(false); return r;}; try{cargarSolicitudes=window.cargarSolicitudes;}catch(e){} }
+  window.crearJobUsuarioAgentesInicioV23=async function(){ const usuario=val('manualWorkerUsuarioInicio'); const tipoAccion=val('agentUserTipoInicioV23')||'CREAR_USUARIO'; const clave=tipoAccion==='CREAR_USUARIO'?DEFAULT_PASS:(val('agentUserClaveInicioV23')||DEFAULT_PASS); const out=$('manualWorkerResultadoInicio'); if(!usuario){if(out)out.innerHTML='<div class="err-box">Ingresa el usuario en Accion rapida.</div>'; return;} if(out)out.innerHTML=`<div class="alert-box">Enviando ${tipoAccion==='CREAR_USUARIO'?'creacion de usuario':'cambio de clave'} al worker...</div>`; try{ const {data,error}=await supabaseClient.rpc('operativo_crear_worker_job_usuario_clave_v1',{p_session_token:token(),p_pc_codigo:pc(),p_usuario:usuario,p_tipo_accion:tipoAccion,p_clave:clave,p_observacion:''}); if(error) throw error; const row=Array.isArray(data)?data[0]:data; if(row&&row.ok===false) throw new Error(row.mensaje||row.error||'No se pudo crear el job.'); const jobId=row?.job_id||row?.id||''; if(out)out.innerHTML=`<div class="ok-box">${tipoAccion==='CREAR_USUARIO'?'Crear usuario':'Cambiar clave'} enviado al worker. Job: <b>${esc(jobId||'-')}</b></div>`; await refreshOpsStable(true); }catch(e){if(out)out.innerHTML=`<div class="err-box">${esc(e.message||e)}</div>`;} };
+  window.crearJobUsuarioAgentesInicio=window.crearJobUsuarioAgentesInicioV23;
+  document.addEventListener('DOMContentLoaded',()=>setTimeout(()=>{renderQuickStable(true);renderQueueStable(true);},100)); window.addEventListener('load',()=>setTimeout(()=>{renderQuickStable(true);renderQueueStable(true);},250)); setTimeout(()=>{renderQuickStable(true);renderQueueStable(true);},50);
 })();
 </script>
 </body>
 </html>
+
