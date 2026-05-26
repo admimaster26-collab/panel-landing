@@ -9680,5 +9680,84 @@ body.nodo-v20 #alertas .alert-box{padding:8px 10px;font-size:12px;margin-bottom:
   setTimeout(() => { try{ obs.observe(document.getElementById('appView') || document.body, {childList:true, subtree:true, characterData:true}); run(); }catch(e){} }, 200);
 })();
 </script>
+<style id="nodo-v25-neon-clean-css">
+  body.nodo-v25-neon .layout{grid-template-columns:64px 1fr!important;}
+  body.nodo-v25-neon .sidebar{width:64px!important;padding:10px 6px!important;overflow:hidden!important;background:#0b111b!important;border-right:1px solid rgba(56,189,248,.22)!important;}
+  body.nodo-v25-neon .sidebar .logo{width:42px!important;margin:0 auto 12px!important;}
+  body.nodo-v25-neon .sidebar .card{display:none!important;}
+  body.nodo-v25-neon .nav-btn{height:48px!important;width:52px!important;margin:0 auto 8px!important;padding:0!important;border-radius:14px!important;text-align:center!important;font-size:0!important;display:flex!important;align-items:center!important;justify-content:center!important;background:#111827!important;border:1px solid rgba(148,163,184,.15)!important;box-shadow:none!important;overflow:hidden!important;}
+  body.nodo-v25-neon .nav-btn::before{font-size:21px!important;line-height:1!important;filter:drop-shadow(0 0 8px rgba(56,189,248,.45));}
+  body.nodo-v25-neon #navInicio::before{content:'I';}
+  body.nodo-v25-neon #navSolicitudes::before{content:'S';}
+  body.nodo-v25-neon #navBilleteras::before{content:'B';color:#67e8f9;}
+  body.nodo-v25-neon #navChat::before{content:'C';color:#22d3ee;}
+  body.nodo-v25-neon #navWorker::before{content:'W';}
+  body.nodo-v25-neon #navAjustes::before{content:'A';color:#fbbf24;}
+  body.nodo-v25-neon .nav-btn[onclick*="cerrarSesion"]::before{content:'X';color:#fca5a5;}
+  body.nodo-v25-neon .nav-btn.active{background:linear-gradient(180deg,#1d4ed8,#2563eb)!important;border-color:#38bdf8!important;box-shadow:0 0 16px rgba(56,189,248,.42)!important;}
+  body.nodo-v25-neon .badge-alert{right:2px!important;top:1px!important;transform:scale(.72);}
+  body.nodo-v25-neon .main{padding-left:12px!important;}
+
+  body.nodo-v25-neon #opsKpis .ops-kpi:first-child,
+  body.nodo-v25-neon .ops-kpi:first-child{border-color:rgba(34,211,238,.7)!important;background:radial-gradient(circle at 18% 0%,rgba(34,211,238,.22),rgba(15,23,42,.96) 42%)!important;box-shadow:0 0 22px rgba(34,211,238,.22), inset 0 0 18px rgba(34,211,238,.08)!important;}
+  body.nodo-v25-neon #opsKpis .ops-kpi:first-child .ops-kpi-title,
+  body.nodo-v25-neon .ops-kpi:first-child .ops-kpi-title{color:#cffafe!important;letter-spacing:.8px!important;}
+  body.nodo-v25-neon #opsKpis .ops-kpi:first-child .ops-kpi-value,
+  body.nodo-v25-neon .ops-kpi:first-child .ops-kpi-value{color:#e0faff!important;text-shadow:0 0 8px rgba(34,211,238,.95),0 0 22px rgba(34,211,238,.55)!important;}
+
+  body.nodo-v25-neon .ops-wallet{border-color:rgba(34,211,238,.42)!important;background:linear-gradient(180deg,rgba(15,23,42,.98),rgba(8,18,24,.98))!important;box-shadow:0 0 18px rgba(34,211,238,.14), inset 0 0 16px rgba(34,211,238,.05)!important;}
+  body.nodo-v25-neon .ops-wallet-name{color:#e0faff!important;text-shadow:0 0 7px rgba(34,211,238,.85),0 0 18px rgba(34,211,238,.32)!important;letter-spacing:.3px!important;}
+  body.nodo-v25-neon .ops-wallet-saldo{color:#7dd3fc!important;text-shadow:0 0 8px rgba(34,211,238,.75)!important;}
+
+  body.nodo-v25-neon #opsQuickTop #agentUserActionsBox,
+  body.nodo-v25-neon #opsQuickTop #agentUserActionsBoxV5,
+  body.nodo-v25-neon #opsQuickTop .agent-user-v5{display:none!important;}
+  body.nodo-v25-neon #opsQuickTop .nodo-v23-agent ~ .nodo-v23-agent{display:none!important;}
+</style>
+<script id="nodo-v25-neon-clean-js">
+(function(){
+  if(window.__NODO_V25_NEON_CLEAN__) return;
+  window.__NODO_V25_NEON_CLEAN__ = true;
+  document.body.classList.add('nodo-v25-neon');
+  const $ = id => document.getElementById(id);
+  const norm = v => String(v || '').toUpperCase().trim();
+  function removeLegacyAgent(){
+    const quick = $('opsQuickTop');
+    if(!quick) return;
+    quick.querySelectorAll('#agentUserActionsBox,#agentUserActionsBoxV5,.agent-user-v5').forEach(el => el.remove());
+    const agents = [...quick.querySelectorAll('.nodo-v23-agent,#agentUserActionsBoxV23')];
+    agents.slice(1).forEach(el => el.remove());
+  }
+  function cleanQueueTypes(){
+    const box = $('opsColaUnificada');
+    if(!box) return;
+    box.querySelectorAll('td').forEach(td => {
+      const t = norm(td.textContent);
+      if(t === 'CARGAR_FICHAS' || t === 'PROCESAR_CARGA' || t === 'CARGAS_FICHAS') td.textContent = 'CARGA';
+      if(t === 'PROCESAR_RETIRO') td.textContent = 'RETIRO';
+      if(t === 'VALIDAR_USUARIO') td.textContent = 'VALIDAR';
+      if(t === 'CREAR_USUARIO') td.textContent = 'CREAR USUARIO';
+      if(t === 'CAMBIAR_CLAVE') td.textContent = 'CAMBIAR CLAVE';
+    });
+  }
+  function run(){ removeLegacyAgent(); cleanQueueTypes(); }
+  const oldCentro = window.renderCentroOperativo;
+  if(typeof oldCentro === 'function'){
+    window.renderCentroOperativo = function(){ const r = oldCentro.apply(this, arguments); setTimeout(run, 0); setTimeout(run, 80); return r; };
+    try{ renderCentroOperativo = window.renderCentroOperativo; }catch(e){}
+  }
+  const oldWorker = window.cargarWorkerJobs;
+  if(typeof oldWorker === 'function'){
+    window.cargarWorkerJobs = async function(){ const r = await oldWorker.apply(this, arguments); run(); return r; };
+    try{ cargarWorkerJobs = window.cargarWorkerJobs; }catch(e){}
+  }
+  document.addEventListener('DOMContentLoaded', () => setTimeout(run, 100));
+  window.addEventListener('load', () => setTimeout(run, 200));
+  setTimeout(run, 50);
+  setInterval(run, 1200);
+  const target = $('opsQuickTop') || document.body;
+  try{ new MutationObserver(() => run()).observe(target, {childList:true, subtree:true}); }catch(e){}
+})();
+</script>
 </body>
 </html>
