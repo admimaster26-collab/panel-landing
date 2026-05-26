@@ -1299,7 +1299,7 @@ async function abrirWorkerLogs(jobId){
         ${verifyRow("Monto", money(j.monto || 0))}
         ${verifyRow("Estado", j.estado || "-")}
         ${verifyRow("Intentos", `${j.intentos || 0} / ${j.max_intentos || 3}`)}
-        <div style="grid-column:1 / -1">${workerResultadoOErrorHTML(j.resultado || "", j.error_mensaje || "", "modal")}</div>
+        <div style="grid-column:1 / -1">${workerResultadoOErrorHTML(j.resultado || "", j.error_mensaje || "", "modal", j.id)}</div>
       </div>
     `;
   }
@@ -2791,24 +2791,24 @@ function workerResultadoHTML(resultado, modo="compact"){
   `;
 }
 
-function workerAliasDuplicadoHTML(txt){
+function workerAliasDuplicadoHTML(txt, jobId){
   const m = String(txt || '').match(/Sugerencias:\s*([^\.]+)/i);
-  if(!m) return '';
+  if(!m || !jobId) return '';
   const sugerencias = m[1].split(',').map(x => x.trim()).filter(Boolean).slice(0, 4);
   if(!sugerencias.length) return '';
-  return `<div class="ops-compact-actions" style="margin-top:8px">${sugerencias.map(a => `<button class="mini-btn green" type="button" onclick="nodoTomarAliasSugerido('${escapeAttr(a)}')">Usar ${escapeHtml(a)}</button>`).join('')}</div>`;
+  return `<div class="ops-compact-actions" style="margin-top:10px">${sugerencias.map(a => `<button class="mini-btn green" type="button" onclick="nodoReintentarAliasMismoJob('${escapeAttr(jobId)}','${escapeAttr(a)}')">Reintentar con ${escapeHtml(a)}</button>`).join('')}</div><div class="small" style="margin-top:8px;color:#fcd34d">Reintenta este mismo job. No crea otra solicitud.</div>`;
 }
 
-function workerErrorHTML(error, modo="compact"){
-  const txt = String(error || "").trim();
+function workerErrorHTML(error, modo="compact", jobId=""){
+  const txt = String(error || '').trim();
   if(!txt) return `<span class="small">-</span>`;
-  return `<div class="worker-error-card ${modo}">${escapeHtml(txt)}${workerAliasDuplicadoHTML(txt)}</div>`;
+  return `<div class="worker-error-card ${modo}">${escapeHtml(txt)}${workerAliasDuplicadoHTML(txt, jobId)}</div>`;
 }
 
-function workerResultadoOErrorHTML(resultado, error, modo="compact"){
+function workerResultadoOErrorHTML(resultado, error, modo="compact", jobId=""){
   const bloques = [];
   if(resultado) bloques.push(workerResultadoHTML(resultado, modo));
-  if(error) bloques.push(workerErrorHTML(error, modo));
+  if(error) bloques.push(workerErrorHTML(error, modo, jobId));
   return bloques.length ? bloques.join("") : `<span class="small">-</span>`;
 }
 
@@ -2967,7 +2967,7 @@ function renderWorkerJobs(){
       <td>${money(j.monto || 0)}</td>
       <td>${workerEstadoBadge(j.estado)}</td>
       <td>${escapeHtml(j.intentos || 0)} / ${escapeHtml(j.max_intentos || 3)}</td>
-      <td>${workerResultadoOErrorHTML(j.resultado || "", j.error_mensaje || "", "compact")}</td>
+      <td>${workerResultadoOErrorHTML(j.resultado || "", j.error_mensaje || "", "compact", j.id)}</td>
       <td>
         <button class="mini-btn blue" onclick="abrirDetalleWorkerJob('${escapeAttr(id)}')">Ver</button>
         ${puedeAccionar ? `
@@ -3006,7 +3006,7 @@ function abrirDetalleWorkerJob(jobId){
     </div>
     <div class="verify-box">
       <div class="verify-title">Resultado / error</div>
-      ${workerResultadoOErrorHTML(j.resultado || "", j.error_mensaje || "", "modal")}
+      ${workerResultadoOErrorHTML(j.resultado || "", j.error_mensaje || "", "modal", j.id)}
     </div>
   `, async()=>cerrarModal(), "Cerrar");
 }
@@ -3252,7 +3252,7 @@ function renderColaUnificada(){
       <td>${money(r.monto || 0)}</td>
       <td>${estadoBadge(r.estado || "-")}</td>
       <td>${job ? `#${escapeHtml(job)}<br>${workerEstadoBadge(r.worker)}` : workerEstadoBadge(r.worker || "SIN_WORKER")}</td>
-      <td>${workerResultadoOErrorHTML(r.resultado || "", r.error || "", "compact")}</td>
+      <td>${workerResultadoOErrorHTML(r.resultado || "", r.error || "", "compact", r.worker_job_id || r.job_id || r.id)}</td>
       <td>${acciones}</td>
     </tr>`;
   });
