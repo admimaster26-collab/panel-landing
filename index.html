@@ -9574,7 +9574,7 @@ body.nodo-v20 #alertas .alert-box{padding:8px 10px;font-size:12px;margin-bottom:
   if(typeof oldQuick === 'function' && !oldQuick.__nodoV5){
     const fn = function(){
       const r = oldQuick.apply(this, arguments);
-      setTimeout(ensureAgentUserActions, 40);
+      
       return r;
     };
     fn.__nodoV5 = true;
@@ -9610,16 +9610,16 @@ body.nodo-v20 #alertas .alert-box{padding:8px 10px;font-size:12px;margin-bottom:
     const fn = function(){
       const s = snap();
       const r = oldCentro.apply(this, arguments);
-      setTimeout(()=>{ ensureAgentUserActions(); checkWatchedJobs(); renderQueue(false); restore(s); }, 45);
+      setTimeout(()=>{ checkWatchedJobs(); renderQueue(false); restore(s); }, 45);
       return r;
     };
     fn.__nodoV5 = true;
     window.renderCentroOperativo = renderCentroOperativo = fn;
   }
-  document.addEventListener('DOMContentLoaded',()=>setTimeout(()=>{ ensureAgentUserActions(); checkWatchedJobs(); renderQueue(true); attachScroll(tableWrap()); }, 700));
-  window.addEventListener('load',()=>setTimeout(()=>{ ensureAgentUserActions(); checkWatchedJobs(); renderQueue(true); }, 1000));
+  document.addEventListener('DOMContentLoaded',()=>setTimeout(()=>{ checkWatchedJobs(); renderQueue(true); attachScroll(tableWrap()); }, 700));
+  window.addEventListener('load',()=>setTimeout(()=>{ checkWatchedJobs(); renderQueue(true); }, 1000));
   setInterval(()=>{ if(!document.hidden){ checkWatchedJobs(); renderQueue(false); } }, 6500);
-  setTimeout(()=>{ ensureAgentUserActions(); renderQueue(true); }, 900);
+  setTimeout(()=>{ renderQueue(true); }, 900);
 })();
 </script>
 <script id="nodo-v24-visible-text-clean-js">
@@ -9672,7 +9672,8 @@ body.nodo-v20 #alertas .alert-box{padding:8px 10px;font-size:12px;margin-bottom:
       else if(t !== btn.textContent) btn.textContent = t;
     });
   }
-  function run(){ setStaticLabels(); cleanNode(document.getElementById('appView') || document.body); }
+  function removeLegacyAgentBlocks(){ document.querySelectorAll('#agentUserActionsBox,#agentUserActionsBoxV5,.agent-user-v5').forEach(el => el.remove()); }
+  function run(){ removeLegacyAgentBlocks(); setStaticLabels(); cleanNode(document.getElementById('appView') || document.body); }
   document.addEventListener('DOMContentLoaded', () => setTimeout(run, 50));
   window.addEventListener('load', () => setTimeout(run, 150));
   const obs = new MutationObserver(() => { clearTimeout(window.__NODO_V24_TEXT_TIMER__); window.__NODO_V24_TEXT_TIMER__ = setTimeout(run, 30); });
