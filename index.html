@@ -8539,5 +8539,234 @@ body.nodo-v20 #alertas .alert-box{padding:8px 10px;font-size:12px;margin-bottom:
   setTimeout(installRealtime, 1500);
 })();
 </script>
+<style id="nodo-cierre-v3-css">
+  body.nodo-cierre-v3 .nodo-v18-quick-grid{
+    display:grid!important;
+    grid-template-columns:minmax(210px,1.25fr) minmax(160px,1fr) minmax(120px,.7fr) minmax(160px,.9fr) minmax(92px,.45fr)!important;
+    gap:8px!important;
+    align-items:end!important;
+  }
+  body.nodo-cierre-v3 .nodo-v18-quick-grid .wallet-cell{grid-column:auto!important;order:1}
+  body.nodo-cierre-v3 .nodo-v18-quick-grid .user-cell{order:2}
+  body.nodo-cierre-v3 .nodo-v18-quick-grid .amount-cell{order:3}
+  body.nodo-cierre-v3 .nodo-v18-quick-grid .preview-cell{order:4}
+  body.nodo-cierre-v3 .nodo-v18-quick-grid .send-cell{grid-column:auto!important;order:5}
+  body.nodo-cierre-v3 .ops-table-wrap{scroll-behavior:auto!important;overscroll-behavior:contain!important}
+  body.nodo-cierre-v3 .ops-main-table th,
+  body.nodo-cierre-v3 .ops-main-table td{padding:7px 8px!important;white-space:nowrap!important}
+  body.nodo-cierre-v3 .ops-main-table th:nth-child(4),
+  body.nodo-cierre-v3 .ops-main-table td:nth-child(4){min-width:92px}
+  body.nodo-cierre-v3 .ops-main-table th:nth-child(7),
+  body.nodo-cierre-v3 .ops-main-table td:nth-child(7),
+  body.nodo-cierre-v3 .ops-main-table th:nth-child(8),
+  body.nodo-cierre-v3 .ops-main-table td:nth-child(8),
+  body.nodo-cierre-v3 .ops-main-table th:nth-child(9),
+  body.nodo-cierre-v3 .ops-main-table td:nth-child(9){min-width:46px!important;max-width:78px!important;text-align:center!important}
+  body.nodo-cierre-v3 .ops-main-table th:last-child,
+  body.nodo-cierre-v3 .ops-main-table td:last-child{position:sticky;right:0;background:#101722!important;z-index:5;box-shadow:-8px 0 12px rgba(0,0,0,.28)}
+  body.nodo-cierre-v3 .nodo-signal{display:inline-flex;align-items:center;justify-content:center;min-width:34px;height:24px;border-radius:999px;padding:0 8px;font-size:11px;font-weight:950;line-height:1;color:white}
+  body.nodo-cierre-v3 .nodo-signal.ok{background:#087433;color:#dcfce7}
+  body.nodo-cierre-v3 .nodo-signal.err{background:#7f1d1d;color:#fee2e2}
+  body.nodo-cierre-v3 .nodo-signal.retry{background:#8a5a00;color:#ffefb3}
+  body.nodo-cierre-v3 .nodo-signal.run{background:#1d4ed8;color:#dbeafe}
+  body.nodo-cierre-v3 .nodo-signal.muted{background:#374151;color:#d1d5db}
+  body.nodo-cierre-v3 .ops-compact-actions .mini-btn{padding:5px 8px!important;font-size:11px!important;border-radius:8px!important;line-height:1.1!important}
+  body.nodo-cierre-v3 .ops-compact-actions .mini-btn.green{background:#087433;color:#dcfce7}
+  body.nodo-cierre-v3 .ops-compact-actions .mini-btn.red{background:#7f1d1d;color:#fee2e2}
+  body.nodo-cierre-v3 .ops-compact-actions .mini-btn.yellow{background:#f59e0b;color:#111827}
+  @media(max-width:1200px){
+    body.nodo-cierre-v3 .nodo-v18-quick-grid{grid-template-columns:1fr 1fr!important}
+    body.nodo-cierre-v3 .nodo-v18-quick-grid .wallet-cell{grid-column:1 / -1!important}
+    body.nodo-cierre-v3 .nodo-v18-quick-grid .send-cell{grid-column:1 / -1!important}
+  }
+</style>
+<script id="nodo-cierre-v3-js">
+(function(){
+  if(window.__NODO_CIERRE_V3__) return;
+  window.__NODO_CIERRE_V3__ = true;
+  document.body.classList.add('nodo-cierre-v3');
+
+  const DEFAULT_PASS='12345a';
+  const $=id=>document.getElementById(id);
+  const esc=v=>String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+  const attr=v=>esc(v).replace(/`/g,'&#96;');
+  const norm=v=>{try{return String(v??'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toUpperCase().trim();}catch(e){return String(v??'').toUpperCase().trim();}};
+  const val=id=>String($(id)?.value??'').trim();
+  const set=(id,html)=>{const el=$(id);if(el)el.innerHTML=html;};
+  const pc=()=>{try{return String(window.pcOperativa||pcOperativa||'P1').trim().toUpperCase();}catch(e){return 'P1';}};
+  const money=v=>{const fn=window.moneyLocal||window.pesos||window.money;if(typeof fn==='function'){try{return fn(v||0);}catch(e){}}return '$ '+Number(v||0).toLocaleString('es-AR');};
+  const fecha=v=>{const fn=window.fechaLocal||window.formatFecha;if(typeof fn==='function'){try{return fn(v||'');}catch(e){}}return String(v||'-');};
+  const jobs=()=>{try{return window.workerJobs||workerJobs||[];}catch(e){return window.workerJobs||[];}};
+  const solicitudes=()=>{try{return window.solicitudes||solicitudes||[];}catch(e){return window.solicitudes||[];}};
+  const wallets=()=>{try{return window.saldosOperativos?.billeteras||(typeof saldosOperativos!=='undefined'?saldosOperativos?.billeteras:[])||window.billeteras||[];}catch(e){return window.billeteras||[];}};
+  const walletId=w=>String(w?.id??w?.billetera_id??w?.ID_BILLETERA??w?.ID??'').trim();
+  const walletName=w=>String(w?.nombre_visible||w?.NOMBRE_VISIBLE||w?.BILLETERA_NOMBRE||w?.nombre||w?.NOMBRE||'Billetera').trim();
+  function walletNameById(id){
+    const sid=String(id||'').trim();
+    if(!sid) return '';
+    const w=wallets().find(x=>walletId(x)===sid);
+    return w ? walletName(w) : '';
+  }
+  function readWalletMap(){
+    try{return JSON.parse(localStorage.getItem('nodo_job_wallet_map_'+pc())||'{}')||{};}catch(e){return {};}
+  }
+  function payloadOf(job){
+    const p=job?.payload;
+    if(!p) return {};
+    if(typeof p==='object') return p;
+    try{return JSON.parse(String(p));}catch(e){return {};}
+  }
+  function walletFromMovs(jobId){
+    const sid=String(jobId||'');
+    const movs=(window.saldosOperativos?.movimientos_billetera||(typeof saldosOperativos!=='undefined'?saldosOperativos?.movimientos_billetera:[])||[]);
+    if(!Array.isArray(movs)) return '';
+    const m=movs.find(x=>String(x.worker_job_id||x.job_id||'')===sid && (x.billetera_nombre||x.nombre_visible||x.billetera_id));
+    if(!m) return '';
+    return String(m.billetera_nombre||m.nombre_visible||walletNameById(m.billetera_id)||'');
+  }
+  function jobWallet(job){
+    if(!job) return '-';
+    const p=payloadOf(job);
+    const directName=job.billetera_nombre||job.BILLETERA_NOMBRE||job.wallet_nombre||job.nombre_billetera||p.billetera_nombre||p.wallet_nombre||p.billetera?.nombre||'';
+    if(directName) return String(directName);
+    const fromMov=walletFromMovs(job.id||job.job_id);
+    if(fromMov) return fromMov;
+    const id=job.billetera_id||job.ID_BILLETERA||job.wallet_id||p.billetera_id||p.wallet_id||readWalletMap()[String(job.id||job.job_id||'')]||'';
+    if(id) return walletNameById(id)||('#'+id);
+    const txt=`${job.observacion||''} ${job.observaciones||''} ${job.descripcion||''} ${job.resultado||''} ${job.error_mensaje||''} ${JSON.stringify(p)}`;
+    const m=txt.match(/billetera_id\s*[=:]\s*(\d+)/i);
+    return m ? (walletNameById(m[1])||('#'+m[1])) : '-';
+  }
+  function signal(kind,text,title){
+    const labels={ok:'OK',err:'Error',retry:'Reintentar',run:'...',muted:'-'};
+    return `<span class="nodo-signal ${kind}" title="${attr(title||text||labels[kind]||'')}">${esc(text||labels[kind]||'-')}</span>`;
+  }
+  function statusSignal(value){
+    const raw=String(value||'');
+    const x=norm(raw);
+    if(['COMPLETADO','ACREDITADA','APROBADA','APROBADA_MANUAL','APROBADA_MANUAL_OK','PAGADA','DONE'].includes(x)) return signal('ok','OK',raw);
+    if(['ERROR','ERROR_JOB','ERROR_WORKER','RECHAZADA','CANCELADO','CANCELADA','REQUIERE_MANUAL','MANUAL'].includes(x)) return signal('err','Error',raw);
+    if(['REINTENTAR','PENDIENTE','NUEVA','NUEVO','EN_REVISION'].includes(x)) return signal('retry','Reintentar',raw);
+    if(['PROCESANDO','EN_COLA_WORKER','PREPARANDO_COLA','EN_PROCESO_WORKER'].includes(x)) return signal('run','...',raw);
+    if(!x||x==='SIN_WORKER'||x==='-') return signal('muted','-',raw);
+    return signal('muted','-',raw);
+  }
+  function resultSignal(row){
+    const full=String(row.error||row.resultado||row.worker||row.estado||'');
+    if(row.error) return signal('err','Error',full);
+    const w=norm(row.worker), e=norm(row.estado), r=norm(row.resultado);
+    if(['REINTENTAR','PENDIENTE'].includes(w)||['REINTENTAR','PENDIENTE'].includes(e)) return signal('retry','Reintentar',full);
+    if(['ERROR','ERROR_JOB','ERROR_WORKER','REQUIERE_MANUAL','RECHAZADA','CANCELADO','CANCELADA'].includes(w)||['ERROR','RECHAZADA','CANCELADO','CANCELADA'].includes(e)||/ERROR|RECHAZ|BLOQUEADO/.test(r)) return signal('err','Error',full);
+    if(row.resultado||['COMPLETADO','ACREDITADA','APROBADA','APROBADA_MANUAL','PAGADA'].includes(w)||['COMPLETADO','ACREDITADA','APROBADA','APROBADA_MANUAL','PAGADA'].includes(e)) return signal('ok','OK',full);
+    return signal('muted','-',full);
+  }
+  window.estadoBadge=estadoBadge=function(v){return statusSignal(v);};
+  window.workerEstadoBadge=workerEstadoBadge=function(v){return statusSignal(v);};
+  window.workerResultadoOErrorHTML=workerResultadoOErrorHTML=function(resultado,error,modo='compact',jobId=''){
+    if(String(modo)==='compact') return resultSignal({resultado,error});
+    const old=window.workerResultadoHTML;
+    const parts=[];
+    if(resultado) parts.push(typeof old==='function'?old(resultado,modo):`<div class="worker-result-card ${esc(modo)}"><pre>${esc(resultado)}</pre></div>`);
+    if(error) parts.push(`<div class="worker-error-card ${esc(modo)}">${esc(error)}${typeof workerAliasDuplicadoHTML==='function'?workerAliasDuplicadoHTML(error,jobId):''}</div>`);
+    return parts.length?parts.join(''):'<span class="small">-</span>';
+  };
+
+  let holdUntil=0;
+  function wrap(){return $('opsColaUnificada')?.querySelector('.ops-table-wrap')||null;}
+  function saveScroll(){
+    const w=wrap();
+    return {top:w?.scrollTop||0,left:w?.scrollLeft||0,reading:!!w && w.scrollTop>30 && Date.now()<holdUntil};
+  }
+  function restoreScroll(saved){
+    const w=wrap();
+    if(w){w.scrollTop=saved?.top||0;w.scrollLeft=saved?.left||0;attachScroll(w);}
+  }
+  function attachScroll(w){
+    if(!w||w.dataset.nodoV3Scroll) return;
+    w.dataset.nodoV3Scroll='1';
+    w.addEventListener('scroll',()=>{ if(w.scrollTop>30) holdUntil=Date.now()+7000; },{passive:true});
+  }
+  function rows(){
+    const js=jobs();
+    const out=[];
+    solicitudes().forEach(s=>{
+      const sid=s.ID||s.SOLICITUD_ID||s.id||'';
+      const jobId=s.WORKER_JOB_ID||s.worker_job_id||s.ultimo_job_id||'';
+      const j=js.find(x=>String(x.id||x.job_id)===String(jobId))||{};
+      out.push({origen:'LANDING',fecha:s.FECHA_CREACION||s.FECHA||s.created_at||s.solicitud_created_at,usuario:s.USUARIO||s.usuario||s.USUARIO_JUGADOR||'',sub:s.TITULAR_TRANSFERENCIA||s.titular_transferencia||s.NOMBRE_COMPLETO||s.nombre_completo||'',billetera:s.BILLETERA_NOMBRE||s.billetera_nombre||jobWallet(j)||walletNameById(s.ID_BILLETERA||s.billetera_id)||'-',tipo:s.TIPO_SOLICITUD||s.TIPO||s.tipo||'',monto:s.MONTO_DECLARADO||s.MONTO_REAL||s.monto||0,estado:s.ESTADO||s.estado||j.estado||'',worker:j.estado||s.ESTADO_WORKER||'',job:jobId,resultado:j.resultado||s.WORKER_RESULTADO||'',error:s.WORKER_ERROR||j.error_mensaje||'',sid});
+    });
+    js.filter(j=>!j.solicitud_id).forEach(j=>out.push({origen:'MANUAL',fecha:j.created_at||j.updated_at,usuario:j.usuario||'',sub:'',billetera:jobWallet(j),tipo:j.tipo_accion||'',monto:j.monto||0,estado:j.estado||'',worker:j.estado||'',job:j.id||j.job_id||'',resultado:j.resultado||'',error:j.error_mensaje||'',sid:''}));
+    return out;
+  }
+  function renderQueue(force=false){
+    const box=$('opsColaUnificada');
+    if(!box) return;
+    const saved=saveScroll();
+    if(saved.reading && !force){restoreScroll(saved);return;}
+    let list=rows();
+    const q=norm(val('opsFiltroTexto'));
+    const f=norm(val('opsFiltroEstado'));
+    list.sort((a,b)=>new Date(b.fecha||0)-new Date(a.fecha||0));
+    if(f) list=list.filter(r=>norm(`${r.estado} ${r.worker}`).includes(f));
+    if(q) list=list.filter(r=>norm(`${r.usuario} ${r.sub} ${r.tipo} ${r.estado} ${r.worker} ${r.error} ${r.job} ${r.sid} ${r.billetera}`).includes(q));
+    list=list.slice(0,100);
+    if(!list.length){box.innerHTML='<div class="alert-box">No hay operaciones para mostrar.</div>';return;}
+    let html='<div class="ops-table-wrap"><table class="ops-main-table"><thead><tr><th>Hora</th><th>Origen</th><th>Usuario</th><th>Billetera</th><th>Tipo</th><th>Monto</th><th>Resultado</th><th>Estado</th><th>Worker</th><th>Acciones</th></tr></thead><tbody>';
+    list.forEach(r=>{
+      const w=norm(r.worker), e=norm(r.estado), t=norm(r.tipo);
+      const retry=r.job&&!['COMPLETADO','CANCELADO','CANCELADA'].includes(w)&&!['COMPLETADO','CANCELADO','CANCELADA'].includes(e);
+      let actions='<div class="ops-compact-actions">';
+      if(r.sid&&typeof verSolicitudInicio==='function') actions+=`<button class="mini-btn blue" onclick="verSolicitudInicio('${attr(r.sid)}')">Ver</button>`;
+      if(r.job) actions+=`<button class="mini-btn blue" onclick="abrirWorkerLogs('${attr(r.job)}')">Logs</button>`;
+      if(r.job&&typeof abrirEditarBilleteraJobV20==='function') actions+=`<button class="mini-btn yellow" onclick="abrirEditarBilleteraJobV20('${attr(r.job)}')">Billetera</button>`;
+      else if(r.job&&typeof abrirCorregirBilleteraJob==='function') actions+=`<button class="mini-btn yellow" onclick="abrirCorregirBilleteraJob('${attr(r.job)}')">Billetera</button>`;
+      if(retry&&typeof workerPanelReintentarJob==='function') actions+=`<button class="mini-btn yellow" onclick="workerPanelReintentarJob('${attr(r.job)}')">Reintentar</button>`;
+      actions+='</div>';
+      const mp=(t==='CARGA'&&r.sid)?' <span class="mp-pill info">MP</span>':'';
+      html+=`<tr><td>${fecha(r.fecha)}</td><td><span class="ops-origin ${r.origen==='LANDING'?'landing':'manual'}">${esc(r.origen)}</span></td><td><b>${esc(r.usuario)}</b>${r.sub?`<br><span class="small">${esc(r.sub)}</span>`:''}</td><td>${esc(r.billetera||'-')}</td><td>${esc(r.tipo||'-')}${mp}</td><td>${money(r.monto||0)}</td><td>${resultSignal(r)}</td><td>${statusSignal(r.estado||'-')}</td><td>${r.job?`#${esc(r.job)}<br>`:''}${statusSignal(r.worker||'SIN_WORKER')}</td><td>${actions}</td></tr>`;
+    });
+    html+='</tbody></table></div>';
+    if(force||window.__NODO_V3_QUEUE_HTML__!==html){
+      window.__NODO_V3_QUEUE_HTML__=html;
+      box.innerHTML=html;
+      restoreScroll(saved);
+    }else restoreScroll(saved);
+  }
+  window.renderColaFinalOperativa=renderQueue;
+  window.renderColaUnificada=renderColaUnificada=renderQueue;
+
+  function renderQuick(force=false){
+    const active=document.activeElement;
+    if(!force&&active&&['manualWorkerUsuarioInicio','manualWorkerMontoInicio','manualWorkerBilleteraInicio','agentUserClaveInicio','agentUserTipoInicio'].includes(active.id)) return;
+    const oldWallet=val('manualWorkerBilleteraInicio')||localStorage.getItem('nodo_last_wallet_v18_'+pc())||localStorage.getItem('nodoUltimaBilleteraImpactada')||'';
+    const oldUser=val('manualWorkerUsuarioInicio');
+    const oldMonto=val('manualWorkerMontoInicio');
+    const oldResult=$('manualWorkerResultadoInicio')?.innerHTML||'';
+    const agent=$('agentUserActionsBox')?.outerHTML||`<div id="agentUserActionsBox" style="margin-top:12px;border-top:1px solid #273142;padding-top:12px"><div class="ops-panel-title" style="font-size:15px;margin-bottom:8px">Usuario Agentes</div><div class="ops-manual-grid nodo-agent-user-grid"><div><label>Clave</label><input id="agentUserClaveInicio" type="password" autocomplete="new-password" value="${DEFAULT_PASS}" placeholder="${DEFAULT_PASS}"></div><div><label>Accion</label><select id="agentUserTipoInicio"><option value="CREAR_USUARIO">Crear usuario</option><option value="CAMBIAR_CLAVE">Cambiar clave</option></select></div><div><label>&nbsp;</label><button class="btn btn-primary" type="button" style="height:38px;margin:0;padding:0 12px" onclick="crearJobUsuarioAgentesInicio()">Enviar accion</button></div></div><div class="small">Para crear usuario se usa la clave generica ${DEFAULT_PASS}. Luego el usuario puede cambiarla desde la plataforma.</div></div>`;
+    const opts=wallets().map(w=>{const id=walletId(w), banco=w.banco||w.BANCO||w.tipo||w.TIPO||'', saldo=w.saldo||w.SALDO||0;return `<option value="${attr(id)}" ${String(id)===String(oldWallet)?'selected':''}>${esc(walletName(w))} - ${esc(banco)} - ${money(saldo)}</option>`;}).join('');
+    set('opsQuickTop',`<div class="nodo-v18-quick"><div class="nodo-v18-quick-title">Accion rapida</div><div class="nodo-v18-quick-grid"><div class="wallet-cell"><label>Billetera impactada</label><select id="manualWorkerBilleteraInicio" onchange="localStorage.setItem('nodo_last_wallet_v18_${attr(pc())}',this.value);localStorage.setItem('nodoUltimaBilleteraImpactada',this.value)"><option value="">No aplica / seleccionar</option>${opts}</select></div><div class="user-cell"><label>Usuario</label><input id="manualWorkerUsuarioInicio" placeholder="ej: pruebaxx" value="${attr(oldUser)}" autocomplete="off"></div><div class="amount-cell"><label>Monto</label><input id="manualWorkerMontoInicio" placeholder="0 valida | + carga | - retiro" value="${attr(oldMonto)}" autocomplete="off" oninput="nodoV18PreviewAccion&&nodoV18PreviewAccion()"></div><div class="preview-cell"><label>Accion</label><div id="nodoV18Preview" class="nodo-v18-preview valida">Validar usuario</div></div><div class="send-cell"><label>&nbsp;</label><button class="btn btn-green" style="height:38px;margin:0;padding:0 12px" onclick="crearWorkerJobManualInicio()">Enviar</button></div></div>${agent}<div id="manualWorkerResultadoInicio">${oldResult}</div></div>`);
+    try{if(typeof nodoV18PreviewAccion==='function')nodoV18PreviewAccion();}catch(e){}
+  }
+  window.renderQuickV18=renderQuickV18=renderQuick;
+
+  const oldWorker=window.cargarWorkerJobs||(typeof cargarWorkerJobs!=='undefined'?cargarWorkerJobs:null);
+  if(typeof oldWorker==='function'&&!oldWorker.__nodoV3){
+    const fn=async function(){const saved=saveScroll();const r=await oldWorker.apply(this,arguments);renderQueue(false);restoreScroll(saved);return r;};
+    fn.__nodoV3=true;window.cargarWorkerJobs=cargarWorkerJobs=fn;
+  }
+  const oldSolicitudes=window.cargarSolicitudes||(typeof cargarSolicitudes!=='undefined'?cargarSolicitudes:null);
+  if(typeof oldSolicitudes==='function'&&!oldSolicitudes.__nodoV3){
+    const fn=async function(){const saved=saveScroll();const r=await oldSolicitudes.apply(this,arguments);renderQueue(false);restoreScroll(saved);return r;};
+    fn.__nodoV3=true;window.cargarSolicitudes=cargarSolicitudes=fn;
+  }
+  const oldCentro=window.renderCentroOperativo||(typeof renderCentroOperativo!=='undefined'?renderCentroOperativo:null);
+  if(typeof oldCentro==='function'&&!oldCentro.__nodoV3){
+    const fn=function(){const saved=saveScroll();const r=oldCentro.apply(this,arguments);setTimeout(()=>{renderQuick(false);renderQueue(false);restoreScroll(saved);},40);return r;};
+    fn.__nodoV3=true;window.renderCentroOperativo=renderCentroOperativo=fn;
+  }
+  setTimeout(()=>{renderQuick(true);renderQueue(true);},250);
+  setInterval(()=>{renderQueue(false);},1200);
+})();
+</script>
 </body>
 </html>
