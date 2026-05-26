@@ -6482,11 +6482,11 @@ body.nodo-ux-safe .ops-main-table td,body.nodo-ux-safe .ops-main-table th{font-s
     const list = ((so && Array.isArray(so.billeteras) && so.billeteras.length) ? so.billeteras.map(normWallet) : listaWalletsBase());
     let html;
     if(!list.length){
-      html = `<div class="ops-wallet"><div class="ops-wallet-name">Billeteras</div><div class="ops-wallet-meta">Sin billeteras visibles para esta PC.</div></div>`;
+      html = `<div class="ops-wallet compact-wallet"><div class="ops-wallet-name">Billeteras</div><div class="ops-wallet-meta">Sin billeteras visibles para esta PC.</div></div>`;
     } else {
       html = list.map(b=>{
-        const mensaje = ['Datos para transferir:', b.nombre||'Billetera', b.titular?('Titular: '+b.titular):'', b.banco?('Banco/medio: '+b.banco):'', b.alias?('Alias: '+b.alias):'', b.cbu?('CBU/CVU: '+b.cbu):''].filter(Boolean).join('\n');
-        return `<div class="ops-wallet"><div class="ops-wallet-name">${esc(b.nombre||'Billetera')}</div><div class="ops-wallet-saldo">${moneySafe(b.saldo||0)}</div><div class="ops-wallet-meta">${esc(b.banco||'')} · ${esc(b.titular||'')}<br>Alias: ${esc(b.alias||'-')}${b.cbu?`<br>CBU/CVU: ${esc(b.cbu)}`:''}</div><div class="ops-wallet-actions"><button class="mini-btn gray" onclick="copiarTextoOperativo('${attr(b.alias||'')}','Alias')">Alias</button><button class="mini-btn gray" onclick="copiarTextoOperativo('${attr(b.cbu||'')}','CBU/CVU')">CBU</button><button class="mini-btn green" onclick="copiarTextoOperativo('${attr(mensaje)}','Mensaje billetera')">Mensaje WA</button><button class="mini-btn yellow" onclick="abrirAjusteBilletera('${attr(b.id)}')">Ajustar</button></div><div class="wallet-copy-card"><div class="wallet-copy-title">Mensaje para enviar</div><div>${esc(b.nombre||'Billetera')}<br>Alias: ${esc(b.alias||'-')}${b.cbu?`<br>CBU/CVU: ${esc(b.cbu)}`:''}</div></div></div>`;
+        const mensaje = ['Datos para transferir:', b.nombre||'Billetera', b.alias?('Alias: '+b.alias):'', b.cbu?('CBU/CVU: '+b.cbu):''].filter(Boolean).join('\n');
+        return `<div class="ops-wallet compact-wallet" onclick="copiarTextoOperativo('${attr(mensaje)}','Mensaje billetera')" title="Copiar datos para WhatsApp"><div class="ops-wallet-name">${esc(b.nombre||'Billetera')}</div><div class="ops-wallet-saldo">${moneySafe(b.saldo||0)}</div><div class="ops-wallet-meta">Alias: ${esc(b.alias||'-')}${b.cbu?`<br>CBU/CVU: ${esc(b.cbu)}`:''}</div></div>`;
       }).join('');
     }
     if(window.__opsWalletStripHtml !== html){ window.__opsWalletStripHtml = html; setBox('opsWalletStrip', html); }
@@ -7549,7 +7549,7 @@ html, body { height:100%; overflow:hidden!important; }
     if(texto) rows=rows.filter(r=>norm(`${r.usuario} ${r.sub} ${r.tipo} ${r.estado} ${r.worker} ${r.error} ${r.job} ${r.sid} ${r.billetera} ${r.operador}`).includes(texto));
     rows=rows.slice(0,100);
     if(!rows.length){set('opsColaUnificada','<div class="alert-box">No hay operaciones para mostrar.</div>'); return;}
-    let html='<div class="ops-table-wrap"><table class="ops-main-table"><thead><tr><th>Hora</th><th>Origen</th><th>Usuario</th><th>Billetera</th><th>Tipo</th><th>Monto</th><th>Estado</th><th>Worker</th><th>Resultado</th><th>Operador</th><th>Acciones</th></tr></thead><tbody>';
+    let html='<div class="ops-table-wrap"><table class="ops-main-table"><thead><tr><th>Hora</th><th>Origen</th><th>Usuario</th><th>Billetera</th><th>Tipo</th><th>Monto</th><th>Resultado</th><th>Estado</th><th>Worker</th><th>Operador</th><th>Acciones</th></tr></thead><tbody>';
     rows.forEach(r=>{
       const tipoN=norm(r.tipo), workerN=norm(r.worker), estadoN=norm(r.estado);
       let acciones='<div class="ops-compact-actions">';
@@ -7565,7 +7565,7 @@ html, body { height:100%; overflow:hidden!important; }
       if(r.job) acciones+=`<button class="mini-btn blue" onclick="abrirWorkerLogs('${attr(r.job)}')">Logs</button>`;
       acciones+='</div>';
       const mpChip=(tipoN==='CARGA' && r.sid)?' <span class="mp-pill info">MP</span>':'';
-      html+=`<tr><td>${fechaLocal(r.fecha)}</td><td><span class="ops-origin ${r.origen==='LANDING'?'landing':'manual'}">${esc(r.origen)}</span></td><td><b>${esc(r.usuario)}</b>${r.sub?`<br><span class="small">${esc(r.sub)}</span>`:''}</td><td>${esc(r.billetera||'-')}</td><td>${esc(r.tipo||'-')}${mpChip}</td><td>${moneyLocal(r.monto||0)}</td><td>${badgeEstado(r.estado||'-')}</td><td>${r.job?`#${esc(r.job)}<br>`:''}${badgeWorker(r.worker||'SIN_WORKER')}</td><td>${resultCompact(r.resultado,r.error)}</td><td>${esc(r.operador||'-')}</td><td>${acciones}</td></tr>`;
+      html+=`<tr><td>${fechaLocal(r.fecha)}</td><td><span class="ops-origin ${r.origen==='LANDING'?'landing':'manual'}">${esc(r.origen)}</span></td><td><b>${esc(r.usuario)}</b>${r.sub?`<br><span class="small">${esc(r.sub)}</span>`:''}</td><td>${esc(r.billetera||'-')}</td><td>${esc(r.tipo||'-')}${mpChip}</td><td>${moneyLocal(r.monto||0)}</td><td>${resultCompact(r.resultado,r.error)}</td><td>${badgeEstado(r.estado||'-')}</td><td>${r.job?`#${esc(r.job)}<br>`:''}${badgeWorker(r.worker||'SIN_WORKER')}</td><td>${esc(r.operador||'-')}</td><td>${acciones}</td></tr>`;
     });
     html+='</tbody></table></div>';
     if(S.colaHtml!==html || force){S.colaHtml=html; set('opsColaUnificada',html); const nw=$('opsColaUnificada')?.querySelector('.ops-table-wrap'); if(nw){nw.scrollTop=top;nw.scrollLeft=left;}}
@@ -8358,14 +8358,11 @@ html, body { height:100%; overflow:hidden!important; }
     if(!usuario || !jobId || isDone(jobId)) return;
     markDone(jobId);
     const msg = mensajeUsuario(usuario);
-    set('manualWorkerResultadoInicio', `
-      <div class="ok-box" id="usuarioCreadoCard" style="margin-top:10px">
-        <b>Usuario creado correctamente.</b>
-        <textarea readonly style="width:100%;min-height:94px;margin-top:8px;border-radius:10px;padding:9px;background:#071b12;color:#dcfce7;border:1px solid #14532d;font:13px/1.35 Consolas,monospace">${esc(msg)}</textarea>
-        <button class="mini-btn green" type="button" onclick="nodoCopiarUsuarioCreado('${attr(usuario)}')">Copiar mensaje</button>
-      </div>
-    `);
-    setTimeout(()=>{ const card=$('usuarioCreadoCard'); if(card) card.remove(); }, 30000);
+    const u = attr(usuario);
+    const modalHtml = `<div class="verify-box"><div class="verify-title">Usuario creado correctamente</div><div class="verify-row"><span>Usuario</span><b>${esc(usuario)}</b></div><div class="verify-row"><span>Clave</span><b>${DEFAULT_PASS}</b></div><div class="verify-row"><span>Link</span><b>${PLATFORM_LINK}</b></div><textarea readonly style="width:100%;min-height:92px;margin-top:10px;border-radius:10px;padding:9px;background:#071b12;color:#dcfce7;border:1px solid #14532d;font:13px/1.35 Consolas,monospace">${esc(msg)}</textarea><button class="mini-btn green" type="button" onclick="nodoCopiarUsuarioCreado('${u}')">Copiar mensaje</button></div>`;
+    try{ abrirModal('Usuario creado', modalHtml, async()=>cerrarModal(), 'Cerrar'); }
+    catch(e){ set('manualWorkerResultadoInicio', `<div class="ok-box">Usuario creado correctamente: <b>${esc(usuario)}</b> <button class="mini-btn green" type="button" onclick="nodoCopiarUsuarioCreado('${u}')">Copiar mensaje</button></div>`); }
+    set('manualWorkerResultadoInicio', `<div class="ok-box">Usuario <b>${esc(usuario)}</b> creado correctamente.</div>`);
   }
 
   function ensureAgentUserActions(){
@@ -8516,6 +8513,49 @@ html, body { height:100%; overflow:hidden!important; }
     window.renderCentroOperativo = function(){ const r=oldRenderCentro.apply(this, arguments); setTimeout(ensureAgentUserActions,50); return r; };
   }
   document.addEventListener('DOMContentLoaded',()=>setTimeout(()=>{ ensureAgentUserActions(); checkPendingUserJob(); },1000));
+})();
+</script>
+<style id="nodo-final-ux-clean-css">
+  .ops-wallet.compact-wallet{cursor:pointer;padding:10px 12px;min-height:unset}
+  .ops-wallet.compact-wallet .ops-wallet-name{font-size:16px;margin-bottom:4px}
+  .ops-wallet.compact-wallet .ops-wallet-saldo{font-size:18px;margin-bottom:4px}
+  .ops-wallet.compact-wallet .ops-wallet-meta{font-size:11px;line-height:1.25}
+  .ops-compact-actions .mini-btn,.ops-main-table .mini-btn{padding:5px 8px!important;font-size:11px!important;border-radius:8px!important;line-height:1.1!important}
+  .ops-main-table td,.ops-main-table th{padding:7px 8px!important}
+  .ops-main-table th:nth-child(7),.ops-main-table td:nth-child(7){min-width:74px}
+</style>
+<script id="nodo-final-ux-clean-js">
+(function(){
+  if(window.__NODO_FINAL_UX_CLEAN_V1__) return;
+  window.__NODO_FINAL_UX_CLEAN_V1__ = true;
+  function pc(){ try{return String(window.pcOperativa||pcOperativa||'').trim().toUpperCase();}catch(e){return '';} }
+  function readKey(id){ return 'nodo_operativo_chat_read_v3_'+pc()+'_'+String(id||''); }
+  function setRead(id,n){ try{ localStorage.setItem(readKey(id), String(Number(n||0))); }catch(e){} }
+  function refreshChatBadges(){
+    try{ if(typeof renderChatList==='function') renderChatList(); }catch(e){}
+    try{ if(typeof renderInicio==='function') renderInicio(); }catch(e){}
+    try{ if(typeof updateBadgeChatLateralV8==='function') updateBadgeChatLateralV8(); }catch(e){}
+  }
+  function baselineChatsOnce(){
+    const key='nodo_chat_session_baseline_'+pc();
+    try{ if(sessionStorage.getItem(key)==='1') return; sessionStorage.setItem(key,'1'); }catch(e){}
+    const list = window.chats || (typeof chats!=='undefined'?chats:[]);
+    if(!Array.isArray(list) || !list.length) return;
+    list.forEach(c=>{
+      const id = c.chat_id || c.ID_CHAT || c.id;
+      const count = Number(c.USER_COUNT || c.user_count || c.total_usuario || c.SIN_LEER || 0);
+      if(id) { setRead(id, count); c.SIN_LEER = 0; }
+    });
+    refreshChatBadges();
+  }
+  const oldCargarChats = window.cargarChats || (typeof cargarChats!=='undefined'?cargarChats:null);
+  if(typeof oldCargarChats==='function'){
+    window.cargarChats = cargarChats = async function(){
+      const r = await oldCargarChats.apply(this, arguments);
+      baselineChatsOnce();
+      return r;
+    };
+  }
 })();
 </script>
 </body>
