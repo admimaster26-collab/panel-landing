@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>NODO · OPERATIVO V20 · UX fina realtime</title>
+<title>NODO · OPERATIVO V20 · Retry fix</title>
 
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif}
@@ -274,7 +274,7 @@ table{width:100%;border-collapse:collapse}th,td{padding:11px;border-bottom:1px s
   <div class="login-card">
     <img src="logo-nodo.png" class="logo" alt="NODO">
     <h2 style="margin-bottom:6px">PANEL OPERATIVO LITE</h2>
-    <div class="small" style="margin-bottom:16px">Versión V20 · UX fina realtime</div>
+    <div class="small" style="margin-bottom:16px">Versión V20 · Retry fix</div>
     <label>Usuario</label>
     <input id="loginUsuario" autocomplete="username">
     <label>Clave</label>
@@ -9214,6 +9214,448 @@ body.nodo-v20-recuperado #opsQuickTop .nodo-v23-agent{display:none!important}
   document.addEventListener('DOMContentLoaded',()=>setTimeout(boot,400));
   window.addEventListener('load',()=>setTimeout(boot,700));
   setTimeout(boot,900);
+})();
+</script>
+
+
+<style id="nodo-v20-retry-fix-css">
+  body.nodo-v20-ux-fina .nodo-estado-note{display:none!important}
+  body.nodo-v20-ux-fina .worker-error-card{
+    max-width:none!important;
+  }
+  body.nodo-v20-ux-fina .nodo-modal-msg-final,
+  body.nodo-v20-ux-fina .nodo-created-user-modal textarea{
+    width:100%!important;
+    min-height:82px!important;
+    max-height:110px!important;
+    overflow:auto!important;
+    background:rgba(18,183,106,.12)!important;
+    color:#d8ffe5!important;
+    border:1px solid rgba(18,183,106,.35)!important;
+    border-radius:12px!important;
+    padding:12px!important;
+    font-family:Arial,sans-serif!important;
+    font-size:13px!important;
+    line-height:1.45!important;
+    resize:none!important;
+  }
+</style>
+
+<script id="nodo-v20-retry-fix-js">
+(function(){
+  if(window.__NODO_V20_RETRY_FIX__) return;
+  window.__NODO_V20_RETRY_FIX__ = true;
+
+  const STATE = {
+    watching:{},
+    shown:{},
+    poll:null,
+    lastRetryJob:null
+  };
+
+  function $(id){ return document.getElementById(id); }
+  function esc(v){
+    if(typeof escapeHtml === 'function') return escapeHtml(v);
+    return String(v ?? '').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'","&#039;");
+  }
+  function attr(v){
+    if(typeof escapeAttr === 'function') return escapeAttr(v);
+    return esc(v).replaceAll('`','&#96;');
+  }
+  function norm(v){
+    try{return String(v ?? '').normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim().toUpperCase();}
+    catch(e){return String(v ?? '').trim().toUpperCase();}
+  }
+  function money2(v){
+    if(typeof money === 'function') return money(v);
+    return '$ ' + Number(v || 0).toLocaleString('es-AR');
+  }
+  function fecha2(v){
+    if(typeof formatFecha === 'function') return formatFecha(v);
+    return esc(v || '');
+  }
+  function jobs(){
+    try{return Array.isArray(window.workerJobs) ? window.workerJobs : (Array.isArray(workerJobs) ? workerJobs : []);}
+    catch(e){return [];}
+  }
+  function setJobs(lista){
+    try{ window.workerJobs = lista; }catch(e){}
+    try{ workerJobs = lista; }catch(e){}
+  }
+  function jobById(id){
+    return jobs().find(j => String(j.id || j.job_id || j.worker_job_id || '') === String(id || '')) || null;
+  }
+  function isOk(e){ return ['COMPLETADO','OK','FINALIZADO'].includes(norm(e)); }
+  function isErr(e, err){
+    const n = norm(e);
+    return n.includes('ERROR') || n === 'REINTENTAR' || n === 'REQUIERE_MANUAL' || String(err || '').trim();
+  }
+  function isUsuarioJob(j){
+    const t = norm(j?.tipo_accion || j?.tipo || '');
+    const txt = norm((j?.resultado || '') + ' ' + JSON.stringify(j?.payload || {}));
+    return t === 'CREAR_USUARIO' || txt.includes('USUARIO CREADO') || txt.includes('CREADO CORRECTAMENTE');
+  }
+  function parseJson(v){
+    if(!v) return null;
+    if(typeof v === 'object') return v;
+    try{return JSON.parse(String(v));}catch(e){return null;}
+  }
+  function datoRegex(txt, labels){
+    for(const l of labels){
+      const re = new RegExp(l + "\\s*[:=]\\s*([^\\n\\r,;]+)", "i");
+      const m = String(txt || '').match(re);
+      if(m && m[1]) return m[1].trim();
+    }
+    return '';
+  }
+  function datosUsuario(j){
+    const payload = parseJson(j?.payload) || {};
+    const rj = parseJson(j?.resultado) || {};
+    const txt = String(j?.resultado || '');
+    const usuario = payload.usuario_creado || payload.usuario || rj.usuario || rj.username || datoRegex(txt, ['Usuario','user','username']) || j?.usuario || '';
+    const clave = payload.clave || payload.password || rj.clave || rj.password || datoRegex(txt, ['Clave','Password','pass']) || '12345a';
+    const link = payload.link || payload.url || rj.link || rj.url || datoRegex(txt, ['Link','URL']) || 'http://bet-300.pw/';
+    return {usuario, clave, link};
+  }
+  function copiar(txt, nombre){
+    if(typeof copiarTextoOperativo === 'function') copiarTextoOperativo(txt, nombre || 'Texto');
+    else navigator.clipboard?.writeText(String(txt || ''));
+    if(typeof toast === 'function') toast((nombre || 'Texto') + ' copiado','green');
+  }
+  window.nodoCopiarMensajeUsuarioFinal = function(usuario, clave, link){
+    const msg = `Usuario: ${usuario || ''}\nClave: ${clave || ''}\nLink: ${link || 'http://bet-300.pw/'}`;
+    copiar(msg, 'Mensaje usuario');
+  };
+
+  function limpiarTextoModalUsuario(){
+    document.querySelectorAll('.nodo-created-user-modal textarea,.nodo-modal-msg-final').forEach(t => {
+      t.value = String(t.value || '')
+        .replace(/\n?Pod[eé]s cambiar la clave desde la plataforma si quer[eé]s\.?/gi,'')
+        .replace(/\n{3,}/g,'\n\n')
+        .trim();
+    });
+  }
+
+  window.mostrarModalUsuarioCreadoV20 = function(job){
+    const d = datosUsuario(job || {});
+    const msg = `Usuario: ${d.usuario || ''}\nClave: ${d.clave || ''}\nLink: ${d.link || ''}`;
+    if(typeof abrirModal !== 'function'){
+      alert('Usuario creado\n\n' + msg);
+      return;
+    }
+    abrirModal('Usuario creado', `
+      <div class="verify-box good nodo-created-user-modal">
+        <div class="verify-title">Usuario creado correctamente</div>
+        <div class="verify-grid">
+          ${typeof verifyRow === 'function' ? verifyRow('Usuario', d.usuario || '-', '', true) : `<div>${esc(d.usuario)}</div>`}
+          ${typeof verifyRow === 'function' ? verifyRow('Clave', d.clave || '-', '', true) : `<div>${esc(d.clave)}</div>`}
+          ${typeof verifyRow === 'function' ? verifyRow('Link', d.link || '-', '', true) : `<div>${esc(d.link)}</div>`}
+        </div>
+        <textarea class="nodo-modal-msg-final" readonly>${esc(msg)}</textarea>
+        <button class="mini-btn green" style="margin-top:10px" onclick="nodoCopiarMensajeUsuarioFinal('${attr(d.usuario)}','${attr(d.clave)}','${attr(d.link)}')">Copiar mensaje</button>
+      </div>
+    `, async()=>cerrarModal(), 'Cerrar');
+    setTimeout(limpiarTextoModalUsuario, 40);
+  };
+
+  async function fetchJob(jobId){
+    let local = jobById(jobId);
+    try{
+      const r = await supabaseClient
+        .from('worker_jobs')
+        .select('*')
+        .eq('id', Number(jobId))
+        .single();
+
+      if(r && r.data){
+        const lista = jobs().slice();
+        const idx = lista.findIndex(j => String(j.id) === String(jobId));
+        const merged = {...(idx >= 0 ? lista[idx] : {}), ...r.data};
+        if(idx >= 0) lista[idx] = merged;
+        else lista.unshift(merged);
+        setJobs(lista);
+        return merged;
+      }
+    }catch(e){}
+    return local;
+  }
+
+  async function refrescarUI(){
+    try{ if(typeof cargarWorkerJobs === 'function') await cargarWorkerJobs(true); }catch(e){}
+    try{ if(typeof cargarSolicitudes === 'function') await cargarSolicitudes(true); }catch(e){}
+    try{ if(typeof renderWorkerJobs === 'function') renderWorkerJobs(); }catch(e){}
+    try{ if(typeof renderColaUnificada === 'function') renderColaUnificada(); }catch(e){}
+    try{ if(typeof renderCentroOperativo === 'function') renderCentroOperativo(); }catch(e){}
+    setTimeout(() => document.querySelectorAll('.nodo-estado-note').forEach(el => el.remove()), 30);
+  }
+
+  async function revisarJob(jobId){
+    const j = await fetchJob(jobId);
+    if(!j) return;
+
+    if(isOk(j.estado)){
+      await refrescarUI();
+      if(isUsuarioJob(j) && !STATE.shown[String(jobId)]){
+        STATE.shown[String(jobId)] = true;
+        delete STATE.watching[String(jobId)];
+        setTimeout(() => window.mostrarModalUsuarioCreadoV20(j), 100);
+      }
+      return;
+    }
+
+    if(isErr(j.estado, j.error_mensaje)){
+      await refrescarUI();
+    }
+  }
+
+  function startWatch(jobId){
+    if(!jobId) return;
+    STATE.watching[String(jobId)] = Date.now();
+    revisarJob(jobId);
+    if(!STATE.poll){
+      STATE.poll = setInterval(() => {
+        Object.keys(STATE.watching).forEach(id => revisarJob(id));
+      }, 900);
+    }
+  }
+
+  function stopWatch(jobId){
+    if(jobId) delete STATE.watching[String(jobId)];
+    if(!Object.keys(STATE.watching).length && STATE.poll){
+      clearInterval(STATE.poll);
+      STATE.poll = null;
+    }
+  }
+
+  window.startWatchingJobV20 = startWatch;
+  window.stopWatchingJobV20 = stopWatch;
+
+  async function actualizarUsuarioDelMismoJob(jobId, nuevoUsuario){
+    if(!nuevoUsuario) return {ok:true, skipped:true};
+
+    const j = await fetchJob(jobId);
+    if(!j) return {ok:false, error:'No encontré el job para actualizar usuario.'};
+
+    const actual = String(j.usuario || '').trim();
+    if(!actual || actual === nuevoUsuario) return {ok:true, skipped:true};
+
+    const payload = parseJson(j.payload) || {};
+    payload.usuario = nuevoUsuario;
+    payload.usuario_creado = nuevoUsuario;
+
+    // Actualiza el MISMO job. No crea otro.
+    const { error } = await supabaseClient
+      .from('worker_jobs')
+      .update({
+        usuario: nuevoUsuario,
+        payload: payload,
+        error_mensaje: null,
+        resultado: null
+      })
+      .eq('id', Number(jobId));
+
+    if(error) return {ok:false, error:error.message || String(error)};
+
+    const lista = jobs().slice();
+    const idx = lista.findIndex(x => String(x.id) === String(jobId));
+    if(idx >= 0){
+      lista[idx] = {...lista[idx], usuario:nuevoUsuario, payload, error_mensaje:null, resultado:null};
+      setJobs(lista);
+    }
+
+    return {ok:true};
+  }
+
+  function usuarioElegidoParaRetry(jobId){
+    const j = jobById(jobId);
+    const inp = $('manualWorkerUsuarioInicio') || $('manualWorkerUsuario');
+    const escrito = String(inp?.value || '').trim();
+
+    // Solo usa el campo si realmente cambió respecto al job.
+    if(escrito && j && escrito !== String(j.usuario || '').trim()){
+      return escrito;
+    }
+
+    return '';
+  }
+
+  window.copiarSugerenciaUsuarioV20 = function(usuario){
+    const u = String(usuario || '').trim();
+    copiar(u, 'Usuario sugerido');
+    const inp = $('manualWorkerUsuarioInicio') || $('manualWorkerUsuario');
+    if(inp){
+      inp.value = u;
+      inp.dispatchEvent(new Event('input', {bubbles:true}));
+      inp.focus();
+      inp.select();
+    }
+  };
+
+  window.workerPanelReintentarJob = async function(jobId){
+    try{
+      const id = Number(jobId);
+      if(!id) throw new Error('Job inválido.');
+
+      const nuevoUsuario = usuarioElegidoParaRetry(id);
+      if(nuevoUsuario){
+        const upd = await actualizarUsuarioDelMismoJob(id, nuevoUsuario);
+        if(!upd.ok){
+          throw new Error('No pude actualizar el usuario del mismo job: ' + upd.error);
+        }
+      }
+
+      // IMPORTANTE: esta RPC en tu Supabase solo acepta p_job_id.
+      // No se mandan p_usuario ni p_usuario_override para no romper schema cache.
+      const { data, error } = await supabaseClient.rpc('admin_reintentar_worker_job', {
+        p_job_id: id
+      });
+
+      if(error) throw error;
+      const r = Array.isArray(data) ? data[0] : data;
+      if(r && r.ok === false) throw new Error(r.error || 'No se pudo reintentar.');
+
+      STATE.lastRetryJob = id;
+      if(typeof toast === 'function') toast('Reintentando mismo job','green');
+
+      startWatch(id);
+      await refrescarUI();
+
+      // Poll inmediato para que el OK/modal aparezca sin refresh manual.
+      [350, 900, 1500, 2300, 3300, 5000, 7500].forEach(ms => {
+        setTimeout(() => revisarJob(id), ms);
+      });
+
+      // Si sigue abierto el modal de logs, lo refrescamos visualmente una sola vez después de disparar.
+      setTimeout(() => {
+        const title = $('modalTitle');
+        if(title && /Logs del worker/i.test(title.textContent || '')){
+          try{ window.abrirWorkerLogsUxFina(id); }catch(e){}
+        }
+      }, 650);
+
+    }catch(e){
+      alert('Error reintentando job: ' + (e.message || e));
+    }
+  };
+
+  // Logs corregidos: sugerencias copiables y botón reintentar que usa mismo job.
+  window.abrirWorkerLogsUxFina = async function(jobId){
+    if(!jobId){
+      alert('Este registro todavía no tiene job asociado.');
+      return;
+    }
+
+    const id = Number(jobId);
+    const j = await fetchJob(id);
+    startWatch(id);
+
+    function variantesDesdeError(usuario, error){
+      const txt = String(error || '');
+      const m = txt.match(/Sugerencias?\s*:\s*([^\.]+)/i);
+      if(m && m[1]){
+        return m[1].split(',').map(x=>x.trim()).filter(Boolean).slice(0,6);
+      }
+      const base = String(usuario || 'usuario').toLowerCase().replace(/[^a-z0-9]/g,'').slice(0,14) || 'usuario';
+      const n = Math.floor(Math.random()*90)+10;
+      return [base+n, base+'1', base+'ok', base+'x', base+'vip'];
+    }
+
+    function sugerenciasAlias(usuario, error){
+      const t = norm(error);
+      if(!(t.includes('DUPLIC') || t.includes('EXIST') || t.includes('ALIAS') || t.includes('USUARIO'))){
+        return '';
+      }
+      const vars = variantesDesdeError(usuario, error);
+      return `<div class="nodo-sugerencias-alias">
+        <b>Posible alias/usuario duplicado.</b>
+        <div class="small" style="margin-top:6px">Copiá una variante al campo Usuario y tocá <b>Reintentar mismo job</b>.</div>
+        <div style="margin-top:8px">
+          ${vars.map(v=>`<button class="nodo-sugerencia-copy" onclick="copiarSugerenciaUsuarioV20('${attr(v)}')">${esc(v)}</button>`).join('')}
+        </div>
+      </div>`;
+    }
+
+    let logsHtml = '';
+    try{
+      const { data, error } = await supabaseClient
+        .from('worker_logs')
+        .select('*')
+        .eq('worker_job_id', id)
+        .order('created_at', { ascending:false })
+        .limit(30);
+
+      if(!error && data && data.length){
+        logsHtml = data.map(l => `
+          <div class="verify-box">
+            <div class="verify-title">${esc(l.nivel || l.tipo || 'LOG')} · ${fecha2(l.created_at || '')}</div>
+            <div class="small">${esc(l.mensaje || l.detalle || JSON.stringify(l))}</div>
+          </div>
+        `).join('');
+      }
+    }catch(e){}
+
+    const estado = j ? (j.estado || '-') : '-';
+    const err = j ? (j.error_mensaje || '') : '';
+    const res = j ? (j.resultado || '') : '';
+    const usuario = j ? (j.usuario || '') : '';
+
+    const acciones = j ? `
+      <div class="nodo-log-actions">
+        <button class="mini-btn green" onclick="workerPanelReintentarJob('${attr(id)}')">Reintentar mismo job</button>
+        <button class="mini-btn yellow" onclick="abrirEditarBilleteraJobV20('${attr(id)}')">Editar billetera</button>
+        <button class="mini-btn red" onclick="workerPanelCancelarJob('${attr(id)}')">Cancelar</button>
+      </div>
+    ` : '';
+
+    const detalle = j ? `
+      <div class="verify-box">
+        <div class="verify-title">Job #${esc(j.id)} · ${esc((j.tipo_accion || '').replaceAll('_',' ').toLowerCase().replace(/^\w/, c => c.toUpperCase()))}</div>
+        <div class="verify-grid">
+          ${typeof verifyRow === 'function' ? verifyRow('Usuario', usuario || '-', '', true) : `<div>${esc(usuario)}</div>`}
+          ${typeof verifyRow === 'function' ? verifyRow('Monto', money2(j.monto || 0)) : `<div>${money2(j.monto||0)}</div>`}
+          ${typeof verifyRow === 'function' ? verifyRow('Estado', estado) : `<div>${esc(estado)}</div>`}
+          ${typeof verifyRow === 'function' ? verifyRow('Intentos', `${j.intentos || 0} / ${j.max_intentos || 3}`) : `<div>${esc(j.intentos || 0)}</div>`}
+        </div>
+      </div>
+      ${sugerenciasAlias(usuario, err || res)}
+      <div class="verify-box">
+        <div class="verify-title">Resultado / error</div>
+        ${err ? `<div class="worker-error-card">${esc(err)}</div>` : (res ? `<div class="ok-box">${esc(res)}</div>` : `<div class="alert-box">Sin resultado todavía.</div>`)}
+      </div>
+    ` : `<div class="alert-box">No encontré el job en memoria. Actualizá worker y volvé a abrir los logs.</div>`;
+
+    abrirModal('Logs del worker', `
+      ${acciones}
+      ${detalle}
+      ${logsHtml || `<div class="alert-box">Todavía no hay logs detallados para este job.</div>`}
+    `, async()=>{ stopWatch(id); cerrarModal(); }, 'Cerrar');
+  };
+
+  window.abrirWorkerLogs = window.abrirWorkerLogsUxFina;
+  window.abrirDetalleWorkerJob = window.abrirWorkerLogsUxFina;
+
+  // Limpieza continua mínima del texto viejo si otro módulo abre el modal antiguo.
+  const oldAbrirModal = window.abrirModal;
+  if(typeof oldAbrirModal === 'function' && !oldAbrirModal.__retryFix){
+    window.abrirModal = function(){
+      const r = oldAbrirModal.apply(this, arguments);
+      setTimeout(limpiarTextoModalUsuario, 50);
+      setTimeout(limpiarTextoModalUsuario, 250);
+      return r;
+    };
+    window.abrirModal.__retryFix = true;
+    try{ abrirModal = window.abrirModal; }catch(e){}
+  }
+
+  function boot(){
+    try{ refrescarUI(); }catch(e){}
+    document.querySelectorAll('.nodo-estado-note').forEach(el => el.remove());
+    limpiarTextoModalUsuario();
+  }
+
+  document.addEventListener('DOMContentLoaded',()=>setTimeout(boot,500));
+  window.addEventListener('load',()=>setTimeout(boot,900));
+  setTimeout(boot,1000);
 })();
 </script>
 
