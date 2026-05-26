@@ -348,7 +348,7 @@ table{width:100%;border-collapse:collapse}th,td{padding:11px;border-bottom:1px s
               <div class="ops-alert">Carga: suma dinero a billetera y resta fichas. Retiro: resta dinero y recupera fichas.</div>
               <div class="ops-manual-grid">
                 <div><label>Usuario</label><input id="manualWorkerUsuarioInicio" placeholder="ej: pruebasan"></div>
-                <div><label>Tipo</label><select id="manualWorkerTipoInicio" onchange="ajustarMontoWorkerManualInicio()"><option value="VALIDAR_USUARIO">Validar usuario</option><option value="CARGAR_FICHAS">Cargar fichas</option><option value="PROCESAR_RETIRO">Retirar fichas</option></select></div>
+                <div><label>Tipo</label><select id="manualWorkerTipoInicio" onchange="ajustarMontoWorkerManualInicio()"><option value="VALIDAR_USUARIO">Validar usuario</option><option value="CARGAR_FICHAS">Carga</option><option value="PROCESAR_RETIRO">Retiro</option></select></div>
                 <div><label>Monto</label><input id="manualWorkerMontoInicio" type="number" min="0" step="1" placeholder="ej: 2000"></div>
                 <div><label>Billetera impactada</label><select id="manualWorkerBilleteraInicio"><option value="">No aplica / seleccionar</option></select></div>
                 <div><label>Observación</label><input id="manualWorkerObsInicio" placeholder="opcional"></div>
@@ -481,8 +481,8 @@ table{width:100%;border-collapse:collapse}th,td{padding:11px;border-bottom:1px s
               <label>Tipo de acción</label>
               <select id="manualWorkerTipo" onchange="ajustarMontoWorkerManual()">
                 <option value="VALIDAR_USUARIO">Validar usuario</option>
-                <option value="CARGAR_FICHAS">Cargar fichas</option>
-                <option value="PROCESAR_RETIRO">Retirar fichas</option>
+                <option value="CARGAR_FICHAS">Carga</option>
+                <option value="PROCESAR_RETIRO">Retiro</option>
               </select>
             </div>
             <div>
@@ -513,17 +513,12 @@ table{width:100%;border-collapse:collapse}th,td{padding:11px;border-bottom:1px s
             <select id="workerFiltroEstado" onchange="renderWorkerJobs()">
               <option value="">Todos los estados</option>
               <option value="PENDIENTE">Pendiente</option>
-              <option value="PROCESANDO">Procesando</option>
-              <option value="REINTENTAR">Reintentar</option>
-              <option value="COMPLETADO">Completado</option>
-              <option value="ERROR">Error</option>
-              <option value="REQUIERE_MANUAL">Requiere manual</option>
+              <option value="COMPLETADO">Completo</option>
               <option value="CANCELADO">Cancelado</option>
             </select>
             <select id="workerFiltroTipo" onchange="renderWorkerJobs()">
               <option value="">Todos los tipos</option>
-              <option value="VALIDAR_USUARIO">Validar usuario</option>
-              <option value="CARGAR_FICHAS">Cargar fichas</option>
+              <option value="CARGAR_FICHAS">Carga</option>
               <option value="PROCESAR_RETIRO">Retiro</option>
             </select>
             <button class="mini-btn blue" onclick="cargarWorkerJobs(true)">Filtrar / actualizar</button>
@@ -1518,12 +1513,12 @@ function finalizarLogin(guardar=true){
   iniciarRealtimeSolicitudes();
   if(!timersIniciados){
     timersIniciados=true;
-    setInterval(()=>nodoRefrescoSeguro(()=>cargarSolicitudes(true), "solicitudes"),3500);
-    setInterval(()=>nodoRefrescoSeguro(()=>cargarChats(true), "chat"),3500);
+    setInterval(()=>{ if(!document.hidden) nodoRefrescoSeguro(()=>cargarSolicitudes(true), "solicitudes"); },9000);
+    setInterval(()=>{ if(!document.hidden) nodoRefrescoSeguro(()=>cargarChats(true), "chat"); },9000);
     setInterval(()=>nodoRefrescoSeguro(()=>cargarBilleteras(false), "billeteras"),15000);
-    setInterval(()=>nodoRefrescoSeguro(()=>cargarSaldosOperativos(true), "saldos"),7000);
-    setInterval(()=>nodoRefrescoSeguro(()=>cargarWorkerJobs(false), "worker"),3500);
-    setInterval(()=>{ if(chatActualId) cargarChatActual(nodoChatDebeAutoScroll()); },4000);
+    setInterval(()=>{ if(!document.hidden) nodoRefrescoSeguro(()=>cargarSaldosOperativos(true), "saldos"); },12000);
+    setInterval(()=>{ if(!document.hidden) nodoRefrescoSeguro(()=>cargarWorkerJobs(false), "worker"); },9000);
+    setInterval(()=>{ if(!document.hidden && chatActualId) cargarChatActual(nodoChatDebeAutoScroll()); },9000);
   }
 }
 
@@ -4606,7 +4601,7 @@ async function cerrarSesion(){
     // Respaldo liviano cada 60s por si el navegador duerme el socket.
     if(!timersIniciados){
       timersIniciados = true;
-      setInterval(()=>{ try{ cargarSaldoAgenteRealtime(); }catch(e){} }, 5000);
+      setInterval(()=>{ if(!document.hidden){ try{ cargarSaldoAgenteRealtime(); }catch(e){} } }, 15000);
     }
   };
 
@@ -6203,9 +6198,9 @@ async function cerrarSesion(){
   function startTimers(){
     if(S.timersStarted) return;
     S.timersStarted=true;
-    setInterval(()=>{ if(!document.hidden) nodoReloadWorkerDirect('poll'); },1500);
-    setInterval(()=>{ if(!document.hidden) cargarPagosMp(true); },5000);
-    setInterval(()=>{ if(!document.hidden) nodoReloadSolicitudesDirect('poll'); },4500);
+    setInterval(()=>{ if(!document.hidden) nodoReloadWorkerDirect('poll'); },8000);
+    setInterval(()=>{ if(!document.hidden) cargarPagosMp(true); },15000);
+    setInterval(()=>{ if(!document.hidden) nodoReloadSolicitudesDirect('poll'); },10000);
   }
 
   function boot(){
@@ -8532,7 +8527,7 @@ body.nodo-v20 #alertas .alert-box{padding:8px 10px;font-size:12px;margin-bottom:
     }catch(e){}
   }
   if(!window.__NODO_REALTIME_TIMER_V2__){
-    window.__NODO_REALTIME_TIMER_V2__ = setInterval(() => realtimeTick(false), 1800);
+    window.__NODO_REALTIME_TIMER_V2__ = setInterval(() => { if(false) realtimeTick(false); }, 60000);
   }
   document.addEventListener('DOMContentLoaded', () => setTimeout(() => { installRealtime(); realtimeTick(true); }, 800));
   window.addEventListener('load', () => setTimeout(() => { installRealtime(); realtimeTick(true); }, 1200));
@@ -8765,7 +8760,7 @@ body.nodo-v20 #alertas .alert-box{padding:8px 10px;font-size:12px;margin-bottom:
     fn.__nodoV3=true;window.renderCentroOperativo=renderCentroOperativo=fn;
   }
   setTimeout(()=>{renderQuick(true);renderQueue(true);},250);
-  setInterval(()=>{renderQueue(false);},1200);
+  setInterval(()=>{ if(false) renderQueue(false); },60000);
 })();
 </script>
 <style id="nodo-cierre-v4-css">
@@ -9165,28 +9160,22 @@ body.nodo-v20 #alertas .alert-box{padding:8px 10px;font-size:12px;margin-bottom:
   }
   function estadoFinalKind(row){
     const joined = norm(`${row.worker || ''} ${row.estado || ''}`);
-    if(/\b(COMPLETADO|ACREDITADA|APROBADA|APROBADA_MANUAL|APROBADA_MANUAL_OK|PAGADA|DONE)\b/.test(joined)) return 'ok';
-    if(/\b(CANCELADO|CANCELADA)\b/.test(joined)) return 'cancel';
-    if(/\b(RECHAZADA|ERROR|ERROR_JOB|ERROR_WORKER|REQUIERE_MANUAL|MANUAL)\b/.test(joined)) return 'err';
-    if(/\b(PROCESANDO|EN_COLA_WORKER|PREPARANDO_COLA|EN_PROCESO_WORKER)\b/.test(joined)) return 'run';
+    if(/\b(CANCELADO|CANCELADA|RECHAZADA)\b/.test(joined)) return 'cancel';
+    if(/\b(COMPLETADO|ACREDITADA|APROBADA|APROBADA_MANUAL|APROBADA_MANUAL_OK|PAGADA|DONE|OK)\b/.test(joined)) return 'ok';
     return 'pend';
   }
   function estadoFinal(row){
     const kind = estadoFinalKind(row);
     if(kind === 'ok') return pill('ok','COMPLETO',`${row.estado || ''} ${row.worker || ''}`);
     if(kind === 'cancel') return pill('cancel','CANCELADO',`${row.estado || ''} ${row.worker || ''}`);
-    if(kind === 'err') return pill('err','ERROR',`${row.estado || ''} ${row.worker || ''}`);
-    if(kind === 'run') return pill('run','PENDIENTE',`${row.estado || ''} ${row.worker || ''}`);
     return pill('pend','PENDIENTE',`${row.estado || ''} ${row.worker || ''}`);
   }
   function resultadoFinal(row){
     const txt = String(row.error || row.resultado || '').trim();
-    const kind = estadoFinalKind(row);
-    if(row.error || kind === 'err') return pill('err','ERROR',txt || `${row.estado || ''} ${row.worker || ''}`);
-    if(kind === 'ok' || row.resultado) return pill('ok','OK',txt || `${row.estado || ''} ${row.worker || ''}`);
-    if(kind === 'cancel') return pill('cancel','-',txt || 'Cancelado');
-    if(kind === 'run' || kind === 'pend') return pill('pend','...',txt || `${row.estado || ''} ${row.worker || ''}`);
-    return pill('muted','-',txt);
+    const raw = norm(`${row.error || ''} ${row.resultado || ''} ${row.estado || ''} ${row.worker || ''}`);
+    if(row.error || /\b(ERROR|ERROR_JOB|ERROR_WORKER|REQUIERE_MANUAL|FALLO|FAILED)\b/.test(raw)) return pill('err','ERROR',txt || `${row.estado || ''} ${row.worker || ''}`);
+    if(row.resultado || /\b(COMPLETADO|OK|DONE|ACREDITADA|APROBADA|PAGADA)\b/.test(raw)) return pill('ok','OK',txt || `${row.estado || ''} ${row.worker || ''}`);
+    return pill('muted','-',txt || 'Sin resultado todavia');
   }
   window.estadoBadge = estadoBadge = function(v){ return estadoFinal({estado:v,worker:v}); };
   window.workerEstadoBadge = workerEstadoBadge = function(v){ return estadoFinal({estado:v,worker:v}); };
@@ -9317,7 +9306,7 @@ body.nodo-v20 #alertas .alert-box{padding:8px 10px;font-size:12px;margin-bottom:
     const q = norm(val('opsFiltroTexto'));
     const f = norm(val('opsFiltroEstado'));
     list.sort((a,b) => new Date(b.fecha || 0) - new Date(a.fecha || 0));
-    if(f) list = list.filter(r => norm(`${r.estado} ${r.worker}`).includes(f));
+    if(f) list = list.filter(r => norm(estadoFinalKind(r) === 'ok' ? 'COMPLETADO COMPLETO' : estadoFinalKind(r) === 'cancel' ? 'CANCELADO' : 'PENDIENTE').includes(f));
     if(q) list = list.filter(r => norm(`${r.usuario} ${r.sub} ${r.tipo} ${r.estado} ${r.worker} ${r.error} ${r.job} ${r.sid} ${r.billetera} ${r.operador}`).includes(q));
     list = list.slice(0, 100);
     if(!list.length){ box.innerHTML = '<div class="alert-box">No hay operaciones para mostrar.</div>'; return; }
@@ -9338,7 +9327,7 @@ body.nodo-v20 #alertas .alert-box{padding:8px 10px;font-size:12px;margin-bottom:
         <td>${moneyFmt(r.monto || 0)}</td>
         <td>${resultadoFinal(r)}</td>
         <td>${estadoFinal(r)}</td>
-        <td>${esc(r.operador || '-')}</td>
+        <td>${estadoFinalKind(r) === 'pend' && r.job ? `<button class="nodo-v5-action info" title="Abrir pendiente" onclick="abrirWorkerLogs('${attr(r.job)}')">${esc(r.operador || 'Pendiente')}</button>` : esc(r.operador || '-')}</td>
         <td>${actions}</td>
       </tr>`;
     });
@@ -9412,7 +9401,7 @@ body.nodo-v20 #alertas .alert-box{padding:8px 10px;font-size:12px;margin-bottom:
       ${!['COMPLETADO','CANCELADO','CANCELADA'].includes(estado) ? `<button class="mini-btn red" type="button" onclick="nodoV5CancelarJob('${attr(id)}')">Cancelar operacion</button>` : ''}
     </div>` : '';
     const logHtml = logs.length ? logs.map(l => `<div class="verify-box"><div class="verify-title">${esc(l.nivel || l.tipo || 'LOG')} - ${fechaFmt(l.created_at || '')}</div><div class="small">${esc(l.mensaje || l.detalle || JSON.stringify(l))}</div></div>`).join('') : '<div class="alert-box">Todavia no hay logs detallados para este job. Se muestra el estado actual arriba.</div>';
-    abrirModal('Detalles del worker', `${detail}${actions}${logHtml}`, async()=>cerrarModal(), 'Cerrar');
+    abrirModal('Detalle de operacion pendiente', `${detail}${actions}${logHtml}`, async()=>cerrarModal(), 'Cerrar');
   };
   window.nodoV5ReintentarJob = async function(jobId){
     const id = Number(jobId);
@@ -9629,7 +9618,7 @@ body.nodo-v20 #alertas .alert-box{padding:8px 10px;font-size:12px;margin-bottom:
   }
   document.addEventListener('DOMContentLoaded',()=>setTimeout(()=>{ ensureAgentUserActions(); checkWatchedJobs(); renderQueue(true); attachScroll(tableWrap()); }, 700));
   window.addEventListener('load',()=>setTimeout(()=>{ ensureAgentUserActions(); checkWatchedJobs(); renderQueue(true); }, 1000));
-  setInterval(()=>{ checkWatchedJobs(); renderQueue(false); }, 1600);
+  setInterval(()=>{ if(!document.hidden){ checkWatchedJobs(); renderQueue(false); } }, 6500);
   setTimeout(()=>{ ensureAgentUserActions(); renderQueue(true); }, 900);
 })();
 </script>
