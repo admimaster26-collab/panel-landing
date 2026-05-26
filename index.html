@@ -9076,5 +9076,562 @@ body.nodo-v20 #alertas .alert-box{padding:8px 10px;font-size:12px;margin-bottom:
   setTimeout(()=>{ensureRetiroBubble();renderQueue(true);},900);
 })();
 </script>
+<style id="nodo-cierre-v5-css">
+  body.nodo-cierre-v5 .ops-main-table th,
+  body.nodo-cierre-v5 .ops-main-table td{padding:7px 8px!important;white-space:nowrap!important}
+  body.nodo-cierre-v5 .ops-main-table th:nth-child(7),
+  body.nodo-cierre-v5 .ops-main-table td:nth-child(7),
+  body.nodo-cierre-v5 .ops-main-table th:nth-child(8),
+  body.nodo-cierre-v5 .ops-main-table td:nth-child(8){min-width:72px!important;max-width:96px!important;text-align:center!important}
+  body.nodo-cierre-v5 .ops-main-table th:last-child,
+  body.nodo-cierre-v5 .ops-main-table td:last-child{position:sticky;right:0;background:#101722!important;z-index:6;box-shadow:-8px 0 12px rgba(0,0,0,.28)}
+  body.nodo-cierre-v5 .nodo-v5-pill{display:inline-flex;align-items:center;justify-content:center;min-width:68px;height:24px;border-radius:999px;padding:0 9px;font-size:11px;font-weight:950;line-height:1;text-transform:uppercase}
+  body.nodo-cierre-v5 .nodo-v5-pill.ok{background:#087433;color:#dcfce7;box-shadow:0 0 0 1px rgba(34,197,94,.2),0 0 12px rgba(34,197,94,.14)}
+  body.nodo-cierre-v5 .nodo-v5-pill.err{background:#8f1d1d;color:#fee2e2}
+  body.nodo-cierre-v5 .nodo-v5-pill.pend{background:#f59e0b;color:#111827}
+  body.nodo-cierre-v5 .nodo-v5-pill.run{background:#1d4ed8;color:#dbeafe}
+  body.nodo-cierre-v5 .nodo-v5-pill.cancel{background:#374151;color:#d1d5db}
+  body.nodo-cierre-v5 .nodo-v5-pill.muted{background:#273142;color:#cbd5e1}
+  body.nodo-cierre-v5 .nodo-v5-action{width:28px;height:28px;border:0;border-radius:9px;display:inline-flex;align-items:center;justify-content:center;font-size:13px;font-weight:950;cursor:pointer;margin:0 2px;line-height:1}
+  body.nodo-cierre-v5 .nodo-v5-action.info{background:#3152ff;color:#fff}
+  body.nodo-cierre-v5 .nodo-v5-action.edit{background:#f59e0b;color:#111827}
+  body.nodo-cierre-v5 .nodo-v5-log-actions{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
+  body.nodo-cierre-v5 .nodo-v5-log-actions .mini-btn{width:auto;padding:9px 12px;border-radius:10px}
+  body.nodo-cierre-v5 .agent-user-v5{margin-top:12px;border-top:1px solid #273142;padding-top:12px}
+  body.nodo-cierre-v5 .agent-user-v5-grid{display:grid;grid-template-columns:minmax(160px,1fr) minmax(150px,.7fr) minmax(118px,.45fr);gap:8px;align-items:end}
+  body.nodo-cierre-v5 .agent-user-v5-grid input,
+  body.nodo-cierre-v5 .agent-user-v5-grid select{margin:0}
+  body.nodo-cierre-v5 .agent-user-v5-grid .btn{height:38px;margin:0;padding:0 12px}
+  body.nodo-cierre-v5 .nodo-v5-created textarea{box-sizing:border-box}
+  body.nodo-cierre-v5 .worker-error-card .ops-compact-actions{margin-top:9px}
+  body.nodo-cierre-v5 .worker-error-card .mini-btn.green{background:#087433;color:#dcfce7}
+  @media(max-width:900px){
+    body.nodo-cierre-v5 .agent-user-v5-grid{grid-template-columns:1fr}
+  }
+</style>
+<script id="nodo-cierre-v5-js">
+(function(){
+  if(window.__NODO_CIERRE_V5__) return;
+  window.__NODO_CIERRE_V5__ = true;
+  document.body.classList.add('nodo-cierre-v5');
+
+  const DEFAULT_PASS = '12345a';
+  const PLATFORM_LINK = 'http://bet-300.pw/';
+  const WATCH_KEY = 'nodo_agent_user_watch_v6';
+  const $ = id => document.getElementById(id);
+  const esc = v => String(v ?? '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+  const attr = v => esc(v).replace(/`/g,'&#96;');
+  const norm = v => {
+    try { return String(v ?? '').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toUpperCase().trim(); }
+    catch(e){ return String(v ?? '').toUpperCase().trim(); }
+  };
+  const val = id => String($(id)?.value ?? '').trim();
+  const set = (id, html) => { const el = $(id); if(el) el.innerHTML = html; };
+  const pc = () => { try { return String(window.pcOperativa || pcOperativa || 'P1').trim().toUpperCase(); } catch(e){ return 'P1'; } };
+  const token = () => typeof requireSessionToken === 'function' ? requireSessionToken() : (window.panelSessionToken || '');
+  const moneyFmt = v => {
+    const fn = window.moneyLocal || window.money;
+    if(typeof fn === 'function'){ try { return fn(v || 0); } catch(e){} }
+    return '$ ' + Number(v || 0).toLocaleString('es-AR');
+  };
+  const fechaFmt = v => {
+    const fn = window.fechaLocal || window.formatFecha;
+    if(typeof fn === 'function'){ try { return fn(v || ''); } catch(e){} }
+    return String(v || '-');
+  };
+  const jobs = () => { try { return window.workerJobs || workerJobs || []; } catch(e){ return window.workerJobs || []; } };
+  const getSolicitudes = () => { try { return window.solicitudes || solicitudes || []; } catch(e){ return window.solicitudes || []; } };
+  const wallets = () => {
+    try {
+      return window.saldosOperativos?.billeteras ||
+        (typeof saldosOperativos !== 'undefined' ? saldosOperativos?.billeteras : []) ||
+        window.billeteras || billeteras || [];
+    } catch(e){ return window.billeteras || []; }
+  };
+  const walletId = w => String(w?.id ?? w?.billetera_id ?? w?.ID_BILLETERA ?? w?.ID ?? '').trim();
+  const walletName = w => String(w?.nombre_visible || w?.NOMBRE_VISIBLE || w?.BILLETERA_NOMBRE || w?.nombre || w?.NOMBRE || 'Billetera').trim();
+
+  function pill(kind, text, title){
+    return `<span class="nodo-v5-pill ${kind}" title="${attr(title || text || '')}">${esc(text || '-')}</span>`;
+  }
+  function tipoCorto(tipo){
+    const x = norm(tipo);
+    if(['CARGAR_FICHAS','PROCESAR_CARGA','CARGA','CARGAS_FICHAS'].includes(x)) return 'CARGA';
+    if(['PROCESAR_RETIRO','RETIRO'].includes(x)) return 'RETIRO';
+    if(x === 'VALIDAR_USUARIO') return 'VALIDAR';
+    if(x === 'CREAR_USUARIO') return 'CREAR USUARIO';
+    if(x === 'CAMBIAR_CLAVE') return 'CAMBIAR CLAVE';
+    return String(tipo || '-').replaceAll('_',' ');
+  }
+  function estadoFinalKind(row){
+    const joined = norm(`${row.worker || ''} ${row.estado || ''}`);
+    if(/\b(COMPLETADO|ACREDITADA|APROBADA|APROBADA_MANUAL|APROBADA_MANUAL_OK|PAGADA|DONE)\b/.test(joined)) return 'ok';
+    if(/\b(CANCELADO|CANCELADA)\b/.test(joined)) return 'cancel';
+    if(/\b(RECHAZADA|ERROR|ERROR_JOB|ERROR_WORKER|REQUIERE_MANUAL|MANUAL)\b/.test(joined)) return 'err';
+    if(/\b(PROCESANDO|EN_COLA_WORKER|PREPARANDO_COLA|EN_PROCESO_WORKER)\b/.test(joined)) return 'run';
+    return 'pend';
+  }
+  function estadoFinal(row){
+    const kind = estadoFinalKind(row);
+    if(kind === 'ok') return pill('ok','COMPLETO',`${row.estado || ''} ${row.worker || ''}`);
+    if(kind === 'cancel') return pill('cancel','CANCELADO',`${row.estado || ''} ${row.worker || ''}`);
+    if(kind === 'err') return pill('err','ERROR',`${row.estado || ''} ${row.worker || ''}`);
+    if(kind === 'run') return pill('run','PENDIENTE',`${row.estado || ''} ${row.worker || ''}`);
+    return pill('pend','PENDIENTE',`${row.estado || ''} ${row.worker || ''}`);
+  }
+  function resultadoFinal(row){
+    const txt = String(row.error || row.resultado || '').trim();
+    const kind = estadoFinalKind(row);
+    if(row.error || kind === 'err') return pill('err','ERROR',txt || `${row.estado || ''} ${row.worker || ''}`);
+    if(kind === 'ok' || row.resultado) return pill('ok','OK',txt || `${row.estado || ''} ${row.worker || ''}`);
+    if(kind === 'cancel') return pill('cancel','-',txt || 'Cancelado');
+    if(kind === 'run' || kind === 'pend') return pill('pend','...',txt || `${row.estado || ''} ${row.worker || ''}`);
+    return pill('muted','-',txt);
+  }
+  window.estadoBadge = estadoBadge = function(v){ return estadoFinal({estado:v,worker:v}); };
+  window.workerEstadoBadge = workerEstadoBadge = function(v){ return estadoFinal({estado:v,worker:v}); };
+  window.workerResultadoOErrorHTML = workerResultadoOErrorHTML = function(resultado, error, modo='compact', jobId=''){
+    if(String(modo) === 'compact') return resultadoFinal({resultado,error,estado:error ? 'ERROR' : (resultado ? 'COMPLETADO' : '')});
+    const parts = [];
+    if(resultado){
+      if(typeof workerResultadoHTML === 'function') parts.push(workerResultadoHTML(resultado, modo));
+      else parts.push(`<div class="worker-result-card ${esc(modo)}"><pre>${esc(resultado)}</pre></div>`);
+    }
+    if(error) parts.push(`<div class="worker-error-card ${esc(modo)}">${esc(error)}${workerAliasDuplicadoHTML(error, jobId)}</div>`);
+    return parts.length ? parts.join('') : '<span class="small">-</span>';
+  };
+
+  function walletNameById(id){
+    const sid = String(id || '').trim();
+    if(!sid) return '';
+    const w = wallets().find(x => walletId(x) === sid);
+    return w ? walletName(w) : '';
+  }
+  function readWalletMap(){
+    try { return JSON.parse(localStorage.getItem('nodo_job_wallet_map_' + pc()) || '{}') || {}; }
+    catch(e){ return {}; }
+  }
+  function payloadOf(job){
+    const p = job?.payload;
+    if(!p) return {};
+    if(typeof p === 'object') return p;
+    try { return JSON.parse(String(p)); } catch(e){ return {}; }
+  }
+  function walletFromMovs(jobId){
+    const sid = String(jobId || '');
+    let movs = [];
+    try { movs = window.saldosOperativos?.movimientos_billetera || (typeof saldosOperativos !== 'undefined' ? saldosOperativos?.movimientos_billetera : []) || []; } catch(e){}
+    if(!Array.isArray(movs)) return '';
+    const m = movs.find(x => String(x.worker_job_id || x.job_id || '') === sid && (x.billetera_nombre || x.nombre_visible || x.billetera_id));
+    if(!m) return '';
+    return String(m.billetera_nombre || m.nombre_visible || walletNameById(m.billetera_id) || '');
+  }
+  function jobWallet(job){
+    if(!job) return '-';
+    const p = payloadOf(job);
+    const direct = job.billetera_nombre || job.BILLETERA_NOMBRE || job.wallet_nombre || job.nombre_billetera ||
+      p.billetera_nombre || p.wallet_nombre || p.billetera?.nombre || '';
+    if(direct) return String(direct);
+    const fromMov = walletFromMovs(job.id || job.job_id);
+    if(fromMov) return fromMov;
+    const id = job.billetera_id || job.ID_BILLETERA || job.wallet_id || p.billetera_id || p.wallet_id ||
+      readWalletMap()[String(job.id || job.job_id || '')] || '';
+    if(id) return walletNameById(id) || ('#' + id);
+    const txt = `${job.observacion || ''} ${job.observaciones || ''} ${job.descripcion || ''} ${job.resultado || ''} ${job.error_mensaje || ''} ${JSON.stringify(p)}`;
+    const m = txt.match(/billetera_id\s*[=:]\s*(\d+)/i);
+    return m ? (walletNameById(m[1]) || ('#' + m[1])) : '-';
+  }
+  function operadorRow(row, job){
+    return row.OPERADOR || row.operador || row.operador_usuario || row.aprobada_por || row.confirmado_por ||
+      row.tomada_por || row.creado_por || job?.operador || job?.creado_por || job?.created_by || job?.locked_by ||
+      job?.worker_id || '-';
+  }
+
+  let holdUntil = 0;
+  function pageEl(){ return $('viewInicio') || document.querySelector('.main > section:not(.hidden)'); }
+  function tableWrap(){ return $('opsColaUnificada')?.querySelector('.ops-table-wrap') || null; }
+  function markReading(){ holdUntil = Date.now() + 9000; }
+  function snap(){
+    const p = pageEl(), w = tableWrap();
+    return {page:p?.scrollTop || 0, top:w?.scrollTop || 0, left:w?.scrollLeft || 0, reading:((p?.scrollTop || 0) > 20 || (w?.scrollTop || 0) > 30) && Date.now() < holdUntil};
+  }
+  function restore(s){
+    const p = pageEl(), w = tableWrap();
+    if(p) p.scrollTop = s?.page || 0;
+    if(w){ w.scrollTop = s?.top || 0; w.scrollLeft = s?.left || 0; attachScroll(w); }
+  }
+  function attachScroll(w){
+    const p = pageEl();
+    if(p && !p.dataset.nodoV5Scroll){ p.dataset.nodoV5Scroll='1'; p.addEventListener('scroll', markReading, {passive:true}); }
+    if(w && !w.dataset.nodoV5Scroll){ w.dataset.nodoV5Scroll='1'; w.addEventListener('scroll', markReading, {passive:true}); }
+  }
+
+  function rowsOperativas(){
+    const js = jobs();
+    const out = [];
+    getSolicitudes().forEach(s => {
+      const sid = s.ID || s.SOLICITUD_ID || s.id || '';
+      const jobId = s.WORKER_JOB_ID || s.worker_job_id || s.ultimo_job_id || '';
+      const j = js.find(x => String(x.id || x.job_id) === String(jobId)) || {};
+      out.push({
+        origen:'LANDING',
+        fecha:s.FECHA_CREACION || s.FECHA || s.created_at || s.solicitud_created_at,
+        usuario:s.USUARIO || s.usuario || s.USUARIO_JUGADOR || '',
+        sub:s.TITULAR_TRANSFERENCIA || s.titular_transferencia || s.NOMBRE_COMPLETO || s.nombre_completo || '',
+        billetera:s.BILLETERA_NOMBRE || s.billetera_nombre || jobWallet(j) || walletNameById(s.ID_BILLETERA || s.billetera_id) || '-',
+        tipo:s.TIPO_SOLICITUD || s.TIPO || s.tipo || '',
+        monto:s.MONTO_DECLARADO || s.MONTO_REAL || s.monto || 0,
+        estado:s.ESTADO || s.estado || '',
+        worker:j.estado || s.ESTADO_WORKER || '',
+        job:jobId,
+        resultado:j.resultado || s.WORKER_RESULTADO || '',
+        error:s.WORKER_ERROR || j.error_mensaje || '',
+        sid,
+        operador:operadorRow(s, j)
+      });
+    });
+    js.filter(j => !j.solicitud_id).forEach(j => out.push({
+      origen:'MANUAL',
+      fecha:j.created_at || j.updated_at,
+      usuario:j.usuario || '',
+      sub:'',
+      billetera:jobWallet(j),
+      tipo:j.tipo_accion || '',
+      monto:j.monto || 0,
+      estado:j.estado || '',
+      worker:j.estado || '',
+      job:j.id || j.job_id || '',
+      resultado:j.resultado || '',
+      error:j.error_mensaje || '',
+      sid:'',
+      operador:operadorRow(j, j)
+    }));
+    return out;
+  }
+  function renderQueue(force=false){
+    const box = $('opsColaUnificada');
+    if(!box) return;
+    const saved = snap();
+    if(saved.reading && !force){ restore(saved); return; }
+    let list = rowsOperativas();
+    const q = norm(val('opsFiltroTexto'));
+    const f = norm(val('opsFiltroEstado'));
+    list.sort((a,b) => new Date(b.fecha || 0) - new Date(a.fecha || 0));
+    if(f) list = list.filter(r => norm(`${r.estado} ${r.worker}`).includes(f));
+    if(q) list = list.filter(r => norm(`${r.usuario} ${r.sub} ${r.tipo} ${r.estado} ${r.worker} ${r.error} ${r.job} ${r.sid} ${r.billetera} ${r.operador}`).includes(q));
+    list = list.slice(0, 100);
+    if(!list.length){ box.innerHTML = '<div class="alert-box">No hay operaciones para mostrar.</div>'; return; }
+    let html = '<div class="ops-table-wrap"><table class="ops-main-table"><thead><tr><th>Hora</th><th>Origen</th><th>Usuario</th><th>Billetera</th><th>Tipo</th><th>Monto</th><th>Resultado</th><th>Estado</th><th>Operador</th><th>Acciones</th></tr></thead><tbody>';
+    list.forEach(r => {
+      let actions = '<div class="ops-compact-actions">';
+      if(r.sid && typeof verSolicitudInicio === 'function') actions += `<button class="nodo-v5-action info" title="Ver solicitud" onclick="verSolicitudInicio('${attr(r.sid)}')">i</button>`;
+      if(r.job) actions += `<button class="nodo-v5-action info" title="Detalles, reintento o cancelacion" onclick="abrirWorkerLogs('${attr(r.job)}')">i</button>`;
+      if(r.job && typeof abrirEditarBilleteraJobV20 === 'function') actions += `<button class="nodo-v5-action edit" title="Editar billetera del job" onclick="abrirEditarBilleteraJobV20('${attr(r.job)}')">✎</button>`;
+      else if(r.job && typeof abrirCorregirBilleteraJob === 'function') actions += `<button class="nodo-v5-action edit" title="Editar billetera del job" onclick="abrirCorregirBilleteraJob('${attr(r.job)}')">✎</button>`;
+      actions += '</div>';
+      html += `<tr>
+        <td>${fechaFmt(r.fecha)}</td>
+        <td><span class="ops-origin ${r.origen === 'LANDING' ? 'landing' : 'manual'}">${esc(r.origen)}</span></td>
+        <td><b>${esc(r.usuario || '-')}</b>${r.sub ? `<br><span class="small">${esc(r.sub)}</span>` : ''}</td>
+        <td>${esc(r.billetera || '-')}</td>
+        <td>${esc(tipoCorto(r.tipo))}</td>
+        <td>${moneyFmt(r.monto || 0)}</td>
+        <td>${resultadoFinal(r)}</td>
+        <td>${estadoFinal(r)}</td>
+        <td>${esc(r.operador || '-')}</td>
+        <td>${actions}</td>
+      </tr>`;
+    });
+    html += '</tbody></table></div>';
+    if(force || window.__NODO_V5_QUEUE_HTML__ !== html){
+      window.__NODO_V5_QUEUE_HTML__ = html;
+      box.innerHTML = html;
+    }
+    restore(saved);
+  }
+  window.renderColaFinalOperativa = renderQueue;
+  window.renderColaUnificada = renderColaUnificada = renderQueue;
+
+  function parseAliasSuggestions(text){
+    const raw = String(text || '');
+    const m = raw.match(/Sugerencias:\s*([^.\n\r]+)/i);
+    if(m) return m[1].split(',').map(x => x.trim()).filter(Boolean).slice(0, 5);
+    const base = (raw.match(/Alias duplicado[^:]*:\s*([a-z0-9._-]+)/i) || [])[1] || '';
+    if(!base) return [];
+    const clean = base.replace(/[^a-zA-Z0-9._-]/g,'').slice(0,18);
+    return [`${clean}x`, `${clean}${Math.floor(10 + Math.random()*89)}`, `${clean}x178`].filter(Boolean);
+  }
+  window.workerAliasDuplicadoHTML = workerAliasDuplicadoHTML = function(text, jobId){
+    const id = Number(jobId || 0);
+    const sugerencias = parseAliasSuggestions(text);
+    if(!id || !sugerencias.length) return '';
+    const buttons = sugerencias.map(alias => `<button class="mini-btn green" type="button" onclick="nodoReintentarAliasMismoJob('${attr(id)}','${attr(alias)}')">Reintentar con ${esc(alias)}</button>`).join('');
+    return `<div class="ops-compact-actions">${buttons}</div><div class="small" style="margin-top:7px;color:#fcd34d">Reintenta este mismo job. No genera otra solicitud.</div>`;
+  };
+  window.workerErrorHTML = workerErrorHTML = function(error, modo='compact', jobId=''){
+    const txt = String(error || '').trim();
+    if(!txt) return '<span class="small">-</span>';
+    return `<div class="worker-error-card ${esc(modo)}">${esc(txt)}${workerAliasDuplicadoHTML(txt, jobId)}</div>`;
+  };
+
+  function estadoAccionable(value){
+    const x = norm(value);
+    return ['REINTENTAR','PENDIENTE','PROCESANDO','ERROR','ERROR_JOB','ERROR_WORKER','REQUIERE_MANUAL','MANUAL','EN_COLA_WORKER','PREPARANDO_COLA'].includes(x);
+  }
+  async function refreshOps(force=false){
+    try { if(typeof window.cargarWorkerJobs === 'function') await window.cargarWorkerJobs(false); } catch(e){}
+    try { if(force && typeof window.cargarSolicitudes === 'function') await window.cargarSolicitudes(false); } catch(e){}
+    checkWatchedJobs();
+    renderQueue(force);
+  }
+  window.abrirWorkerLogs = async function(jobId){
+    const id = Number(jobId);
+    const j = jobs().find(x => Number(x.id || x.job_id) === id) || null;
+    let logs = [];
+    try{
+      const {data,error} = await supabaseClient.from('worker_logs').select('*').eq('worker_job_id', id).order('created_at', {ascending:false}).limit(30);
+      if(!error) logs = data || [];
+    }catch(e){}
+    let detail = '';
+    if(j){
+      detail = `<div class="verify-box">
+        <div class="verify-title">Job #${esc(id)}</div>
+        ${typeof verifyRow === 'function' ? verifyRow('PC', j.pc_codigo || '-') : ''}
+        ${typeof verifyRow === 'function' ? verifyRow('Usuario', j.usuario || '-') : ''}
+        ${typeof verifyRow === 'function' ? verifyRow('Tipo', tipoCorto(j.tipo_accion || '-')) : ''}
+        ${typeof verifyRow === 'function' ? verifyRow('Monto', moneyFmt(j.monto || 0)) : ''}
+        ${typeof verifyRow === 'function' ? verifyRow('Estado', j.estado || '-') : ''}
+        ${typeof verifyRow === 'function' ? verifyRow('Operador', operadorRow(j, j)) : ''}
+        ${typeof verifyRow === 'function' ? verifyRow('Intentos', `${j.intentos || 0} / ${j.max_intentos || 3}`) : ''}
+        <div style="grid-column:1 / -1">${workerResultadoOErrorHTML(j.resultado || '', j.error_mensaje || '', 'modal', id)}</div>
+      </div>`;
+    }
+    const estado = norm(j?.estado || '');
+    const actions = j ? `<div class="nodo-v5-log-actions">
+      ${estadoAccionable(estado) ? `<button class="mini-btn yellow" type="button" onclick="nodoV5ReintentarJob('${attr(id)}')">Reintentar job</button>` : ''}
+      ${!['COMPLETADO','CANCELADO','CANCELADA'].includes(estado) ? `<button class="mini-btn red" type="button" onclick="nodoV5CancelarJob('${attr(id)}')">Cancelar operacion</button>` : ''}
+    </div>` : '';
+    const logHtml = logs.length ? logs.map(l => `<div class="verify-box"><div class="verify-title">${esc(l.nivel || l.tipo || 'LOG')} - ${fechaFmt(l.created_at || '')}</div><div class="small">${esc(l.mensaje || l.detalle || JSON.stringify(l))}</div></div>`).join('') : '<div class="alert-box">Todavia no hay logs detallados para este job. Se muestra el estado actual arriba.</div>';
+    abrirModal('Detalles del worker', `${detail}${actions}${logHtml}`, async()=>cerrarModal(), 'Cerrar');
+  };
+  window.nodoV5ReintentarJob = async function(jobId){
+    const id = Number(jobId);
+    if(!id) return;
+    if(!confirm('¿Reintentar este mismo job?')) return;
+    try{
+      if(typeof workerPanelReintentarJob === 'function') await workerPanelReintentarJob(id);
+      else if(typeof reintentarWorker === 'function') await reintentarWorker(id);
+      cerrarModal();
+      await refreshOps(true);
+    }catch(e){ alert('No se pudo reintentar: ' + (e.message || e)); }
+  };
+  window.nodoV5CancelarJob = async function(jobId){
+    const id = Number(jobId);
+    if(!id) return;
+    if(!confirm('¿Cancelar esta operacion?')) return;
+    try{
+      if(typeof workerPanelCancelarJob === 'function') await workerPanelCancelarJob(id);
+      cerrarModal();
+      await refreshOps(true);
+    }catch(e){ alert('No se pudo cancelar: ' + (e.message || e)); }
+  };
+
+  function readWatch(){
+    try { return JSON.parse(localStorage.getItem(WATCH_KEY) || '{}') || {}; } catch(e){ return {}; }
+  }
+  function writeWatch(map){
+    try { localStorage.setItem(WATCH_KEY, JSON.stringify(map || {})); } catch(e){}
+  }
+  function watchJob(jobId, usuario, tipo){
+    const id = Number(jobId || 0);
+    if(!id) return;
+    const map = readWatch();
+    map[id] = {jobId:id, usuario:String(usuario || ''), tipo:String(tipo || 'CREAR_USUARIO'), ts:Date.now()};
+    writeWatch(map);
+  }
+  function unwatchJob(jobId){
+    const map = readWatch();
+    delete map[String(jobId)];
+    writeWatch(map);
+  }
+  function shownKey(jobId){ return 'nodo_agent_user_created_modal_v6_' + jobId; }
+  function wasShown(jobId){
+    try { return sessionStorage.getItem(shownKey(jobId)) === '1'; } catch(e){ return false; }
+  }
+  function markShown(jobId){
+    try { sessionStorage.setItem(shownKey(jobId), '1'); } catch(e){}
+  }
+  function accesoMensaje(usuario){
+    return [
+      'Datos de acceso a la plataforma:',
+      'Usuario: ' + usuario,
+      'Clave: ' + DEFAULT_PASS,
+      'Link: ' + PLATFORM_LINK,
+      '',
+      'Podes cambiar la clave desde la plataforma si queres.'
+    ].join('\n');
+  }
+  window.nodoCopiarUsuarioCreadoV5 = function(usuario){
+    const msg = accesoMensaje(usuario);
+    if(typeof copiarTextoOperativo === 'function') copiarTextoOperativo(msg, 'datos de usuario');
+    else navigator.clipboard?.writeText(msg).catch(()=>alert(msg));
+  };
+  window.nodoCopiarUsuarioCreado = window.nodoCopiarUsuarioCreadoV5;
+  function modalUsuarioCreado(usuario, jobId){
+    if(!usuario || !jobId || wasShown(jobId)) return;
+    markShown(jobId);
+    unwatchJob(jobId);
+    const input = $('manualWorkerUsuarioInicio');
+    if(input && norm(input.value) === norm(usuario)) input.value = '';
+    const msg = accesoMensaje(usuario);
+    const body = `<div class="verify-box nodo-v5-created">
+      <div class="verify-title">Usuario creado correctamente</div>
+      <div class="verify-grid">
+        ${typeof verifyRow === 'function' ? verifyRow('Usuario', usuario, '', true) : `<div>${esc(usuario)}</div>`}
+        ${typeof verifyRow === 'function' ? verifyRow('Clave', DEFAULT_PASS, '', true) : `<div>${esc(DEFAULT_PASS)}</div>`}
+        ${typeof verifyRow === 'function' ? verifyRow('Link', PLATFORM_LINK, '', true) : `<div>${esc(PLATFORM_LINK)}</div>`}
+      </div>
+      <textarea readonly style="width:100%;min-height:96px;margin-top:10px;border-radius:10px;padding:9px;background:#071b12;color:#dcfce7;border:1px solid #14532d;font:13px/1.35 Consolas,monospace">${esc(msg)}</textarea>
+      <button class="mini-btn green" type="button" onclick="nodoCopiarUsuarioCreadoV5('${attr(usuario)}')">Copiar mensaje</button>
+    </div>`;
+    try { abrirModal('Usuario creado', body, async()=>cerrarModal(), 'Cerrar'); }
+    catch(e){ set('manualWorkerResultadoInicio', `<div class="ok-box">Usuario <b>${esc(usuario)}</b> creado correctamente. <button class="mini-btn green" type="button" onclick="nodoCopiarUsuarioCreadoV5('${attr(usuario)}')">Copiar mensaje</button></div>`); }
+  }
+  function checkWatchedJobs(){
+    const map = readWatch();
+    jobs().forEach(j => {
+      const id = Number(j.id || j.job_id || 0);
+      const watch = map[id];
+      if(!watch) return;
+      const estado = norm(j.estado);
+      const tipo = norm(j.tipo_accion || watch.tipo);
+      if(estado === 'COMPLETADO'){
+        if(tipo === 'CREAR_USUARIO') modalUsuarioCreado(j.usuario || watch.usuario, id);
+        else unwatchJob(id);
+      }
+      if(['CANCELADO','CANCELADA'].includes(estado)) unwatchJob(id);
+    });
+  }
+
+  function ensureAgentUserActions(){
+    document.querySelectorAll('#agentUserActionsBox').forEach(el => el.remove());
+    const result = $('manualWorkerResultadoInicio');
+    if(!result || $('agentUserActionsBoxV5')) return;
+    result.insertAdjacentHTML('beforebegin', `<div id="agentUserActionsBoxV5" class="agent-user-v5">
+      <div class="ops-panel-title" style="font-size:15px;margin-bottom:8px">Usuario Agentes</div>
+      <div class="agent-user-v5-grid">
+        <div><label>Clave</label><input id="agentUserClaveInicioV5" type="password" autocomplete="new-password" value="${DEFAULT_PASS}" placeholder="${DEFAULT_PASS}"></div>
+        <div><label>Accion</label><select id="agentUserTipoInicioV5"><option value="CREAR_USUARIO">Crear usuario</option><option value="CAMBIAR_CLAVE">Cambiar clave</option></select></div>
+        <div><label>&nbsp;</label><button class="btn btn-primary" type="button" onclick="crearJobUsuarioAgentesInicioV5()">Enviar accion</button></div>
+      </div>
+      <div class="small" style="margin-top:7px">Crear usuario usa la clave generica ${DEFAULT_PASS}. Cambio de clave usa la clave indicada arriba.</div>
+    </div>`);
+  }
+  window.crearJobUsuarioAgentesInicioV5 = async function(){
+    const usuario = val('manualWorkerUsuarioInicio');
+    const tipo = val('agentUserTipoInicioV5') || val('agentUserTipoInicio') || 'CREAR_USUARIO';
+    const clave = tipo === 'CREAR_USUARIO' ? DEFAULT_PASS : (val('agentUserClaveInicioV5') || val('agentUserClaveInicio') || DEFAULT_PASS);
+    if(!usuario){ set('manualWorkerResultadoInicio','<div class="err-box">Ingresa el usuario en Accion rapida.</div>'); return; }
+    set('manualWorkerResultadoInicio', `<div class="alert-box">Enviando ${tipo === 'CREAR_USUARIO' ? 'creacion de usuario' : 'cambio de clave'} al worker...</div>`);
+    try{
+      const {data,error} = await supabaseClient.rpc('operativo_crear_worker_job_usuario_clave_v1', {
+        p_session_token: token(),
+        p_pc_codigo: pc(),
+        p_usuario: usuario,
+        p_tipo_accion: tipo,
+        p_clave: clave,
+        p_observacion: ''
+      });
+      if(error) throw error;
+      const row = Array.isArray(data) ? data[0] : data;
+      if(row && row.ok === false) throw new Error(row.mensaje || row.error || 'No se pudo crear el job.');
+      const jobId = row?.job_id || row?.id || '';
+      watchJob(jobId, usuario, tipo);
+      set('manualWorkerResultadoInicio', `<div class="ok-box">${tipo === 'CREAR_USUARIO' ? 'Crear usuario' : 'Cambiar clave'} enviado al worker. Job: <b>${esc(jobId || '-')}</b></div>`);
+      await refreshOps(true);
+    }catch(e){
+      set('manualWorkerResultadoInicio', `<div class="err-box">${esc(e.message || e)}</div>`);
+    }
+  };
+  window.crearJobUsuarioAgentesInicio = window.crearJobUsuarioAgentesInicioV5;
+
+  window.nodoReintentarAliasMismoJob = async function(jobId, alias){
+    const id = Number(jobId || 0);
+    const usuario = String(alias || '').trim();
+    if(!id || !usuario) return;
+    set('manualWorkerResultadoInicio', `<div class="alert-box">Reintentando job #${esc(id)} con alias <b>${esc(usuario)}</b>...</div>`);
+    try{
+      const {data,error} = await supabaseClient.rpc('operativo_reintentar_worker_job_usuario_v1', {
+        p_session_token: token(),
+        p_worker_job_id: id,
+        p_usuario: usuario,
+        p_clave: DEFAULT_PASS
+      });
+      if(error) throw error;
+      const row = Array.isArray(data) ? data[0] : data;
+      if(row && row.ok === false) throw new Error(row.error || row.mensaje || 'No se pudo reintentar.');
+      const j = jobs().find(x => Number(x.id || x.job_id) === id);
+      if(j){ j.usuario = usuario; j.estado = 'PENDIENTE'; j.error_mensaje = ''; j.resultado = ''; }
+      watchJob(id, usuario, 'CREAR_USUARIO');
+      try { cerrarModal?.(); } catch(e){}
+      set('manualWorkerResultadoInicio', `<div class="ok-box">Job #${esc(id)} reintentado con alias <b>${esc(usuario)}</b>. No se creo una solicitud nueva.</div>`);
+      await refreshOps(true);
+    }catch(e){
+      set('manualWorkerResultadoInicio', `<div class="err-box">No se pudo reintentar el mismo job. Si falta la RPC, ejecuta <b>sql_worker_usuario_reintento_alias_v1.sql</b>. ${esc(e.message || e)}</div>`);
+    }
+  };
+
+  const oldQuick = window.renderQuickV18;
+  if(typeof oldQuick === 'function' && !oldQuick.__nodoV5){
+    const fn = function(){
+      const r = oldQuick.apply(this, arguments);
+      setTimeout(ensureAgentUserActions, 40);
+      return r;
+    };
+    fn.__nodoV5 = true;
+    window.renderQuickV18 = renderQuickV18 = fn;
+  }
+  const oldWorker = window.cargarWorkerJobs || (typeof cargarWorkerJobs !== 'undefined' ? cargarWorkerJobs : null);
+  if(typeof oldWorker === 'function' && !oldWorker.__nodoV5){
+    const fn = async function(){
+      const s = snap();
+      const r = await oldWorker.apply(this, arguments);
+      checkWatchedJobs();
+      renderQueue(false);
+      restore(s);
+      return r;
+    };
+    fn.__nodoV5 = true;
+    window.cargarWorkerJobs = cargarWorkerJobs = fn;
+  }
+  const oldSolicitudes = window.cargarSolicitudes || (typeof cargarSolicitudes !== 'undefined' ? cargarSolicitudes : null);
+  if(typeof oldSolicitudes === 'function' && !oldSolicitudes.__nodoV5){
+    const fn = async function(){
+      const s = snap();
+      const r = await oldSolicitudes.apply(this, arguments);
+      renderQueue(false);
+      restore(s);
+      return r;
+    };
+    fn.__nodoV5 = true;
+    window.cargarSolicitudes = cargarSolicitudes = fn;
+  }
+  const oldCentro = window.renderCentroOperativo || (typeof renderCentroOperativo !== 'undefined' ? renderCentroOperativo : null);
+  if(typeof oldCentro === 'function' && !oldCentro.__nodoV5){
+    const fn = function(){
+      const s = snap();
+      const r = oldCentro.apply(this, arguments);
+      setTimeout(()=>{ ensureAgentUserActions(); checkWatchedJobs(); renderQueue(false); restore(s); }, 45);
+      return r;
+    };
+    fn.__nodoV5 = true;
+    window.renderCentroOperativo = renderCentroOperativo = fn;
+  }
+  document.addEventListener('DOMContentLoaded',()=>setTimeout(()=>{ ensureAgentUserActions(); checkWatchedJobs(); renderQueue(true); attachScroll(tableWrap()); }, 700));
+  window.addEventListener('load',()=>setTimeout(()=>{ ensureAgentUserActions(); checkWatchedJobs(); renderQueue(true); }, 1000));
+  setInterval(()=>{ checkWatchedJobs(); renderQueue(false); }, 1600);
+  setTimeout(()=>{ ensureAgentUserActions(); renderQueue(true); }, 900);
+})();
+</script>
 </body>
 </html>
