@@ -8976,10 +8976,34 @@ body.nodo-v20 #alertas .alert-box{padding:8px 10px;font-size:12px;margin-bottom:
 
   function parseMontoQuick(){return Number(String(val('manualWorkerMontoInicio')||'0').replace(',','.'));}
   let retiroTimer=null, lastRetiroKey='';
+  function retiroLocal24(usuario, base){
+    const u=norm(usuario);
+    const now=Date.now();
+    let found=null;
+    try{
+      (jobs()||[]).forEach(j=>{
+        const ju=norm(j.usuario||j.USUARIO||'');
+        const tipo=norm(j.tipo_accion||j.tipo||'');
+        const estado=norm(j.estado||'');
+        if(!u||ju!==u) return;
+        if(!/RETIRO/.test(tipo)) return;
+        if(['CANCELADO','CANCELADA','RECHAZADA'].includes(estado)) return;
+        const raw=j.completed_at||j.finalizado_at||j.updated_at||j.created_at;
+        const t=new Date(raw||0).getTime();
+        if(!Number.isFinite(t)||now-t>24*60*60*1000) return;
+        if(!found||t>found.t) found={t,j};
+      });
+    }catch(e){}
+    if(!found) return base;
+    const j=found.j;
+    const hours=Math.max(0,Math.round((now-found.t)/36e5));
+    return Object.assign({},base||{}, {ok:true,bloqueado:true,usuario,ultimo_retiro_at:j.completed_at||j.finalizado_at||j.updated_at||j.created_at,ultimo_retiro_at_fmt:fecha(j.completed_at||j.finalizado_at||j.updated_at||j.created_at),ultimo_monto:Math.abs(Number(j.monto||0)),horas_desde_ultimo:hours,origen:'worker_jobs_local'});
+  }
   async function consultarRetiro24(usuario){
     const {data,error}=await supabaseClient.rpc('panel_controlar_retiro_24h_v21',{p_session_token:token(),p_pc_codigo:pc(),p_usuario:usuario});
     if(error) throw error;
-    return Array.isArray(data)?data[0]:data;
+    const row=Array.isArray(data)?data[0]:data;
+    return row?.bloqueado ? row : retiroLocal24(usuario,row);
   }
   function retiroBox(html){set('nodoRetiro24Bubble',html);}
   async function refreshRetiro24Bubble(){
@@ -9679,98 +9703,19 @@ body.nodo-v20 #alertas .alert-box{padding:8px 10px;font-size:12px;margin-bottom:
   const obs = new MutationObserver(() => { clearTimeout(window.__NODO_V24_TEXT_TIMER__); window.__NODO_V24_TEXT_TIMER__ = setTimeout(run, 30); });
   setTimeout(() => { try{ obs.observe(document.getElementById('appView') || document.body, {childList:true, subtree:true, characterData:true}); run(); }catch(e){} }, 200);
 })();
-</script>
-<style id="nodo-v25-neon-clean-css">
-  body.nodo-v25-neon .layout{grid-template-columns:64px 1fr!important;}
-  body.nodo-v25-neon .sidebar{width:64px!important;padding:10px 6px!important;overflow:hidden!important;background:#0b111b!important;border-right:1px solid rgba(56,189,248,.22)!important;}
-  body.nodo-v25-neon .sidebar .logo{width:42px!important;margin:0 auto 12px!important;}
-  body.nodo-v25-neon .sidebar .card{display:none!important;}
-  body.nodo-v25-neon .nav-btn{height:48px!important;width:52px!important;margin:0 auto 8px!important;padding:0!important;border-radius:14px!important;text-align:center!important;font-size:0!important;display:flex!important;align-items:center!important;justify-content:center!important;background:#111827!important;border:1px solid rgba(148,163,184,.15)!important;box-shadow:none!important;overflow:hidden!important;}
-  body.nodo-v25-neon .nav-btn::before{font-size:21px!important;line-height:1!important;filter:drop-shadow(0 0 8px rgba(56,189,248,.45));}
-  body.nodo-v25-neon #navInicio::before{content:'I';}
-  body.nodo-v25-neon #navSolicitudes::before{content:'S';}
-  body.nodo-v25-neon #navBilleteras::before{content:'B';color:#67e8f9;}
-  body.nodo-v25-neon #navChat::before{content:'C';color:#22d3ee;}
-  body.nodo-v25-neon #navWorker::before{content:'W';}
-  body.nodo-v25-neon #navAjustes::before{content:'A';color:#fbbf24;}
-  body.nodo-v25-neon .nav-btn[onclick*="cerrarSesion"]::before{content:'X';color:#fca5a5;}
-  body.nodo-v25-neon .nav-btn.active{background:linear-gradient(180deg,#1d4ed8,#2563eb)!important;border-color:#38bdf8!important;box-shadow:0 0 16px rgba(56,189,248,.42)!important;}
-  body.nodo-v25-neon .badge-alert{right:2px!important;top:1px!important;transform:scale(.72);}
-  body.nodo-v25-neon .main{padding-left:12px!important;}
-
-  body.nodo-v25-neon #opsKpis .ops-kpi:first-child,
-  body.nodo-v25-neon .ops-kpi:first-child{border-color:rgba(34,211,238,.7)!important;background:radial-gradient(circle at 18% 0%,rgba(34,211,238,.22),rgba(15,23,42,.96) 42%)!important;box-shadow:0 0 22px rgba(34,211,238,.22), inset 0 0 18px rgba(34,211,238,.08)!important;}
-  body.nodo-v25-neon #opsKpis .ops-kpi:first-child .ops-kpi-title,
-  body.nodo-v25-neon .ops-kpi:first-child .ops-kpi-title{color:#cffafe!important;letter-spacing:.8px!important;}
-  body.nodo-v25-neon #opsKpis .ops-kpi:first-child .ops-kpi-value,
-  body.nodo-v25-neon .ops-kpi:first-child .ops-kpi-value{color:#e0faff!important;text-shadow:0 0 8px rgba(34,211,238,.95),0 0 22px rgba(34,211,238,.55)!important;}
-
-  body.nodo-v25-neon .ops-wallet{border-color:rgba(34,211,238,.42)!important;background:linear-gradient(180deg,rgba(15,23,42,.98),rgba(8,18,24,.98))!important;box-shadow:0 0 18px rgba(34,211,238,.14), inset 0 0 16px rgba(34,211,238,.05)!important;}
-  body.nodo-v25-neon .ops-wallet-name{color:#e0faff!important;text-shadow:0 0 7px rgba(34,211,238,.85),0 0 18px rgba(34,211,238,.32)!important;letter-spacing:.3px!important;}
-  body.nodo-v25-neon .ops-wallet-saldo{color:#7dd3fc!important;text-shadow:0 0 8px rgba(34,211,238,.75)!important;}
-
-  body.nodo-v25-neon #opsQuickTop #agentUserActionsBox,
-  body.nodo-v25-neon #opsQuickTop #agentUserActionsBoxV5,
-  body.nodo-v25-neon #opsQuickTop .agent-user-v5{display:none!important;}
-  body.nodo-v25-neon #opsQuickTop .nodo-v23-agent ~ .nodo-v23-agent{display:none!important;}
-</style>
-<script id="nodo-v25-neon-clean-js">
-(function(){
-  if(window.__NODO_V25_NEON_CLEAN__) return;
-  window.__NODO_V25_NEON_CLEAN__ = true;
-  document.body.classList.add('nodo-v25-neon');
-  const $ = id => document.getElementById(id);
-  const norm = v => String(v || '').toUpperCase().trim();
-  function removeLegacyAgent(){
-    const quick = $('opsQuickTop');
-    if(!quick) return;
-    quick.querySelectorAll('#agentUserActionsBox,#agentUserActionsBoxV5,.agent-user-v5').forEach(el => el.remove());
-    const agents = [...quick.querySelectorAll('.nodo-v23-agent,#agentUserActionsBoxV23')];
-    agents.slice(1).forEach(el => el.remove());
-  }
-  function cleanQueueTypes(){
-    const box = $('opsColaUnificada');
-    if(!box) return;
-    box.querySelectorAll('td').forEach(td => {
-      const t = norm(td.textContent);
-      if(t === 'CARGAR_FICHAS' || t === 'PROCESAR_CARGA' || t === 'CARGAS_FICHAS') td.textContent = 'CARGA';
-      if(t === 'PROCESAR_RETIRO') td.textContent = 'RETIRO';
-      if(t === 'VALIDAR_USUARIO') td.textContent = 'VALIDAR';
-      if(t === 'CREAR_USUARIO') td.textContent = 'CREAR USUARIO';
-      if(t === 'CAMBIAR_CLAVE') td.textContent = 'CAMBIAR CLAVE';
-    });
-  }
-  function run(){ removeLegacyAgent(); cleanQueueTypes(); }
-  const oldCentro = window.renderCentroOperativo;
-  if(typeof oldCentro === 'function'){
-    window.renderCentroOperativo = function(){ const r = oldCentro.apply(this, arguments); setTimeout(run, 0); setTimeout(run, 80); return r; };
-    try{ renderCentroOperativo = window.renderCentroOperativo; }catch(e){}
-  }
-  const oldWorker = window.cargarWorkerJobs;
-  if(typeof oldWorker === 'function'){
-    window.cargarWorkerJobs = async function(){ const r = await oldWorker.apply(this, arguments); run(); return r; };
-    try{ cargarWorkerJobs = window.cargarWorkerJobs; }catch(e){}
-  }
-  document.addEventListener('DOMContentLoaded', () => setTimeout(run, 100));
-  window.addEventListener('load', () => setTimeout(run, 200));
-  setTimeout(run, 50);
-  setInterval(run, 1200);
-  const target = $('opsQuickTop') || document.body;
-  try{ new MutationObserver(() => run()).observe(target, {childList:true, subtree:true}); }catch(e){}
-})();
-</script><style id="nodo-v26-operativo-final-css">
-  body.nodo-v26-final .layout{grid-template-columns:176px 1fr!important;}
-  body.nodo-v26-final .sidebar{width:176px!important;padding:10px!important;overflow:hidden auto!important;background:#070b12!important;border-right:1px solid rgba(56,189,248,.20)!important;}
-  body.nodo-v26-final .sidebar .logo{width:54px!important;margin:0 0 12px 4px!important;}
+</script>`n`n<style id="nodo-v26-operativo-final-css">
+  body.nodo-v26-final .layout{grid-template-columns:86px 1fr!important;}
+  body.nodo-v26-final .sidebar{width:86px!important;padding:10px 7px!important;overflow:hidden auto!important;background:#070b12!important;border-right:1px solid rgba(56,189,248,.20)!important;}
+  body.nodo-v26-final .sidebar .logo{width:44px!important;margin:0 auto 12px!important;display:block!important;}
   body.nodo-v26-final .sidebar .card{display:none!important;}
-  body.nodo-v26-final .nav-btn{width:100%!important;height:44px!important;margin:0 0 7px!important;padding:0 12px!important;border-radius:10px!important;background:#171d2a!important;border:1px solid rgba(148,163,184,.10)!important;color:#fff!important;display:flex!important;align-items:center!important;justify-content:flex-start!important;gap:10px!important;text-align:left!important;font-size:14px!important;font-weight:900!important;box-shadow:none!important;overflow:visible!important;position:relative!important;}
+  body.nodo-v26-final .nav-btn{width:58px!important;height:48px!important;margin:0 auto 8px!important;padding:0!important;border-radius:14px!important;background:#171d2a!important;border:1px solid rgba(148,163,184,.10)!important;color:#fff!important;display:flex!important;align-items:center!important;justify-content:center!important;gap:0!important;text-align:center!important;font-size:0!important;font-weight:900!important;box-shadow:none!important;overflow:visible!important;position:relative!important;}
   body.nodo-v26-final .nav-btn::before{content:none!important;display:none!important;}
   body.nodo-v26-final .nav-btn:hover{background:#20283a!important;border-color:rgba(56,189,248,.25)!important;}
   body.nodo-v26-final .nav-btn.active{background:#4258ff!important;border-color:#5ee7ff!important;box-shadow:0 0 14px rgba(56,189,248,.35)!important;}
-  body.nodo-v26-final .nav-ico{width:18px;display:inline-flex;justify-content:center;filter:drop-shadow(0 0 5px rgba(56,189,248,.38));}
-  body.nodo-v26-final .badge-alert{right:8px!important;top:5px!important;transform:none!important;min-width:16px!important;height:16px!important;font-size:10px!important;padding:0 4px!important;}
-  body.nodo-v26-final .badge-chat{right:8px!important;background:#8b5cf6!important;}
-  body.nodo-v26-final #badgeMp{right:8px!important;background:#f59e0b!important;color:#111!important;}
+  body.nodo-v26-final .nav-ico{width:auto!important;display:inline-flex;justify-content:center;font-size:22px!important;line-height:1!important;filter:drop-shadow(0 0 5px rgba(56,189,248,.38));}
+  body.nodo-v26-final .badge-alert{right:-2px!important;top:-3px!important;transform:none!important;min-width:17px!important;height:17px!important;font-size:10px!important;padding:0 4px!important;}
+  body.nodo-v26-final .badge-chat{right:-2px!important;background:#8b5cf6!important;}
+  body.nodo-v26-final #badgeMp{right:-2px!important;background:#f59e0b!important;color:#111!important;}
   body.nodo-v26-final .main{padding-left:14px!important;}
   body.nodo-v26-final #opsKpis .ops-kpi:first-child,
   body.nodo-v26-final .ops-kpi:first-child{border-color:rgba(34,211,238,.76)!important;background:radial-gradient(circle at 12% 0%,rgba(34,211,238,.24),rgba(15,23,42,.98) 46%)!important;box-shadow:0 0 24px rgba(34,211,238,.26), inset 0 0 18px rgba(34,211,238,.08)!important;}
@@ -9781,15 +9726,8 @@ body.nodo-v20 #alertas .alert-box{padding:8px 10px;font-size:12px;margin-bottom:
   body.nodo-v26-final .ops-wallet-saldo{color:#7dd3fc!important;text-shadow:0 0 8px rgba(34,211,238,.75)!important;}
   body.nodo-v26-final .ops-wallet-actions{display:flex!important;margin-top:10px!important;gap:7px!important;flex-wrap:wrap!important;}
   body.nodo-v26-final .ops-wallet-actions .mini-btn{display:inline-flex!important;width:auto!important;padding:7px 10px!important;border-radius:10px!important;font-size:12px!important;}
-  body.nodo-v26-final #agentUserActionsFinal{display:block!important;margin-top:12px;border-top:1px solid #273142;padding-top:12px;}
-  body.nodo-v26-final #agentUserActionsFinal .agent-final-grid{display:grid;grid-template-columns:minmax(180px,1fr) minmax(180px,1fr) auto;gap:8px;align-items:end;}
-  body.nodo-v26-final #agentUserActionsFinal input,
-  body.nodo-v26-final #agentUserActionsFinal select{margin:0!important;}
-  body.nodo-v26-final #agentUserActionsFinal .btn{height:38px;margin:0;padding:0 14px;white-space:nowrap;}
-  body.nodo-v26-final #opsQuickTop #agentUserActionsBox,
-  body.nodo-v26-final #opsQuickTop #agentUserActionsBoxV5,
-  body.nodo-v26-final #opsQuickTop .agent-user-v5{display:none!important;}
-  @media(max-width:760px){body.nodo-v26-final .layout{grid-template-columns:74px 1fr!important;}body.nodo-v26-final .sidebar{width:74px!important;padding:8px 6px!important;}body.nodo-v26-final .nav-btn{justify-content:center!important;padding:0!important;}body.nodo-v26-final .nav-btn span:not(.nav-ico):not(.badge-alert){display:none!important;}body.nodo-v26-final #agentUserActionsFinal .agent-final-grid{grid-template-columns:1fr!important;}}
+
+  @media(max-width:760px){body.nodo-v26-final .layout{grid-template-columns:74px 1fr!important;}body.nodo-v26-final .sidebar{width:74px!important;padding:8px 6px!important;}body.nodo-v26-final .nav-btn{justify-content:center!important;padding:0!important;}body.nodo-v26-final .nav-btn span:not(.nav-ico):not(.badge-alert){display:none!important;}body.nodo-v26-final .nodo-agent-user-grid{grid-template-columns:1fr!important;}}
 </style>
 <script id="nodo-v26-operativo-final-js">
 (function(){
@@ -9911,7 +9849,7 @@ body.nodo-v20 #alertas .alert-box{padding:8px 10px;font-size:12px;margin-bottom:
     const map = {CARGAR_FICHAS:'CARGA',PROCESAR_CARGA:'CARGA',CARGAS_FICHAS:'CARGA',PROCESAR_RETIRO:'RETIRO',VALIDAR_USUARIO:'VALIDAR',CREAR_USUARIO:'CREAR USUARIO',CAMBIAR_CLAVE:'CAMBIAR CLAVE'};
     document.querySelectorAll('#opsColaUnificada td').forEach(td => { const t = td.textContent.trim().toUpperCase(); if(map[t]) td.textContent = map[t]; });
   }
-  function run(){ setNav(); ensureAgentFinal(); walletActions(); cleanQueueTypes(); }
+  function run(){ setNav(); walletActions(); cleanQueueTypes(); }
 
   const oldCentro = window.renderCentroOperativo;
   if(typeof oldCentro === 'function'){
@@ -9926,12 +9864,14 @@ body.nodo-v20 #alertas .alert-box{padding:8px 10px;font-size:12px;margin-bottom:
   document.addEventListener('DOMContentLoaded', () => setTimeout(run, 100));
   window.addEventListener('load', () => setTimeout(run, 250));
   setTimeout(run, 50);
-  setInterval(run, 1500);
-  try{ new MutationObserver(() => setTimeout(run, 0)).observe(document.getElementById('opsQuickTop') || document.body, {childList:true, subtree:true}); }catch(e){}
+
+
 })();
 </script>
 </body>
 </html>
+
+
 
 
 
