@@ -560,7 +560,7 @@ function limpiarDatosTransferencia(){
 }
 function debeReintentarSolicitudLegacy(error){
   const msg=String(error?.message||error?.details||error?.hint||"").toLowerCase();
-  return msg.includes("function")&&msg.includes("landing_crear_solicitud_segura") || msg.includes("p_titular_transferencia") || msg.includes("p_dni_transferencia") || msg.includes("p_medio_transferencia");
+  return msg.includes("function")&&(msg.includes("landing_crear_solicitud_segura")||msg.includes("landing_crear_solicitud_v3")) || msg.includes("p_titular_transferencia") || msg.includes("p_dni_transferencia") || msg.includes("p_medio_transferencia");
 }function actualizarCamposPorTipoSolicitud(){
   const esRetiro = String(tipoSolicitudActual||"CARGA").toUpperCase()==="RETIRO";
   $("datosTransferenciaBox")?.classList.toggle("hidden", esRetiro);
@@ -614,13 +614,13 @@ async function renovarValidacionParaSolicitud(){
 }
 
 async function llamarCrearSolicitudSegura(params){
-  let res=await supabaseClient.rpc("landing_crear_solicitud_segura",params);
+  let res=await supabaseClient.rpc("landing_crear_solicitud_v3",params);
   if(res.error&&debeReintentarSolicitudLegacy(res.error)){
     const legacyParams={...params};
     delete legacyParams.p_titular_transferencia;
     delete legacyParams.p_dni_transferencia;
     delete legacyParams.p_medio_transferencia;
-    res=await supabaseClient.rpc("landing_crear_solicitud_segura",legacyParams);
+    res=await supabaseClient.rpc("landing_crear_solicitud_v3",legacyParams);
   }
   return res;
 }
@@ -1201,6 +1201,7 @@ function iniciarRealtimeChatLanding(){return}
 
 </body>
 </html>
+
 
 
 
