@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -487,20 +487,52 @@ function renderValidacionNoExisteBox(){return `<div class="validation-card" styl
 function renderValidacionErrorBox(){return `<div class="validation-card" style="border-color:rgba(245,158,11,.45)"><div class="validation-head"><div class="validation-icon" style="background:rgba(245,158,11,.15);color:#fcd34d">?</div><div><div class="validation-title">No pudimos validar automaticamente</div><div class="validation-sub">Intentá nuevamente o consultanos por chat.</div></div></div><button type="button" onclick="abrirChatLite()">Consultar por chat</button></div>`}
 
 async function cargarBilletera(){
-  let encontrada=null, ultimoError=null;
-  for(const pcTry of pcCandidatos(PC)){
-    const {data,error}=await supabaseClient.rpc("landing_obtener_billetera_segura",{
-      p_validacion_usuario_id:Number(userData?.validacion_id || 0),
-      p_usuario:userData?.usuario || "",
-      p_nombre_completo:userData?.nombre || "",
-      p_telefono:userData?.telefono || "",
-      p_dni:userData?.dni || "",
-      p_pc_codigo:pcTry
-    });
-    if(error){ultimoError=error;DEBUG && console.warn(error.message);continue}
-    if(data&&data.length){encontrada=data[0];break}
+  let encontrada = null;
+  let ultimoError = null;
+
+  // Candidatos: el PC real del portal + compatibilidad fija P1.
+  // Esto evita que el usuario vea "Sin billetera" cuando la validación expira
+  // o cuando el portal no llega con el mismo pc_codigo que Supabase.
+  const candidatos = [...new Set([...(pcCandidatos(PC) || []), "P1"])]
+    .map(v => String(v || "").trim().toUpperCase())
+    .filter(Boolean);
+
+  // 1) Camino seguro: validación + billetera.
+  for(const pcTry of candidatos){
+    try{
+      const {data,error}=await supabaseClient.rpc("landing_obtener_billetera_segura",{
+        p_validacion_usuario_id:Number(userData?.validacion_id || 0),
+        p_usuario:userData?.usuario || "",
+        p_nombre_completo:userData?.nombre || "",
+        p_telefono:userData?.telefono || "",
+        p_dni:userData?.dni || "",
+        p_pc_codigo:pcTry
+      });
+      if(error){ ultimoError=error; DEBUG && console.warn("billetera_segura", pcTry, error.message); continue; }
+      if(data && data.length){ encontrada=data[0]; break; }
+    }catch(e){ ultimoError=e; DEBUG && console.warn("billetera_segura catch", pcTry, e.message); }
   }
-  if(!encontrada){if(ultimoError)DEBUG && console.error(ultimoError);mostrarBilleteraNoDisponible();return}
+
+  // 2) Fallback público: si la validación venció, igual mostramos la billetera
+  // seleccionada para el portal. La validación sigue aplicando al crear solicitud.
+  if(!encontrada){
+    for(const pcTry of candidatos){
+      try{
+        const {data,error}=await supabaseClient.rpc("landing_obtener_billetera",{
+          p_pc_codigo:pcTry
+        });
+        if(error){ ultimoError=error; DEBUG && console.warn("billetera_publica", pcTry, error.message); continue; }
+        if(data && data.length){ encontrada=data[0]; break; }
+      }catch(e){ ultimoError=e; DEBUG && console.warn("billetera_publica catch", pcTry, e.message); }
+    }
+  }
+
+  if(!encontrada){
+    if(ultimoError) DEBUG && console.error("No se pudo cargar billetera", ultimoError);
+    mostrarBilleteraNoDisponible();
+    return;
+  }
+
   billeteraActiva=encontrada;
   $("aliasBox").innerText=billeteraActiva.alias||"Consultar";
   $("cbuBox").innerText=billeteraActiva.cbu||"Consultar";
