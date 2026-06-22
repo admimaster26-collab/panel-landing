@@ -673,5 +673,118 @@ document.addEventListener("DOMContentLoaded",function(){
   },250);
 });
 
+
+/* ============================================================
+   ADMIN GENERAL V20 · RPC CONNECTION PATCH SAFE
+   Conecta Mapa Maestro / Rutas / Aliases por RPC con session_token.
+   Si el RPC no existe todavía, deja fallback directo para diagnóstico.
+   ============================================================ */
+
+async function rpcRowsSafe(name,payload,fallbackFn){
+  try{
+    return await rpcRows(name,payload||{});
+  }catch(e){
+    console.warn("[RPC fallback]",name,e.message);
+    if(typeof fallbackFn==="function") return await fallbackFn(e);
+    throw e;
+  }
+}
+
+loadRutasPublicas = async function(render=false){
+  try{
+    rutasPublicas = await rpcRowsSafe(
+      "admin_general_rutas_list",
+      {p_session_token:requireAdminToken()},
+      async()=>await tableRows("landing_rutas_publicas",q=>q.order("pc_codigo",{ascending:true}))
+    );
+    rutasPublicas=(rutasPublicas||[]).map(r=>({...r,pc_codigo:normPc(r.pc_codigo)}));
+    if(render)renderAll();
+  }catch(e){
+    console.warn(e);
+    rutasPublicas=[];
+    toast("Error rutas públicas: "+e.message,"err");
+  }
+};
+
+loadAliasesOficina = async function(render=false){
+  try{
+    aliasesOficina = await rpcRowsSafe(
+      "admin_general_aliases_list",
+      {p_session_token:requireAdminToken()},
+      async()=>await tableRows("nodo_oficina_aliases",q=>q.order("pc_codigo_compat",{ascending:true}).order("alias_codigo",{ascending:true}))
+    );
+    aliasesOficina=(aliasesOficina||[]).map(a=>({...a,pc_codigo_compat:normPc(a.pc_codigo_compat)}));
+    if(render)renderAll();
+  }catch(e){
+    console.warn(e);
+    aliasesOficina=[];
+    toast("Error aliases: "+e.message,"err");
+  }
+};
+
+saveRuta = async function(e){
+  e.preventDefault();
+  const id=val("ruta_id"), pc=normPc(val("ruta_pc_codigo")), public_code=val("ruta_public_code");
+  if(!pc||!public_code)return toast("PC interna y public_code son obligatorios.","err");
+
+  const payload={
+    p_session_token:requireAdminToken(),
+    p_id:id?Number(id):null,
+    p_pc_codigo:pc,
+    p_public_code:public_code,
+    p_nombre_publico:val("ruta_nombre_publico")||pc,
+    p_link_plataforma:val("ruta_link_plataforma"),
+    p_whatsapp_numero:val("ruta_whatsapp_numero"),
+    p_activo:bool("ruta_activo")
+  };
+
+  try{
+    await rpcRowsSafe("admin_general_guardar_ruta",payload,async()=>{
+      const direct={pc_codigo:pc,public_code,nombre_publico:val("ruta_nombre_publico")||pc,link_plataforma:val("ruta_link_plataforma"),whatsapp_numero:val("ruta_whatsapp_numero"),activo:bool("ruta_activo"),updated_at:new Date().toISOString()};
+      const res=id?await supabaseClient.from("landing_rutas_publicas").update(direct).eq("id",id):await supabaseClient.from("landing_rutas_publicas").insert([direct]);
+      if(res.error)throw res.error;
+      return [];
+    });
+    resetRutaForm();
+    await loadRutasPublicas(false);
+    fillPcSelects();
+    renderAll();
+    toast("Ruta pública guardada","okb");
+  }catch(err){
+    toast("Error guardando ruta: "+err.message,"err");
+  }
+};
+
+saveAlias = async function(e){
+  e.preventDefault();
+  const id=val("alias_id"), alias_codigo=val("alias_codigo"), pc=normPc(val("alias_pc_codigo_compat"));
+  if(!alias_codigo||!pc)return toast("Alias y PC compatible son obligatorios.","err");
+
+  const payload={
+    p_session_token:requireAdminToken(),
+    p_id:id?Number(id):null,
+    p_alias_codigo:alias_codigo.toUpperCase(),
+    p_oficina_id:(val("alias_oficina_id")||pc).toUpperCase(),
+    p_pc_codigo_compat:pc,
+    p_activa:bool("alias_activa"),
+    p_observaciones:val("alias_observaciones")
+  };
+
+  try{
+    await rpcRowsSafe("admin_general_guardar_alias",payload,async()=>{
+      const direct={alias_codigo:alias_codigo.toUpperCase(),oficina_id:(val("alias_oficina_id")||pc).toUpperCase(),pc_codigo_compat:pc,activa:bool("alias_activa"),observaciones:val("alias_observaciones"),updated_at:new Date().toISOString()};
+      const res=id?await supabaseClient.from("nodo_oficina_aliases").update(direct).eq("id",id):await supabaseClient.from("nodo_oficina_aliases").insert([direct]);
+      if(res.error)throw res.error;
+      return [];
+    });
+    resetAliasForm();
+    await loadAliasesOficina(false);
+    renderAll();
+    toast("Alias guardado","okb");
+  }catch(err){
+    toast("Error guardando alias: "+err.message,"err");
+  }
+};
+
 </script>
 </body></html>
