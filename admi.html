@@ -3,16 +3,27 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>NODO · ADMIN V19 BLINDADO</title>
+<title>NODO · ADMIN GENERAL V20</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif}:root{--bg:#020617;--panel:#0f172a;--card:#111827;--card2:#1f2937;--line:#334155;--muted:#94a3b8;--txt:#f8fafc;--green:#22c55e;--red:#ef4444;--yellow:#f59e0b;--blue:#3b82f6;--violet:#8b5cf6;--cyan:#06b6d4}body{background:radial-gradient(circle at top left,#172554,#020617 42%);color:var(--txt);min-height:100vh}.hidden{display:none!important}.app{display:grid;grid-template-columns:260px 1fr;min-height:100vh}.login{position:fixed;inset:0;z-index:999999;background:#020617;display:flex;align-items:center;justify-content:center;padding:20px}.loginBox{width:min(430px,94vw);background:#111827;border:1px solid #334155;border-radius:22px;padding:26px;box-shadow:0 25px 80px rgba(0,0,0,.55)}.loginBox h1{font-size:28px;margin-bottom:6px}.loginBox p{color:var(--muted);margin-bottom:18px}.loginMsg{margin-top:14px;color:#facc15;font-weight:800;line-height:1.4}aside{background:linear-gradient(180deg,#0f172a,#111827 60%,#17131f);border-right:1px solid var(--line);padding:18px 12px;position:sticky;top:0;height:100vh;overflow:auto}.brand{padding:8px 10px 16px;border-bottom:1px solid var(--line);margin-bottom:14px}.brand h1{font-size:22px}.brand h1::after{content:' · V18';color:#a78bfa;font-size:13px;margin-left:5px}.brand p{color:var(--muted);font-size:12px;margin-top:6px;line-height:1.35}.adminInfo{padding:12px;border:1px solid rgba(59,130,246,.25);background:rgba(59,130,246,.08);border-radius:14px;margin-bottom:14px;font-size:13px}.nav button{width:100%;display:flex;justify-content:space-between;align-items:center;border:1px solid transparent;border-radius:13px;background:transparent;color:#d1d5db;padding:12px 13px;margin-bottom:8px;text-align:left;font-weight:900}.nav button:hover,.nav button.active{background:rgba(34,197,94,.12);border-color:rgba(34,197,94,.28);color:#86efac}.badge{font-size:11px;color:var(--muted);background:rgba(255,255,255,.06);border:1px solid var(--line);border-radius:999px;padding:2px 8px}main{padding:22px;min-width:0}.top{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;margin-bottom:18px}.top h2{font-size:28px}.top p{color:var(--muted);font-size:14px;margin-top:6px}.top-actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end;align-items:center}.pilot{padding:9px 12px;border-radius:12px;background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.35);font-size:12px;color:#fde68a}.section{display:none}.section.active{display:block}button{border:0;border-radius:12px;padding:11px 14px;cursor:pointer;font-weight:900;color:#fff;background:var(--card2)}button:hover{filter:brightness(1.08)}.primary{background:var(--green);color:#052e16}.danger{background:var(--red)}.warning{background:var(--yellow);color:#111827}.blue{background:var(--blue)}.violet{background:var(--violet)}.cyan{background:var(--cyan);color:#05242a}.small{padding:7px 9px;border-radius:9px;font-size:12px}input,select,textarea{width:100%;background:#020617;color:var(--txt);border:1px solid var(--line);border-radius:11px;padding:11px 12px;outline:none;font-size:14px}input:focus,select:focus,textarea:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(34,197,94,.12)}textarea{min-height:70px;resize:vertical}label{display:block;font-size:13px;font-weight:900;color:#d1d5db;margin-bottom:6px}.row{margin-bottom:12px}.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}.actions,.rowActions{display:flex;gap:8px;flex-wrap:wrap}.stats{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:13px;margin-bottom:18px}.stat,.card{background:rgba(17,24,39,.96);border:1px solid var(--line);border-radius:16px;box-shadow:0 16px 45px rgba(0,0,0,.22)}.stat{padding:15px}.stat small{display:block;color:var(--muted);margin-bottom:8px}.stat strong{font-size:25px}.stat .sub{margin-top:6px;color:var(--muted);font-size:12px;line-height:1.35}.stat.click{cursor:pointer}.stat.click:hover{border-color:rgba(167,139,250,.55)}.card{overflow:hidden;margin-bottom:18px}.card-h{padding:15px 17px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:12px}.card-b{padding:17px}.grid2{display:grid;grid-template-columns:390px 1fr;gap:18px;align-items:start}.gridDash{display:grid;grid-template-columns:1fr 1fr;gap:18px}.filters{display:grid;grid-template-columns:1.2fr 1fr 1fr 1fr 1fr auto;gap:10px;padding:13px 17px;background:rgba(31,41,55,.45);border-bottom:1px solid var(--line)}.filters.compact{grid-template-columns:repeat(6,minmax(0,1fr)) auto}.tableWrap{overflow:auto;width:100%}table{width:100%;border-collapse:collapse;min-width:1040px}th,td{padding:11px 10px;border-bottom:1px solid var(--line);font-size:13px;text-align:left;vertical-align:middle}th{background:rgba(2,6,23,.78);color:#d1d5db;position:sticky;top:0;z-index:1}.muted{color:var(--muted)}.pill{display:inline-flex;align-items:center;border-radius:999px;padding:5px 9px;font-size:12px;font-weight:900;border:1px solid transparent;white-space:nowrap}.ok{background:rgba(34,197,94,.12);color:#86efac;border-color:rgba(34,197,94,.32)}.off{background:rgba(239,68,68,.12);color:#fca5a5;border-color:rgba(239,68,68,.32)}.warn{background:rgba(245,158,11,.13);color:#fcd34d;border-color:rgba(245,158,11,.32)}.info{background:rgba(59,130,246,.12);color:#93c5fd;border-color:rgba(59,130,246,.32)}.vio{background:rgba(139,92,246,.12);color:#c4b5fd;border-color:rgba(139,92,246,.32)}.cyanP{background:rgba(6,182,212,.12);color:#67e8f9;border-color:rgba(6,182,212,.32)}.empty{text-align:center;color:var(--muted);padding:26px}.notice{background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.32);color:#fde68a;padding:13px 14px;border-radius:13px;margin-bottom:16px;font-size:14px;line-height:1.42}.list{display:grid;gap:10px}.item{border:1px solid var(--line);background:rgba(2,6,23,.38);border-radius:13px;padding:13px}.item strong{display:block;margin-bottom:5px}.item span{color:var(--muted);font-size:13px;line-height:1.35}.toast{position:fixed;right:20px;bottom:20px;z-index:999999;background:#020617;border:1px solid var(--line);padding:14px 16px;border-radius:12px;box-shadow:0 12px 36px rgba(0,0,0,.35);display:none;max-width:430px;line-height:1.35}.toast.show{display:block}.toast.okb{border-color:rgba(34,197,94,.6)}.toast.err{border-color:rgba(239,68,68,.7)}.modalOverlay{position:fixed;inset:0;background:rgba(0,0,0,.72);display:none;align-items:center;justify-content:center;z-index:200;padding:18px}.modalOverlay.show{display:flex}.modalBox{width:min(1040px,96vw);max-height:88vh;overflow:auto;background:#020617;border:1px solid var(--line);border-radius:18px;box-shadow:0 24px 70px rgba(0,0,0,.55)}.modalHead{padding:16px 18px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:12px}.modalBody{padding:18px}.logLine{border:1px solid var(--line);background:rgba(15,23,42,.74);border-radius:13px;padding:12px;margin-bottom:10px}.twoCol{display:grid;grid-template-columns:1fr 1fr;gap:18px}.statusDot{display:inline-block;width:9px;height:9px;border-radius:999px;margin-right:6px;background:#64748b}.statusDot.on{background:#22c55e;box-shadow:0 0 12px rgba(34,197,94,.55)}.statusDot.bad{background:#ef4444}.statusDot.warn{background:#f59e0b}.mp-box{border:1px solid rgba(59,130,246,.35);background:rgba(59,130,246,.06);border-radius:14px;padding:14px;margin:14px 0}.mp-box h4{font-size:15px;margin-bottom:10px;color:#bfdbfe}@media(max-width:1240px){.app{grid-template-columns:1fr}aside{position:relative;height:auto}.grid2,.gridDash,.twoCol{grid-template-columns:1fr}.filters,.filters.compact{grid-template-columns:1fr 1fr}.stats{grid-template-columns:1fr 1fr}}@media(max-width:680px){main{padding:14px}.top{flex-direction:column}.filters,.filters.compact,.g2,.g3,.stats{grid-template-columns:1fr}table{min-width:850px}}
-.brand h1::after{content:' · V19';color:#a78bfa;font-size:13px;margin-left:5px}.workerGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px}.workerCard{border:1px solid var(--line);background:rgba(2,6,23,.45);border-radius:14px;padding:14px}.workerCard.online{border-color:rgba(34,197,94,.45);background:rgba(34,197,94,.07)}.workerCard.warn{border-color:rgba(245,158,11,.5);background:rgba(245,158,11,.08)}.workerCard.bad{border-color:rgba(239,68,68,.5);background:rgba(239,68,68,.08)}.workerHead{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;margin-bottom:10px}.workerName{font-weight:900;font-size:15px}.workerMeta{color:var(--muted);font-size:12px;margin-top:3px}.workerKpis{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}.workerKpi{background:rgba(15,23,42,.72);border:1px solid rgba(51,65,85,.8);border-radius:11px;padding:9px}.workerKpi small{display:block;color:var(--muted);font-size:11px;margin-bottom:4px}.workerKpi strong{font-size:14px}.workerFoot{margin-top:10px;color:#cbd5e1;font-size:12px;line-height:1.35}.workerMini{display:flex;gap:8px;flex-wrap:wrap;margin-top:9px}
+.brand h1::after{content:' · V20 GENERAL';color:#a78bfa;font-size:13px;margin-left:5px}.workerGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px}.workerCard{border:1px solid var(--line);background:rgba(2,6,23,.45);border-radius:14px;padding:14px}.workerCard.online{border-color:rgba(34,197,94,.45);background:rgba(34,197,94,.07)}.workerCard.warn{border-color:rgba(245,158,11,.5);background:rgba(245,158,11,.08)}.workerCard.bad{border-color:rgba(239,68,68,.5);background:rgba(239,68,68,.08)}.workerHead{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;margin-bottom:10px}.workerName{font-weight:900;font-size:15px}.workerMeta{color:var(--muted);font-size:12px;margin-top:3px}.workerKpis{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}.workerKpi{background:rgba(15,23,42,.72);border:1px solid rgba(51,65,85,.8);border-radius:11px;padding:9px}.workerKpi small{display:block;color:var(--muted);font-size:11px;margin-bottom:4px}.workerKpi strong{font-size:14px}.workerFoot{margin-top:10px;color:#cbd5e1;font-size:12px;line-height:1.35}.workerMini{display:flex;gap:8px;flex-wrap:wrap;margin-top:9px}
 </style>
+
+<style id="adminGeneralV20Style">
+.master-ok{border-color:rgba(34,197,94,.45)!important;background:rgba(34,197,94,.06)!important}
+.master-warn{border-color:rgba(245,158,11,.48)!important;background:rgba(245,158,11,.07)!important}
+.master-bad{border-color:rgba(239,68,68,.55)!important;background:rgba(239,68,68,.07)!important}
+.aliasTags{display:flex;gap:5px;flex-wrap:wrap;max-width:360px}
+.aliasTag{font-size:10px;font-weight:900;border:1px solid rgba(148,163,184,.35);background:rgba(148,163,184,.10);color:#cbd5e1;border-radius:999px;padding:3px 7px}
+.linkMini{color:#93c5fd;text-decoration:none;font-weight:800}
+.linkMini:hover{text-decoration:underline}
+</style>
+
 </head>
 <body>
-<div id="loginGate" class="login"><div class="loginBox"><h1>NODO ADMIN</h1><p>Panel profesional multi-oficina.</p><label>Usuario</label><input id="loginUser" autocomplete="username"><label>Clave</label><input id="loginPass" type="password" autocomplete="current-password"><button class="primary" style="width:100%;margin-top:16px" onclick="adminLogin()">Ingresar</button><div id="loginMsg" class="loginMsg"></div></div></div>
-<div id="appView" class="app hidden"><aside><div class="brand"><h1>NODO ADMIN</h1><p>Administración multi-oficina, workers, operadores, billeteras, solicitudes y métricas.</p></div><div id="adminInfo" class="adminInfo hidden"></div><div class="nav"><button class="navBtn active" data-section="dashboard" onclick="showSection('dashboard')">Dashboard <span class="badge" id="badgeDashboard">0</span></button><button class="navBtn" data-section="solicitudes" onclick="showSection('solicitudes')">Solicitudes <span class="badge" id="badgeSolicitudes">0</span></button><button class="navBtn" data-section="worker" onclick="showSection('worker')">Worker <span class="badge" id="badgeWorker">0</span></button><button class="navBtn" data-section="operadores" onclick="showSection('operadores')">Operadores <span class="badge" id="badgeOperadores">0</span></button><button class="navBtn" data-section="billeteras" onclick="showSection('billeteras')">Billeteras <span class="badge" id="badgeBilleteras">0</span></button><button class="navBtn" data-section="pcs" onclick="showSection('pcs')">Oficinas <span class="badge" id="badgePcs">0</span></button><button class="navBtn" data-section="historial" onclick="showSection('historial')">Historial Agente <span class="badge" id="badgeHistorial">CSV</span></button><button class="navBtn" data-section="config" onclick="showSection('config')">Configuración <span class="badge" id="badgeConfig">0</span></button></div></aside><main><div class="top"><div><h2 id="pageTitle">Dashboard</h2><p id="pageSub">Resumen general actualizado por oficina.</p></div><div class="top-actions"><select id="globalPc" onchange="cambiarOficinaAdmin()"></select><button class="blue" onclick="reloadAll(true)">Actualizar todo</button><button class="danger" onclick="adminLogout()">Cerrar sesión</button></div></div>
+<div id="loginGate" class="login"><div class="loginBox"><h1>NODO ADMIN</h1><p>Panel maestro general multi-oficina.</p><label>Usuario</label><input id="loginUser" autocomplete="username"><label>Clave</label><input id="loginPass" type="password" autocomplete="current-password"><button class="primary" style="width:100%;margin-top:16px" onclick="adminLogin()">Ingresar</button><div id="loginMsg" class="loginMsg"></div></div></div>
+<div id="appView" class="app hidden"><aside><div class="brand"><h1>NODO ADMIN</h1><p>Administración general: oficinas, rutas públicas, aliases Chunior, workers, operadores, billeteras, solicitudes y métricas.</p></div><div id="adminInfo" class="adminInfo hidden"></div><div class="nav"><button class="navBtn active" data-section="dashboard" onclick="showSection('dashboard')">Dashboard <span class="badge" id="badgeDashboard">0</span></button><button class="navBtn" data-section="mapa" onclick="showSection('mapa')">Mapa Maestro <span class="badge" id="badgeMapa">Nuevo</span></button><button class="navBtn" data-section="portal-rutas" onclick="showSection('portal-rutas')">Portal / Rutas <span class="badge" id="badgeRutas">0</span></button><button class="navBtn" data-section="aliases" onclick="showSection('aliases')">Aliases Chunior <span class="badge" id="badgeAliases">0</span></button><button class="navBtn" data-section="solicitudes" onclick="showSection('solicitudes')">Solicitudes <span class="badge" id="badgeSolicitudes">0</span></button><button class="navBtn" data-section="worker" onclick="showSection('worker')">Worker <span class="badge" id="badgeWorker">0</span></button><button class="navBtn" data-section="operadores" onclick="showSection('operadores')">Operadores <span class="badge" id="badgeOperadores">0</span></button><button class="navBtn" data-section="billeteras" onclick="showSection('billeteras')">Billeteras <span class="badge" id="badgeBilleteras">0</span></button><button class="navBtn" data-section="pcs" onclick="showSection('pcs')">Oficinas <span class="badge" id="badgePcs">0</span></button><button class="navBtn" data-section="historial" onclick="showSection('historial')">Historial Agente <span class="badge" id="badgeHistorial">CSV</span></button><button class="navBtn" data-section="config" onclick="showSection('config')">Configuración <span class="badge" id="badgeConfig">0</span></button></div></aside><main><div class="top"><div><h2 id="pageTitle">Dashboard</h2><p id="pageSub">Resumen general actualizado por oficina.</p></div><div class="top-actions"><select id="globalPc" onchange="cambiarOficinaAdmin()"></select><button class="blue" onclick="reloadAll(true)">Actualizar todo</button><button class="danger" onclick="adminLogout()">Cerrar sesión</button></div></div>
 <section id="section-dashboard" class="section active">
   <div class="filters compact"><input id="dash_from" type="date" onchange="renderAll()"><input id="dash_to" type="date" onchange="renderAll()"><select id="dash_turno" onchange="renderAll()"><option value="">Todos los turnos</option><option>TM</option><option>TT</option><option>TN</option></select><select id="dash_operador" onchange="renderAll()"><option value="">Todos operadores</option></select><select id="dash_origen" onchange="renderAll()"><option value="">Todos orígenes</option><option value="LANDING">Landing</option><option value="PANEL">Panel operativo</option></select><input id="dash_search" oninput="renderAll()" placeholder="Usuario, estado, monto..."><button onclick="limpiarFiltrosDashboard()">Limpiar</button></div>
   <div class="stats" id="ofiCards"></div>
@@ -20,6 +31,199 @@
   <div class="gridDash"><div class="card"><div class="card-h"><h3>Solicitudes por turno</h3></div><div class="card-b" id="dashTurnos"></div></div><div class="card"><div class="card-h"><h3>Estado de workers</h3><button class="small blue" onclick="loadWorkerStatus(true)">Actualizar</button></div><div class="card-b"><div class="list" id="dashWorkers"></div></div></div></div>
   <div class="card"><div class="card-h"><h3>Últimas solicitudes y órdenes</h3><button class="small violet" onclick="showSection('solicitudes')">Ver detalle completo</button></div><div class="tableWrap"><table><thead><tr><th>Fecha</th><th>Oficina</th><th>Turno</th><th>Origen</th><th>Tipo</th><th>Usuario</th><th>Monto</th><th>Estado</th><th>Worker</th><th>Operador</th></tr></thead><tbody id="ultimasSolicitudes"></tbody></table></div></div>
 </section>
+
+<section id="section-mapa" class="section">
+  <div class="notice">
+    Mapa maestro general. Esta vista cruza rutas públicas del portal, aliases Chunior, operadores, billeteras y worker por <b>pc_codigo</b>.
+    El panel operativo sigue separado: acá se administra la configuración global.
+  </div>
+
+  <div class="stats" id="mapaStats"></div>
+
+  <div class="card">
+    <div class="card-h">
+      <h3>Oficinas configuradas</h3>
+      <div class="rowActions">
+        <button class="blue small" onclick="loadMapaMaestro(true)">Actualizar mapa</button>
+        <button class="violet small" onclick="showSection('portal-rutas')">Rutas portal</button>
+        <button class="cyan small" onclick="showSection('aliases')">Aliases</button>
+      </div>
+    </div>
+    <div class="tableWrap">
+      <table>
+        <thead>
+          <tr>
+            <th>PC</th>
+            <th>Nombre público</th>
+            <th>Código portal</th>
+            <th>WhatsApp</th>
+            <th>Link portal</th>
+            <th>Aliases</th>
+            <th>Operadores</th>
+            <th>Billeteras</th>
+            <th>Workers / Jobs</th>
+            <th>Estado</th>
+          </tr>
+        </thead>
+        <tbody id="mapaBody"></tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section id="section-portal-rutas" class="section">
+  <div class="grid2">
+    <div class="card">
+      <div class="card-h">
+        <h3 id="rutaFormTitle">Crear / editar ruta pública</h3>
+        <button class="small" onclick="resetRutaForm()">Limpiar</button>
+      </div>
+      <div class="card-b">
+        <form id="rutaForm">
+          <input type="hidden" id="ruta_id">
+          <div class="g2">
+            <div class="row">
+              <label>PC interna</label>
+              <input id="ruta_pc_codigo" placeholder="P4">
+            </div>
+            <div class="row">
+              <label>Public code</label>
+              <input id="ruta_public_code" placeholder="rt-z9p42">
+            </div>
+          </div>
+          <div class="row">
+            <label>Nombre público</label>
+            <input id="ruta_nombre_publico" placeholder="SANCHEZPLATA / Canal 1">
+          </div>
+          <div class="row">
+            <label>Link plataforma</label>
+            <input id="ruta_link_plataforma" placeholder="https://www.bet-300.pw/">
+          </div>
+          <div class="g2">
+            <div class="row">
+              <label>WhatsApp número</label>
+              <input id="ruta_whatsapp_numero" placeholder="549...">
+            </div>
+            <div class="row">
+              <label>Activo</label>
+              <select id="ruta_activo"><option value="true">Sí</option><option value="false">No</option></select>
+            </div>
+          </div>
+          <div class="actions">
+            <button class="primary" type="submit">Guardar ruta</button>
+            <button type="button" onclick="resetRutaForm()">Cancelar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-h">
+        <h3>Rutas públicas del portal</h3>
+        <button class="blue small" onclick="loadRutasPublicas(true)">Actualizar</button>
+      </div>
+      <div class="filters compact">
+        <input id="ruta_search" oninput="renderRutasPublicas()" placeholder="Buscar ruta, PC, WhatsApp...">
+        <select id="ruta_filter_activo" onchange="renderRutasPublicas()">
+          <option value="">Todas</option>
+          <option value="true">Activas</option>
+          <option value="false">Inactivas</option>
+        </select>
+        <button onclick="clearRutaFilters()">Reset</button>
+      </div>
+      <div class="tableWrap">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th><th>PC</th><th>Nombre</th><th>Public code</th><th>WhatsApp</th><th>Link</th><th>Activo</th><th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="rutasBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="section-aliases" class="section">
+  <div class="grid2">
+    <div class="card">
+      <div class="card-h">
+        <h3 id="aliasFormTitle">Crear / editar alias Chunior</h3>
+        <button class="small" onclick="resetAliasForm()">Limpiar</button>
+      </div>
+      <div class="card-b">
+        <form id="aliasForm">
+          <input type="hidden" id="alias_id">
+          <div class="row">
+            <label>Alias / puesto / variante</label>
+            <input id="alias_codigo" placeholder="SANCHEZPLATAENUSO">
+          </div>
+          <div class="g2">
+            <div class="row">
+              <label>Oficina ID</label>
+              <input id="alias_oficina_id" placeholder="SANCHEZPLATA">
+            </div>
+            <div class="row">
+              <label>PC compatible</label>
+              <input id="alias_pc_codigo_compat" placeholder="P4">
+            </div>
+          </div>
+          <div class="row">
+            <label>Observaciones</label>
+            <textarea id="alias_observaciones"></textarea>
+          </div>
+          <div class="row">
+            <label>Activo</label>
+            <select id="alias_activa"><option value="true">Sí</option><option value="false">No</option></select>
+          </div>
+          <div class="actions">
+            <button class="primary" type="submit">Guardar alias</button>
+            <button type="button" onclick="resetAliasForm()">Cancelar</button>
+          </div>
+        </form>
+
+        <div class="mp-box">
+          <h4>Probar resolución de alias</h4>
+          <div class="g2">
+            <input id="alias_test_input" placeholder="Ej: SANCHEZPLATA EN USO">
+            <button class="blue" onclick="testResolverAlias()">Resolver</button>
+          </div>
+          <div id="aliasTestResult" style="margin-top:10px"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-h">
+        <h3>Aliases activos</h3>
+        <button class="blue small" onclick="loadAliasesOficina(true)">Actualizar</button>
+      </div>
+      <div class="filters compact">
+        <input id="alias_search" oninput="renderAliasesOficina()" placeholder="Buscar alias, oficina, PC...">
+        <select id="alias_filter_pc" onchange="renderAliasesOficina()"></select>
+        <select id="alias_filter_activa" onchange="renderAliasesOficina()">
+          <option value="">Todos</option>
+          <option value="true">Activos</option>
+          <option value="false">Inactivos</option>
+        </select>
+        <button onclick="clearAliasFilters()">Reset</button>
+      </div>
+      <div class="tableWrap">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th><th>Alias</th><th>Oficina ID</th><th>PC</th><th>Activo</th><th>Observaciones</th><th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="aliasesBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+
 <section id="section-solicitudes" class="section">
   <div class="card"><div class="card-h"><h3>Solicitudes landing + órdenes panel operativo</h3><div class="rowActions"><button class="blue small" onclick="reloadAll(true)">Actualizar</button><button class="small" onclick="limpiarFiltrosSolicitudes()">Reset filtros</button></div></div><div class="filters compact"><input id="sol_from" type="date" onchange="renderSolicitudes()"><input id="sol_to" type="date" onchange="renderSolicitudes()"><select id="sol_turno" onchange="renderSolicitudes()"><option value="">Todos turnos</option><option>TM</option><option>TT</option><option>TN</option></select><select id="sol_operador" onchange="renderSolicitudes()"><option value="">Todos operadores</option></select><select id="sol_origen" onchange="renderSolicitudes()"><option value="">Todos orígenes</option><option value="LANDING">Landing</option><option value="PANEL">Panel operativo</option></select><select id="sol_estado" onchange="renderSolicitudes()"><option value="">Todos estados</option><option>PENDIENTE</option><option>ACREDITADA</option><option>PAGADA</option><option>RECHAZADA</option><option>ERROR</option><option>COMPLETADO</option></select><input id="sol_search" oninput="renderSolicitudes()" placeholder="Buscar usuario, operador, estado..."></div><div class="tableWrap"><table><thead><tr><th>Fecha</th><th>Oficina</th><th>Turno</th><th>Origen</th><th>Tipo</th><th>Usuario</th><th>Nombre</th><th>Monto</th><th>Estado solicitud</th><th>Worker</th><th>Operador</th><th>Detalle</th></tr></thead><tbody id="solBody"></tbody></table></div></div>
 </section>
@@ -209,5 +413,265 @@ function fillHistorialPcSelect(){const e=$("hist_pc_codigo");if(!e)return;const 
 function resetHistorialAgente(){setVals({hist_csv_fuente:""});if($("hist_csv_file"))$("hist_csv_file").value="";if($("hist_csv_resultado"))$("hist_csv_resultado").innerHTML=""}
 async function adminImportarCsvAgente(){const file=$("hist_csv_file")?.files?.[0];const pc=normPc(val("hist_pc_codigo"))||pcSeleccionada();const out=$("hist_csv_resultado");if(!pc){out.innerHTML='<div class="notice">Seleccioná una PC.</div>';return}if(!file){out.innerHTML='<div class="notice">Seleccioná un archivo CSV.</div>';return}try{const text=await file.text();const rows=parseCsvAgente(text);if(!rows.length)throw new Error("No encontré filas válidas en el CSV.");out.innerHTML=`<div class="notice">Importando ${safe(rows.length)} operaciones para ${safe(pcLabel(pc))}...</div>`;const{data,error}=await supabaseClient.rpc("admin_importar_operaciones_agente",{p_session_token:requireAdminToken(),p_pc_codigo:pc,p_operaciones:rows,p_fuente:val("hist_csv_fuente")||file.name});if(error)throw error;out.innerHTML=`<div class="item"><strong>Importación completa</strong><span>Importadas: ${safe(data?.importados??0)} · Duplicadas omitidas: ${safe(data?.omitidos_duplicados??0)} · Lote: ${safe(data?.lote_id||"-")}</span></div>`;toast("Historial Agente importado","okb")}catch(e){out.innerHTML=`<div class="notice" style="border-color:rgba(239,68,68,.7);color:#fca5a5">${safe(e.message||e)}</div>`;toast("Error importando CSV: "+(e.message||e),"err")}}
 document.addEventListener("DOMContentLoaded",async()=>{setDefaultDates();$("loginPass").addEventListener("keydown",e=>{if(e.key==="Enter")adminLogin()});$("operadorForm").addEventListener("submit",saveOperador);$("billeteraForm").addEventListener("submit",saveBilletera);$("pcForm").addEventListener("submit",savePc);const t=localStorage.getItem(TOKEN_KEY);if(t){await validarAdminToken(t,null).catch(()=>{})}else{fillPcSelects()}});
+
+/* ============================================================
+   NODO ADMIN GENERAL V20
+   Fuente maestra:
+   - landing_rutas_publicas
+   - nodo_oficina_aliases
+   - pcs / operadores / billeteras / worker_jobs
+   Panel general maestro. No queda atado a una oficina piloto.
+   ============================================================ */
+let rutasPublicas=[], aliasesOficina=[];
+
+function rutaByPc(pc){
+  pc=normPc(pc);
+  return (rutasPublicas||[]).find(r=>normPc(r.pc_codigo)===pc);
+}
+function aliasesByPc(pc){
+  pc=normPc(pc);
+  return (aliasesOficina||[]).filter(a=>normPc(a.pc_codigo_compat)===pc);
+}
+function adminPortalUrl(code){
+  if(!code)return "-";
+  return location.origin + "/?r=" + encodeURIComponent(code);
+}
+
+// Override etiqueta de PC para usar nombre de rutas públicas cuando exista.
+const adminV20PcLabelBase = pcLabel;
+pcLabel = function(code){
+  const c=normPc(code);
+  const r=rutaByPc(c);
+  if(r && r.nombre_publico) return `${c} · ${r.nombre_publico}`;
+  return adminV20PcLabelBase(code);
+};
+
+async function loadRutasPublicas(render=false){
+  try{
+    rutasPublicas=await tableRows("landing_rutas_publicas",q=>q.order("pc_codigo",{ascending:true}));
+    rutasPublicas=(rutasPublicas||[]).map(r=>({...r,pc_codigo:normPc(r.pc_codigo)}));
+    if(render)renderAll();
+  }catch(e){
+    console.warn(e);
+    rutasPublicas=[];
+    toast("Error rutas públicas: "+e.message,"err");
+  }
+}
+async function loadAliasesOficina(render=false){
+  try{
+    aliasesOficina=await tableRows("nodo_oficina_aliases",q=>q.order("pc_codigo_compat",{ascending:true}).order("alias_codigo",{ascending:true}));
+    aliasesOficina=(aliasesOficina||[]).map(a=>({...a,pc_codigo_compat:normPc(a.pc_codigo_compat)}));
+    if(render)renderAll();
+  }catch(e){
+    console.warn(e);
+    aliasesOficina=[];
+    toast("Error aliases: "+e.message,"err");
+  }
+}
+async function loadMapaMaestro(render=false){
+  await Promise.allSettled([loadRutasPublicas(false),loadAliasesOficina(false),loadPcs(false),loadOperadores(false),loadBilleteras(false),loadWorkerJobs(false),loadWorkerStatus(false)]);
+  fillPcSelects();
+  renderAll();
+  if(render)toast("Mapa maestro actualizado","okb");
+}
+
+const adminV20ReloadAllBase = reloadAll;
+reloadAll = async function(showToast=false){
+  await Promise.allSettled([loadRutasPublicas(false),loadAliasesOficina(false)]);
+  await adminV20ReloadAllBase(false);
+  fillAliasPcFilter();
+  renderMapaGeneral();
+  renderRutasPublicas();
+  renderAliasesOficina();
+  if(showToast)toast("Datos generales actualizados","okb");
+};
+
+const adminV20RenderAllBase = renderAll;
+renderAll = function(){
+  adminV20RenderAllBase();
+  fillAliasPcFilter();
+  renderMapaGeneral();
+  renderRutasPublicas();
+  renderAliasesOficina();
+  if($("badgeRutas"))$("badgeRutas").textContent=String(rutasPublicas.length||0);
+  if($("badgeAliases"))$("badgeAliases").textContent=String(aliasesOficina.length||0);
+  if($("badgeMapa"))$("badgeMapa").textContent=String([...new Set([...(rutasPublicas||[]).map(r=>normPc(r.pc_codigo)),...(aliasesOficina||[]).map(a=>normPc(a.pc_codigo_compat))].filter(Boolean))].length);
+};
+
+const adminV20ShowSectionBase = showSection;
+showSection = function(name){
+  adminV20ShowSectionBase(name);
+  const extra={
+    mapa:["Mapa Maestro","Vista general de oficinas, rutas públicas, aliases, operadores, billeteras y worker."],
+    "portal-rutas":["Portal / Rutas","Configuración de códigos públicos del portal por oficina."],
+    aliases:["Aliases Chunior","Equivalencias de puestos, variantes y nombres de Chunior hacia PC interna."]
+  };
+  if(extra[name])setText({pageTitle:extra[name][0],pageSub:extra[name][1]});
+};
+
+function pcsMapaCodigos(){
+  return [...new Set([
+    ...(rutasPublicas||[]).map(r=>normPc(r.pc_codigo)),
+    ...(aliasesOficina||[]).map(a=>normPc(a.pc_codigo_compat)),
+    ...(pcs||[]).map(p=>normPc(p.pc_codigo||p.codigo)),
+    ...(operadores||[]).map(o=>rowPc(o)),
+    ...(billeteras||[]).map(b=>rowPc(b)),
+    ...(workerJobs||[]).map(w=>rowPc(w)),
+    "P1","P2","P3","P4","P5"
+  ].filter(Boolean))].sort((a,b)=>pcNum(a)-pcNum(b));
+}
+
+function renderMapaGeneral(){
+  if(!$("mapaBody"))return;
+  const cods=pcsMapaCodigos();
+  if($("mapaStats")){
+    const completas=cods.filter(c=>rutaByPc(c)&&aliasesByPc(c).length).length;
+    $("mapaStats").innerHTML=`
+      <div class="stat"><small>Oficinas detectadas</small><strong>${cods.length}</strong><div class="sub">Por rutas, aliases, pcs y operación</div></div>
+      <div class="stat"><small>Rutas públicas</small><strong>${rutasPublicas.length}</strong><div class="sub">landing_rutas_publicas</div></div>
+      <div class="stat"><small>Aliases</small><strong>${aliasesOficina.length}</strong><div class="sub">nodo_oficina_aliases</div></div>
+      <div class="stat"><small>Completas</small><strong>${completas}</strong><div class="sub">Con ruta + alias</div></div>
+      <div class="stat"><small>Workers online</small><strong>${workersOnline().length}</strong><div class="sub">Reporte actual</div></div>
+    `;
+  }
+  $("mapaBody").innerHTML=cods.map(c=>{
+    const r=rutaByPc(c);
+    const al=aliasesByPc(c);
+    const ops=operadores.filter(o=>rowPc(o)===c);
+    const bis=billeteras.filter(b=>rowPc(b)===c);
+    const jobs=workerJobs.filter(w=>rowPc(w)===c);
+    const on=workerStatus.some(w=>rowPc(w)===c && workerOnline(w));
+    const cls=r&&al.length?"ok":r||al.length?"warn":"off";
+    const link=r?.public_code ? adminPortalUrl(r.public_code) : "";
+    return `<tr>
+      <td><strong>${safe(c)}</strong></td>
+      <td>${safe(r?.nombre_publico||pcLabel(c))}</td>
+      <td>${r?.public_code?pill(r.public_code,"vio"):pill("Sin ruta","warn")}</td>
+      <td>${safe(r?.whatsapp_numero||"-")}</td>
+      <td>${r?.public_code?`<span class="muted">?r=${safe(r.public_code)}</span>`:"-"}</td>
+      <td><div class="aliasTags">${al.slice(0,8).map(a=>`<span class="aliasTag">${safe(a.alias_codigo)}</span>`).join("")}${al.length>8?`<span class="aliasTag">+${al.length-8}</span>`:""}</div></td>
+      <td>${ops.length}</td>
+      <td>${bis.length}</td>
+      <td>${on?pill("Online","ok"):pill("Sin ping","warn")} <span class="muted">Jobs: ${jobs.length}</span></td>
+      <td>${pill(r&&al.length?"OK":r?"Faltan aliases":al.length?"Falta ruta":"Incompleta",cls)}</td>
+    </tr>`;
+  }).join("");
+}
+
+function renderRutasPublicas(){
+  if(!$("rutasBody"))return;
+  const q=norm(val("ruta_search")),act=val("ruta_filter_activo");
+  const rows=(rutasPublicas||[]).filter(r=>(!q||norm([r.id,r.pc_codigo,r.nombre_publico,r.public_code,r.whatsapp_numero,r.link_plataforma].join(" ")).includes(q))&&(act===""||String(!!r.activo)===act));
+  if(!rows.length)return empty("rutasBody",8,"No hay rutas públicas.");
+  $("rutasBody").innerHTML=rows.map(r=>`<tr>
+    <td>${safe(r.id)}</td>
+    <td><strong>${safe(r.pc_codigo)}</strong></td>
+    <td>${safe(r.nombre_publico||"-")}</td>
+    <td>${pill(r.public_code||"-","vio")}</td>
+    <td>${safe(r.whatsapp_numero||"-")}</td>
+    <td>${safe(r.link_plataforma||"-")}</td>
+    <td>${r.activo!==false?pill("Activa","ok"):pill("Inactiva","off")}</td>
+    <td><div class="rowActions"><button class="small blue" onclick="editRuta('${safe(r.id)}')">Editar</button><button class="small violet" onclick="copiarTexto('${safe(adminPortalUrl(r.public_code))}')">Copiar link</button></div></td>
+  </tr>`).join("");
+}
+function editRuta(id){
+  const r=(rutasPublicas||[]).find(x=>String(x.id)===String(id));
+  if(!r)return;
+  setVals({ruta_id:r.id,ruta_pc_codigo:r.pc_codigo,ruta_public_code:r.public_code,ruta_nombre_publico:r.nombre_publico,ruta_link_plataforma:r.link_plataforma,ruta_whatsapp_numero:r.whatsapp_numero,ruta_activo:String(r.activo!==false)});
+  $("rutaFormTitle").textContent="Editar ruta pública";
+  showSection("portal-rutas");
+  scrollTo(0,0);
+}
+function resetRutaForm(){
+  $("rutaForm")?.reset();
+  setVals({ruta_id:"",ruta_activo:"true"});
+  if($("rutaFormTitle"))$("rutaFormTitle").textContent="Crear / editar ruta pública";
+}
+async function saveRuta(e){
+  e.preventDefault();
+  const id=val("ruta_id"), pc=normPc(val("ruta_pc_codigo")), public_code=val("ruta_public_code");
+  if(!pc||!public_code)return toast("PC interna y public_code son obligatorios.","err");
+  const payload={pc_codigo:pc,public_code,nombre_publico:val("ruta_nombre_publico")||pc,link_plataforma:val("ruta_link_plataforma"),whatsapp_numero:val("ruta_whatsapp_numero"),activo:bool("ruta_activo"),updated_at:new Date().toISOString()};
+  const res=id?await supabaseClient.from("landing_rutas_publicas").update(payload).eq("id",id):await supabaseClient.from("landing_rutas_publicas").insert([payload]);
+  if(res.error)return toast("Error guardando ruta: "+res.error.message,"err");
+  resetRutaForm();
+  await loadRutasPublicas(false);
+  fillPcSelects();
+  renderAll();
+  toast("Ruta pública guardada","okb");
+}
+function clearRutaFilters(){setVals({ruta_search:"",ruta_filter_activo:""});renderRutasPublicas()}
+
+function fillAliasPcFilter(){
+  const e=$("alias_filter_pc");
+  if(!e)return;
+  const old=normPc(e.value);
+  const cods=pcsMapaCodigos();
+  e.innerHTML='<option value="">Todas las PCs</option>'+cods.map(c=>`<option value="${safe(c)}">${safe(pcLabel(c))}</option>`).join("");
+  e.value=cods.includes(old)?old:"";
+}
+function renderAliasesOficina(){
+  if(!$("aliasesBody"))return;
+  const q=norm(val("alias_search")),pc=normPc(val("alias_filter_pc")),act=val("alias_filter_activa");
+  const rows=(aliasesOficina||[]).filter(a=>(!q||norm([a.id,a.alias_codigo,a.oficina_id,a.pc_codigo_compat,a.observaciones].join(" ")).includes(q))&&(!pc||normPc(a.pc_codigo_compat)===pc)&&(act===""||String(!!a.activa)===act));
+  if(!rows.length)return empty("aliasesBody",7,"No hay aliases para mostrar.");
+  $("aliasesBody").innerHTML=rows.map(a=>`<tr>
+    <td>${safe(a.id)}</td>
+    <td><strong>${safe(a.alias_codigo)}</strong></td>
+    <td>${safe(a.oficina_id||"-")}</td>
+    <td>${safe(a.pc_codigo_compat||"-")}</td>
+    <td>${a.activa!==false?pill("Activo","ok"):pill("Inactivo","off")}</td>
+    <td>${safe(a.observaciones||"")}</td>
+    <td><div class="rowActions"><button class="small blue" onclick="editAlias('${safe(a.id)}')">Editar</button></div></td>
+  </tr>`).join("");
+}
+function editAlias(id){
+  const a=(aliasesOficina||[]).find(x=>String(x.id)===String(id));
+  if(!a)return;
+  setVals({alias_id:a.id,alias_codigo:a.alias_codigo,alias_oficina_id:a.oficina_id,alias_pc_codigo_compat:a.pc_codigo_compat,alias_observaciones:a.observaciones,alias_activa:String(a.activa!==false)});
+  $("aliasFormTitle").textContent="Editar alias Chunior";
+  showSection("aliases");
+  scrollTo(0,0);
+}
+function resetAliasForm(){
+  $("aliasForm")?.reset();
+  setVals({alias_id:"",alias_activa:"true"});
+  if($("aliasFormTitle"))$("aliasFormTitle").textContent="Crear / editar alias Chunior";
+}
+async function saveAlias(e){
+  e.preventDefault();
+  const id=val("alias_id"), alias_codigo=val("alias_codigo"), pc=normPc(val("alias_pc_codigo_compat"));
+  if(!alias_codigo||!pc)return toast("Alias y PC compatible son obligatorios.","err");
+  const payload={alias_codigo:alias_codigo.toUpperCase(),oficina_id:val("alias_oficina_id").toUpperCase()||pc,pc_codigo_compat:pc,activa:bool("alias_activa"),observaciones:val("alias_observaciones"),updated_at:new Date().toISOString()};
+  const res=id?await supabaseClient.from("nodo_oficina_aliases").update(payload).eq("id",id):await supabaseClient.from("nodo_oficina_aliases").insert([payload]);
+  if(res.error)return toast("Error guardando alias: "+res.error.message,"err");
+  resetAliasForm();
+  await loadAliasesOficina(false);
+  renderAll();
+  toast("Alias guardado","okb");
+}
+function clearAliasFilters(){setVals({alias_search:"",alias_filter_pc:"",alias_filter_activa:""});renderAliasesOficina()}
+async function testResolverAlias(){
+  const input=val("alias_test_input");
+  const out=$("aliasTestResult");
+  if(!input){out.innerHTML='<div class="notice">Ingresá un alias para probar.</div>';return}
+  const {data,error}=await supabaseClient.rpc("nodo_resolver_pc_alias",{p_alias:input});
+  if(error){out.innerHTML=`<div class="notice" style="border-color:rgba(239,68,68,.7);color:#fca5a5">${safe(error.message)}</div>`;return}
+  const row=Array.isArray(data)?data[0]:data;
+  if(!row){out.innerHTML='<div class="notice">No se encontró equivalencia.</div>';return}
+  out.innerHTML=`<div class="item"><strong>${safe(input)} → ${safe(row.oficina_id)} → ${safe(row.pc_codigo)}</strong><span>Alias detectado: ${safe(row.alias_codigo)}</span></div>`;
+}
+function copiarTexto(txt){
+  try{navigator.clipboard.writeText(txt);toast("Copiado al portapapeles","okb")}catch(e){toast(txt,"okb")}
+}
+
+// Attach forms without touching old DOMContentLoaded logic.
+document.addEventListener("DOMContentLoaded",function(){
+  setTimeout(function(){
+    $("rutaForm")?.addEventListener("submit",saveRuta);
+    $("aliasForm")?.addEventListener("submit",saveAlias);
+  },250);
+});
+
 </script>
 </body></html>
