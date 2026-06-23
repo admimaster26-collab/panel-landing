@@ -786,5 +786,180 @@ saveAlias = async function(e){
   }
 };
 
+
+/* ============================================================
+   ADMIN GENERAL V20 · NO FALLBACK TABLES FIX
+   Evita pelea de carteles:
+   - rutas/aliases SOLO por RPC
+   - no cae a acceso directo a tablas
+   - no muestra "actualizado" si falló algo crítico
+   ============================================================ */
+
+let adminGeneralLastLoadErrors = [];
+
+function adminGeneralErrorBox(title,msg){
+  return `<div class="notice" style="border-color:rgba(239,68,68,.7);color:#fca5a5;background:rgba(239,68,68,.08)">
+    <b>${safe(title)}</b><br>${safe(msg)}
+  </div>`;
+}
+
+async function rpcRowsStrict(name,payload){
+  const {data,error}=await supabaseClient.rpc(name,payload||{});
+  if(error)throw error;
+  return Array.isArray(data)?data:(data?[data]:[]);
+}
+
+loadRutasPublicas = async function(render=false){
+  try{
+    rutasPublicas = await rpcRowsStrict(
+      "admin_general_rutas_list",
+      {p_session_token:requireAdminToken()}
+    );
+    rutasPublicas=(rutasPublicas||[]).map(r=>({...r,pc_codigo:normPc(r.pc_codigo)}));
+    if(render)renderAll();
+    return true;
+  }catch(e){
+    console.warn("[Admin General] rutas RPC error:",e);
+    rutasPublicas=[];
+    adminGeneralLastLoadErrors.push("Rutas públicas: "+e.message);
+    if($("rutasBody")){
+      $("rutasBody").innerHTML=`<tr><td colspan="8" class="empty">No se pudieron cargar rutas públicas por RPC. Ejecutá el SQL de conexión o revisá admin_general_rutas_list.</td></tr>`;
+    }
+    return false;
+  }
+};
+
+loadAliasesOficina = async function(render=false){
+  try{
+    aliasesOficina = await rpcRowsStrict(
+      "admin_general_aliases_list",
+      {p_session_token:requireAdminToken()}
+    );
+    aliasesOficina=(aliasesOficina||[]).map(a=>({...a,pc_codigo_compat:normPc(a.pc_codigo_compat)}));
+    if(render)renderAll();
+    return true;
+  }catch(e){
+    console.warn("[Admin General] aliases RPC error:",e);
+    aliasesOficina=[];
+    adminGeneralLastLoadErrors.push("Aliases Chunior: "+e.message);
+    if($("aliasesBody")){
+      $("aliasesBody").innerHTML=`<tr><td colspan="7" class="empty">No se pudieron cargar aliases por RPC. Ejecutá el SQL de conexión o revisá admin_general_aliases_list.</td></tr>`;
+    }
+    return false;
+  }
+};
+
+loadMapaMaestro = async function(render=false){
+  adminGeneralLastLoadErrors=[];
+  await Promise.allSettled([
+    loadRutasPublicas(false),
+    loadAliasesOficina(false),
+    loadPcs(false),
+    loadOperadores(false),
+    loadBilleteras(false),
+    loadWorkerJobs(false),
+    loadWorkerStatus(false)
+  ]);
+  fillPcSelects();
+  renderAll();
+
+  const okCritico = (rutasPublicas||[]).length > 0 && (aliasesOficina||[]).length > 0;
+  if(render){
+    if(okCritico && adminGeneralLastLoadErrors.length===0){
+      toast("Mapa maestro actualizado","okb");
+    }else{
+      toast("Mapa cargó parcial: revisá rutas/aliases RPC","err");
+    }
+  }
+};
+
+reloadAll = async function(showToast=false){
+  adminGeneralLastLoadErrors=[];
+  await Promise.allSettled([
+    loadRutasPublicas(false),
+    loadAliasesOficina(false),
+    loadPcs(false),
+    loadOperadores(false),
+    loadBilleteras(false),
+    loadSolicitudes(false),
+    loadWorkerJobs(false),
+    loadWorkerStatus(false),
+    loadChats(false),
+    loadConfig(false)
+  ]);
+
+  fillPcSelects();
+  fillOperatorFilters();
+  fillAliasPcFilter();
+  buildCombined();
+  renderAll();
+
+  const criticosOk = (rutasPublicas||[]).length > 0 && (aliasesOficina||[]).length > 0;
+  if(showToast){
+    if(criticosOk && adminGeneralLastLoadErrors.length===0){
+      toast("Datos generales actualizados","okb");
+    }else{
+      toast("Datos parciales: faltan rutas/aliases por RPC","err");
+    }
+  }
+};
+
+renderMapaGeneral = function(){
+  if(!$("mapaBody"))return;
+  const cods=pcsMapaCodigos();
+
+  if($("mapaStats")){
+    const completas=cods.filter(c=>rutaByPc(c)&&aliasesByPc(c).length).length;
+    $("mapaStats").innerHTML=`
+      <div class="stat"><small>Oficinas detectadas</small><strong>${cods.length}</strong><div class="sub">Por rutas, aliases, pcs y operación</div></div>
+      <div class="stat"><small>Rutas públicas</small><strong>${rutasPublicas.length}</strong><div class="sub">landing_rutas_publicas</div></div>
+      <div class="stat"><small>Aliases</small><strong>${aliasesOficina.length}</strong><div class="sub">nodo_oficina_aliases</div></div>
+      <div class="stat"><small>Completas</small><strong>${completas}</strong><div class="sub">Con ruta + alias</div></div>
+      <div class="stat"><small>Workers online</small><strong>${workersOnline().length}</strong><div class="sub">Reporte actual</div></div>
+    `;
+  }
+
+  let errorHtml="";
+  if(adminGeneralLastLoadErrors.length){
+    errorHtml = `<tr><td colspan="10">${adminGeneralErrorBox("Carga parcial",adminGeneralLastLoadErrors.join(" · "))}</td></tr>`;
+  }
+
+  $("mapaBody").innerHTML=errorHtml + cods.map(c=>{
+    const r=rutaByPc(c);
+    const al=aliasesByPc(c);
+    const ops=operadores.filter(o=>rowPc(o)===c);
+    const bis=billeteras.filter(b=>rowPc(b)===c);
+    const jobs=workerJobs.filter(w=>rowPc(w)===c);
+    const on=workerStatus.some(w=>rowPc(w)===c && workerOnline(w));
+    const cls=r&&al.length?"ok":r||al.length?"warn":"off";
+    return `<tr>
+      <td><strong>${safe(c)}</strong></td>
+      <td>${safe(r?.nombre_publico||pcLabel(c))}</td>
+      <td>${r?.public_code?pill(r.public_code,"vio"):pill("Sin ruta","warn")}</td>
+      <td>${safe(r?.whatsapp_numero||"-")}</td>
+      <td>${r?.public_code?`<span class="muted">?r=${safe(r.public_code)}</span>`:"-"}</td>
+      <td><div class="aliasTags">${al.slice(0,8).map(a=>`<span class="aliasTag">${safe(a.alias_codigo)}</span>`).join("")}${al.length>8?`<span class="aliasTag">+${al.length-8}</span>`:""}</div></td>
+      <td>${ops.length}</td>
+      <td>${bis.length}</td>
+      <td>${on?pill("Online","ok"):pill("Sin ping","warn")} <span class="muted">Jobs: ${jobs.length}</span></td>
+      <td>${pill(r&&al.length?"OK":r?"Faltan aliases":al.length?"Falta ruta":"Incompleta",cls)}</td>
+    </tr>`;
+  }).join("");
+};
+
+testResolverAlias = async function(){
+  const input=val("alias_test_input");
+  const out=$("aliasTestResult");
+  if(!input){out.innerHTML='<div class="notice">Ingresá un alias para probar.</div>';return}
+  try{
+    const rows=await rpcRowsStrict("nodo_resolver_pc_alias",{p_alias:input});
+    const row=rows[0];
+    if(!row){out.innerHTML='<div class="notice">No se encontró equivalencia.</div>';return}
+    out.innerHTML=`<div class="item"><strong>${safe(input)} → ${safe(row.oficina_id)} → ${safe(row.pc_codigo)}</strong><span>Alias detectado: ${safe(row.alias_codigo)}</span></div>`;
+  }catch(e){
+    out.innerHTML=adminGeneralErrorBox("Error resolviendo alias",e.message);
+  }
+};
+
 </script>
 </body></html>
