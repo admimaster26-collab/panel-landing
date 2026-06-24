@@ -1062,9 +1062,10 @@ testResolverAlias = async function(){
         if(r.usuario && tel.length>=6) objs.push({pc_codigo:pc, usuario:r.usuario, telefono_canon:tel, telefono_raw:r.telefono_raw, titular:r.titular, estado_vinculo:'VINCULADO', fuente:'CSV_WHATICKET', verificado_por:(adminScope?.usuario||'admi'), updated_at:new Date().toISOString()});
       }
       let ok=0, err=0;
+      const _tok=(typeof requireAdminToken==='function')?requireAdminToken():adminSessionToken;
       for(let i=0;i<objs.length;i+=400){
         const batch=objs.slice(i,i+400);
-        const {error}=await supabaseClient.from('usuarios_portal_vinculos').upsert(batch,{onConflict:'pc_codigo,usuario'});
+        const {error}=await supabaseClient.rpc('admin_vinculos_importar',{p_session_token:_tok,p_pc_codigo:pc,p_rows:batch});
         if(error){ err+=batch.length; console.warn('[vinc import]',error.message); } else ok+=batch.length;
       }
       $("vincResultado").innerHTML=`<div class="notice">Importados: <b>${ok}</b> · Errores: <b>${err}</b> · Saltados: <b>${rows.length-objs.length}</b> (sin usuario/tel válido)</div>`;
@@ -1099,13 +1100,13 @@ testResolverAlias = async function(){
       </div></td></tr>`).join("");
   };
   window.vincToggleBloqueo=async function(id,bloquear){
-    const {error}=await supabaseClient.from('usuarios_portal_vinculos').update({estado_vinculo:bloquear?'BLOQUEADO':'VINCULADO',updated_at:new Date().toISOString()}).eq('id',Number(id));
+    const {error}=await supabaseClient.rpc('admin_vinculos_set_estado',{p_session_token:requireAdminToken(),p_id:Number(id),p_estado:bloquear?'BLOQUEADO':'VINCULADO'});
     if(error) return toast("Error: "+error.message,"err");
     toast(bloquear?"Vínculo bloqueado":"Vínculo desbloqueado","okb"); vincCargar();
   };
   window.vincBorrar=async function(id){
     if(!confirm("¿Borrar este vínculo?")) return;
-    const {error}=await supabaseClient.from('usuarios_portal_vinculos').delete().eq('id',Number(id));
+    const {error}=await supabaseClient.rpc('admin_vinculos_borrar',{p_session_token:requireAdminToken(),p_id:Number(id)});
     if(error) return toast("Error: "+error.message,"err");
     toast("Vínculo borrado","okb"); vincCargar();
   };
