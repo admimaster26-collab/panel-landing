@@ -989,14 +989,37 @@ testResolverAlias = async function(){
     }
     return {usuario:u.toLowerCase().trim(), titular:ti.trim()};
   }
+  function parseCsvLine(line){
+    const out=[]; let cur='', inQ=false;
+    for(let i=0;i<line.length;i++){
+      const c=line[i];
+      if(inQ){ if(c==='"'){ if(line[i+1]==='"'){cur+='"';i++;} else inQ=false; } else cur+=c; }
+      else { if(c==='"') inQ=true; else if(c===',') {out.push(cur);cur='';} else cur+=c; }
+    }
+    out.push(cur); return out;
+  }
+  // Detecta dos formatos: Whaticket simple (number,name) y Filtrado activo (usuarios,...,telefono,...)
   function parseCsv(text){
-    const lines=text.split(/\r?\n/).filter(l=>l.trim()); const out=[];
-    lines.forEach((line,i)=>{
-      const cols=line.split(',');
-      if(i===0 && /number/i.test(cols[0]||'')) return;
-      const number=(cols[0]||'').trim(), name=(cols[1]||'').trim();
-      if(number&&name) out.push({number,name});
-    });
+    const lines=text.split(/\r?\n/).filter(l=>l.trim());
+    if(!lines.length) return [];
+    const header=parseCsvLine(lines[0]).map(h=>h.trim().toLowerCase());
+    const iUsuarios=header.indexOf('usuarios'), iTel=header.indexOf('telefono');
+    const iNumber=header.indexOf('number'),    iName=header.indexOf('name');
+    const filtrado = iUsuarios>=0;
+    const out=[];
+    for(let k=1;k<lines.length;k++){
+      const cols=parseCsvLine(lines[k]);
+      let usuario='', tel='', titular='';
+      if(filtrado){
+        usuario=(cols[iUsuarios]||'').trim().toLowerCase();
+        tel=(cols[iTel>=0?iTel:3]||'').trim();
+        titular=usuario;
+      } else {
+        tel=(cols[iNumber>=0?iNumber:0]||'').trim();
+        const p=parseName(cols[iName>=0?iName:1]||''); usuario=p.usuario; titular=p.titular;
+      }
+      if(usuario) out.push({usuario, telefono_raw:tel, titular});
+    }
     return out;
   }
 
@@ -1035,8 +1058,8 @@ testResolverAlias = async function(){
       const rows=parseCsv(await f.text());
       const objs=[];
       for(const r of rows){
-        const tel=canonTel(r.number); const {usuario,titular}=parseName(r.name);
-        if(usuario && tel.length>=6) objs.push({pc_codigo:pc, usuario, telefono_canon:tel, telefono_raw:r.number, titular, estado_vinculo:'VINCULADO', fuente:'CSV_WHATICKET', verificado_por:(adminScope?.usuario||'admi'), updated_at:new Date().toISOString()});
+        const tel=canonTel(r.telefono_raw);
+        if(r.usuario && tel.length>=6) objs.push({pc_codigo:pc, usuario:r.usuario, telefono_canon:tel, telefono_raw:r.telefono_raw, titular:r.titular, estado_vinculo:'VINCULADO', fuente:'CSV_WHATICKET', verificado_por:(adminScope?.usuario||'admi'), updated_at:new Date().toISOString()});
       }
       let ok=0, err=0;
       for(let i=0;i<objs.length;i+=400){
