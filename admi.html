@@ -1155,7 +1155,9 @@ testResolverAlias = async function(){
       <div class="row"><label>Nombres de puesto en Chunior (separados por coma o renglón)</label><textarea id="ofi_aliases" rows="3" placeholder="Ej: JUANCHO, JUANCHO EN USO, JGRAL"></textarea></div>
       <div class="actions"><button class="primary" id="ofi_btn" onclick="oficinaWizardCrear()">Crear oficina</button></div>
       <div id="ofi_resultado" style="margin-top:12px"></div>
-    </div></div></section>`;
+    </div></div>
+    <div class="card"><div class="card-h"><h3>Oficinas existentes</h3><button class="blue small" onclick="oficinaListaCargar()">Actualizar</button></div><div class="card-b"><div id="ofi_lista"><div class="notice">Abrí esta sección logueado para ver las oficinas y sus puestos.</div></div></div></div>
+    </section>`;
     const ref=$id("section-config")||$id("section-historial");
     if(ref) ref.insertAdjacentHTML("beforebegin", html);
     else document.querySelector("main")?.insertAdjacentHTML("beforeend", html);
@@ -1192,15 +1194,75 @@ testResolverAlias = async function(){
       const portalUrl=(gv("ofi_link")||"https://www.bet-300.pw/")+"?r="+code;
       out.innerHTML=`<div class="item"><strong>✅ Oficina creada</strong><span>Oficina <b>${oficina_id}</b> · PC <b>${pc}</b> · ${aok} alias${aerr?(" ("+aerr+" con error)"):""}</span><span>Link del portal: <code>${portalUrl}</code></span><span>El operador entra por Chunior con su puesto y el panel resuelve solo a <b>${pc}</b>. Cargá las billeteras sincronizando desde el panel.</span></div>`;
       if(typeof toast==="function") toast("Oficina creada","okb");
-      try{ if(typeof loadRutasPublicas==="function") loadRutasPublicas(false); }catch(_e){}
-      try{ if(typeof loadAliasesOficina==="function") loadAliasesOficina(false); }catch(_e){}
       try{ if(typeof fillPcSelects==="function") fillPcSelects(); }catch(_e){}
+      try{ await oficinaListaCargar(); }catch(_e){}
     }catch(e){
       out.innerHTML=`<div class="notice" style="border-color:rgba(239,68,68,.7);color:#fca5a5">Error: ${(e.message||e)}</div>`;
       if(typeof toast==="function") toast("Error creando oficina: "+(e.message||e),"err");
     }finally{ if(btn){btn.disabled=false;btn.textContent="Crear oficina";} }
   };
 
+  function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c];}); }
+  window.oficinaListaCargar=async function(){
+    try{ if(typeof loadRutasPublicas==="function") await loadRutasPublicas(false); }catch(_e){}
+    try{ if(typeof loadAliasesOficina==="function") await loadAliasesOficina(false); }catch(_e){}
+    oficinaListaRender();
+  };
+  window.oficinaListaRender=function(){
+    const cont=$id("ofi_lista"); if(!cont) return;
+    const rutas=(window.rutasPublicas||[]), aliases=(window.aliasesOficina||[]);
+    const grupos={};
+    aliases.forEach(function(a){ const pc=String(a.pc_codigo_compat||"").toUpperCase(); if(!pc)return; if(!grupos[pc])grupos[pc]={pc:pc,oficina_id:a.oficina_id||pc,aliases:[]}; grupos[pc].aliases.push(a); });
+    rutas.forEach(function(r){ const pc=String(r.pc_codigo||"").toUpperCase(); if(!pc)return; if(!grupos[pc])grupos[pc]={pc:pc,oficina_id:pc,aliases:[]}; grupos[pc].ruta=r; });
+    const keys=Object.keys(grupos).sort();
+    if(!keys.length){ cont.innerHTML='<div class="notice">No hay oficinas configuradas todavía.</div>'; return; }
+    cont.innerHTML=keys.map(function(pc){
+      const g=grupos[pc], r=g.ruta;
+      const chips=g.aliases.map(function(a){ return `<span style="display:inline-flex;align-items:center;gap:4px;background:#222a3a;border-radius:6px;padding:3px 8px;margin:2px;font-size:12px">${esc(a.alias_codigo)} <a href="javascript:void 0" onclick="oficinaQuitarPuesto(${a.id})" title="Quitar puesto" style="color:#fca5a5;text-decoration:none">✕</a></span>`; }).join("");
+      const ruta=r?`<code>${esc(r.public_code)}</code>${r.nombre_publico?(" · "+esc(r.nombre_publico)):""}`:'<span style="color:#fca5a5">sin ruta</span>';
+      return `<div class="item" style="display:block;margin-bottom:10px"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><strong>${esc(g.oficina_id)} · PC ${esc(g.pc)}</strong><button class="red small" onclick="oficinaEliminar('${esc(g.pc)}')">Eliminar oficina</button></div>
+        <div style="margin:6px 0;font-size:12px;color:#9aa">Portal: ${ruta}</div>
+        <div style="margin:6px 0">Puestos: ${chips||'<span style="color:#fca5a5">ninguno</span>'}</div>
+        <div class="row" style="display:flex;gap:6px"><input id="ofi_addp_${esc(g.pc)}" placeholder="Nuevo puesto Chunior" style="flex:1"><button class="blue small" onclick="oficinaAgregarPuesto('${esc(g.pc)}','${esc(g.oficina_id)}')">+ Puesto</button></div>
+      </div>`;
+    }).join("");
+  };
+  window.oficinaAgregarPuesto=async function(pc, oficina_id){
+    const inp=$id("ofi_addp_"+pc); const a=((inp&&inp.value)||"").trim().toUpperCase();
+    if(!a) return;
+    const tok=(typeof requireAdminToken==="function")?requireAdminToken():null;
+    try{
+      await rpcRowsSafe("admin_general_guardar_alias",{p_session_token:tok,p_id:null,p_alias_codigo:a,p_oficina_id:oficina_id,p_pc_codigo_compat:pc,p_activa:true,p_observaciones:"Puesto agregado"},async()=>{
+        const r=await supabaseClient.from("nodo_oficina_aliases").insert([{alias_codigo:a,oficina_id:oficina_id,pc_codigo_compat:pc,activa:true,observaciones:"Puesto agregado"}]); if(r.error)throw r.error; return [];
+      });
+      if(typeof toast==="function") toast("Puesto agregado","okb");
+      await oficinaListaCargar();
+    }catch(e){ if(typeof toast==="function") toast("Error: "+(e.message||e),"err"); }
+  };
+  window.oficinaQuitarPuesto=async function(id){
+    if(!confirm("¿Quitar este puesto?")) return;
+    const tok=(typeof requireAdminToken==="function")?requireAdminToken():null;
+    try{
+      const {error}=await supabaseClient.rpc("admin_general_eliminar_alias",{p_session_token:tok,p_id:Number(id)});
+      if(error) throw error;
+      if(typeof toast==="function") toast("Puesto quitado","okb");
+      await oficinaListaCargar();
+    }catch(e){ if(typeof toast==="function") toast("Error: "+(e.message||e),"err"); }
+  };
+  window.oficinaEliminar=async function(pc){
+    if(!confirm("¿Eliminar la oficina "+pc+"? Borra su ruta del portal y todos sus puestos. Las billeteras NO se borran.")) return;
+    const tok=(typeof requireAdminToken==="function")?requireAdminToken():null;
+    try{
+      const {error}=await supabaseClient.rpc("admin_eliminar_oficina",{p_session_token:tok,p_pc_codigo:pc});
+      if(error) throw error;
+      if(typeof toast==="function") toast("Oficina eliminada","okb");
+      await oficinaListaCargar();
+    }catch(e){ if(typeof toast==="function") toast("Error: "+(e.message||e),"err"); }
+  };
+  const _oldShowSectionOfi=window.showSection;
+  if(typeof _oldShowSectionOfi==="function"){
+    window.showSection=function(s){ _oldShowSectionOfi(s); if(s==="altaofi"){ ensureSectionOficina(); setTimeout(function(){ try{ oficinaListaCargar(); }catch(_e){} },100); } };
+  }
   document.addEventListener("DOMContentLoaded",function(){ setTimeout(ensureSectionOficina,400); });
   setTimeout(ensureSectionOficina, 1500);
 })();
