@@ -1210,7 +1210,8 @@ testResolverAlias = async function(){
   };
   window.oficinaListaRender=function(){
     const cont=$id("ofi_lista"); if(!cont) return;
-    const rutas=(window.rutasPublicas||[]), aliases=(window.aliasesOficina||[]);
+    const rutas=(typeof rutasPublicas!=="undefined"&&rutasPublicas)?rutasPublicas:(window.rutasPublicas||[]);
+    const aliases=(typeof aliasesOficina!=="undefined"&&aliasesOficina)?aliasesOficina:(window.aliasesOficina||[]);
     const grupos={};
     aliases.forEach(function(a){ const pc=String(a.pc_codigo_compat||"").toUpperCase(); if(!pc)return; if(!grupos[pc])grupos[pc]={pc:pc,oficina_id:a.oficina_id||pc,aliases:[]}; grupos[pc].aliases.push(a); });
     rutas.forEach(function(r){ const pc=String(r.pc_codigo||"").toUpperCase(); if(!pc)return; if(!grupos[pc])grupos[pc]={pc:pc,oficina_id:pc,aliases:[]}; grupos[pc].ruta=r; });
