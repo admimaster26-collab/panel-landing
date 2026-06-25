@@ -1078,7 +1078,7 @@ testResolverAlias = async function(){
     const pc=normPc(pcSeleccionada());
     if($("vincPcView")) $("vincPcView").value = pc ? pcLabel(pc) : "Seleccioná oficina arriba";
     if(!pc){ _vinc=[]; return vincRender(); }
-    const {data,error}=await supabaseClient.from('usuarios_portal_vinculos').select('*').eq('pc_codigo',pc).order('updated_at',{ascending:false}).limit(3000);
+    const {data,error}=await supabaseClient.rpc('admin_vinculos_listar',{p_session_token:requireAdminToken(),p_pc_codigo:pc});
     _vinc = error? [] : (data||[]);
     if(error) toast("Error cargando vínculos: "+error.message,"err");
     vincRender();
