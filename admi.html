@@ -1125,4 +1125,84 @@ testResolverAlias = async function(){
   if(document.readyState!=="loading") setTimeout(init,400); else document.addEventListener("DOMContentLoaded",()=>setTimeout(init,400));
 })();
 </script>
+<script>
+/* ============================================================
+   NODO · ADMI · Wizard "Alta de oficina"
+   Crea una oficina nueva sin SQL: ruta pública del portal + aliases de Chunior.
+   Reusa admin_general_guardar_ruta / admin_general_guardar_alias (con fallback directo).
+   ============================================================ */
+(function(){
+  function $id(x){ return document.getElementById(x); }
+  function gv(x){ return ($id(x)?.value||"").trim(); }
+  function randomCode(){ return "rt-"+Math.random().toString(36).slice(2,7); }
+
+  function ensureSectionOficina(){
+    if($id("section-altaofi")) return;
+    const nav=document.querySelector(".nav");
+    if(nav && !document.querySelector('[data-section="altaofi"]')){
+      nav.insertAdjacentHTML("beforeend",`<button class="navBtn" data-section="altaofi" onclick="showSection('altaofi')">Alta de oficina <span class="badge">NUEVA</span></button>`);
+    }
+    const html=`<section id="section-altaofi" class="section"><div class="card"><div class="card-h"><h3>🏢 Alta de oficina nueva</h3></div><div class="card-b">
+      <div class="notice">Crea una oficina nueva <b>sin SQL</b>: ruta del portal + alias de Chunior. Cuando el operador entra por Chunior con su puesto, el panel resuelve solo a esta oficina.</div>
+      <div class="grid2">
+        <div class="row"><label>Código de oficina (oficina_id)</label><input id="ofi_oficina_id" placeholder="Ej: NUEVAPLATA"></div>
+        <div class="row"><label>PC / puesto (pc_codigo)</label><input id="ofi_pc_codigo" placeholder="Ej: P6"></div>
+        <div class="row"><label>Nombre público</label><input id="ofi_nombre" placeholder="Ej: Canal 6"></div>
+        <div class="row"><label>Ruta pública (?r=)</label><input id="ofi_public_code" placeholder="rt-xxxxx (vacío = automática)"></div>
+        <div class="row"><label>WhatsApp (opcional)</label><input id="ofi_whatsapp" placeholder="549..."></div>
+        <div class="row"><label>Link plataforma (opcional)</label><input id="ofi_link" placeholder="https://www.bet-300.pw/"></div>
+      </div>
+      <div class="row"><label>Nombres de puesto en Chunior (separados por coma o renglón)</label><textarea id="ofi_aliases" rows="3" placeholder="Ej: JUANCHO, JUANCHO EN USO, JGRAL"></textarea></div>
+      <div class="actions"><button class="primary" id="ofi_btn" onclick="oficinaWizardCrear()">Crear oficina</button></div>
+      <div id="ofi_resultado" style="margin-top:12px"></div>
+    </div></div></section>`;
+    const ref=$id("section-config")||$id("section-historial");
+    if(ref) ref.insertAdjacentHTML("beforebegin", html);
+    else document.querySelector("main")?.insertAdjacentHTML("beforeend", html);
+  }
+
+  window.oficinaWizardCrear=async function(){
+    const out=$id("ofi_resultado");
+    const oficina_id=gv("ofi_oficina_id").toUpperCase();
+    const pc=(typeof normPc==="function"?normPc(gv("ofi_pc_codigo")):gv("ofi_pc_codigo").toUpperCase());
+    const nombre=gv("ofi_nombre")||pc;
+    const code=gv("ofi_public_code")||randomCode();
+    if(!oficina_id||!pc){ out.innerHTML='<div class="notice" style="border-color:rgba(239,68,68,.7);color:#fca5a5">oficina_id y pc_codigo son obligatorios.</div>'; return; }
+    const tok=(typeof requireAdminToken==="function")?requireAdminToken():null;
+    const btn=$id("ofi_btn"); if(btn){btn.disabled=true;btn.textContent="Creando...";}
+    try{
+      // 1) Ruta pública del portal
+      await rpcRowsSafe("admin_general_guardar_ruta",{p_session_token:tok,p_id:null,p_pc_codigo:pc,p_public_code:code,p_nombre_publico:nombre,p_link_plataforma:gv("ofi_link"),p_whatsapp_numero:gv("ofi_whatsapp"),p_activo:true},async()=>{
+        const r=await supabaseClient.from("landing_rutas_publicas").insert([{pc_codigo:pc,public_code:code,nombre_publico:nombre,link_plataforma:gv("ofi_link"),whatsapp_numero:gv("ofi_whatsapp"),activo:true}]);
+        if(r.error) throw r.error; return [];
+      });
+      // 2) Aliases: pc_codigo + oficina_id + cada nombre de puesto de Chunior
+      const nombres=gv("ofi_aliases").split(/[\n,]+/).map(s=>s.trim()).filter(Boolean);
+      const aliasSet=[...new Set([pc, oficina_id, ...nombres].map(s=>s.toUpperCase()))];
+      let aok=0, aerr=0;
+      for(const a of aliasSet){
+        try{
+          await rpcRowsSafe("admin_general_guardar_alias",{p_session_token:tok,p_id:null,p_alias_codigo:a,p_oficina_id:oficina_id,p_pc_codigo_compat:pc,p_activa:true,p_observaciones:"Alta de oficina (wizard)"},async()=>{
+            const r=await supabaseClient.from("nodo_oficina_aliases").insert([{alias_codigo:a,oficina_id:oficina_id,pc_codigo_compat:pc,activa:true,observaciones:"Alta de oficina (wizard)"}]);
+            if(r.error) throw r.error; return [];
+          });
+          aok++;
+        }catch(e){ aerr++; console.warn("alias",a,e.message||e); }
+      }
+      const portalUrl=(gv("ofi_link")||"https://www.bet-300.pw/")+"?r="+code;
+      out.innerHTML=`<div class="item"><strong>✅ Oficina creada</strong><span>Oficina <b>${oficina_id}</b> · PC <b>${pc}</b> · ${aok} alias${aerr?(" ("+aerr+" con error)"):""}</span><span>Link del portal: <code>${portalUrl}</code></span><span>El operador entra por Chunior con su puesto y el panel resuelve solo a <b>${pc}</b>. Cargá las billeteras sincronizando desde el panel.</span></div>`;
+      if(typeof toast==="function") toast("Oficina creada","okb");
+      try{ if(typeof loadRutasPublicas==="function") loadRutasPublicas(false); }catch(_e){}
+      try{ if(typeof loadAliasesOficina==="function") loadAliasesOficina(false); }catch(_e){}
+      try{ if(typeof fillPcSelects==="function") fillPcSelects(); }catch(_e){}
+    }catch(e){
+      out.innerHTML=`<div class="notice" style="border-color:rgba(239,68,68,.7);color:#fca5a5">Error: ${(e.message||e)}</div>`;
+      if(typeof toast==="function") toast("Error creando oficina: "+(e.message||e),"err");
+    }finally{ if(btn){btn.disabled=false;btn.textContent="Crear oficina";} }
+  };
+
+  document.addEventListener("DOMContentLoaded",function(){ setTimeout(ensureSectionOficina,400); });
+  setTimeout(ensureSectionOficina, 1500);
+})();
+</script>
 </body></html>
