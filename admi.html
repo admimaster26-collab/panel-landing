@@ -1236,7 +1236,7 @@ testResolverAlias = async function(){
       const sub=r&&r.subdominio?esc(String(r.subdominio)):"";
       const pcode=r?esc(r.public_code):"";
       return `<div class="item" style="display:block;margin-bottom:10px"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><strong>${esc(g.oficina_id)} · PC ${esc(g.pc)}</strong><button class="red small" onclick="oficinaEliminar('${esc(g.pc)}')">Eliminar oficina</button></div>
-        <div style="margin:6px 0;font-size:12px;color:#9aa">Portal: ${ruta}${pcode?` <button class="small" onclick="oficinaCopiarLink('${pcode}')">📋 Copiar link</button>`:""}</div>
+        <div style="margin:6px 0;font-size:12px;color:#9aa">Portal: ${ruta}${(pcode||sub)?` <button class="small" onclick="oficinaCopiarLink('${pcode}','${sub}')">📋 Copiar link</button>`:""}</div>
         <div class="row" style="display:flex;gap:6px;align-items:center;margin:6px 0"><input id="ofi_sub_${esc(g.pc)}" value="${sub}" placeholder="subdominio (ej: p6)" style="flex:1"><button class="blue small" onclick="oficinaGuardarSubdominio('${esc(g.pc)}')">Guardar subdom.</button></div>
         <div class="row" style="display:flex;gap:6px;align-items:center;margin:6px 0"><input id="ofi_au_${esc(g.pc)}" autocomplete="off" placeholder="usuario agente" style="flex:1"><input id="ofi_ap_${esc(g.pc)}" type="password" autocomplete="new-password" placeholder="clave agente 🔒" style="flex:1"><button class="blue small" onclick="oficinaGuardarAgente('${esc(g.pc)}')">Guardar agente</button></div>
         <div style="margin:6px 0">Puestos: ${chips||'<span style="color:#fca5a5">ninguno</span>'}</div>
@@ -1298,9 +1298,12 @@ testResolverAlias = async function(){
       await oficinaListaCargar();
     }catch(e){ if(typeof toast==="function") toast("Error: "+(e.message||e),"err"); }
   };
-  window.oficinaCopiarLink=function(code){
-    const link="https://portal-bet300-a4xj.vercel.app/?r="+code;  // base del portal (ajustar al dominio final)
-    try{ navigator.clipboard.writeText(link).then(function(){ if(typeof toast==="function") toast("Link copiado","okb"); }); }
+  window.oficinaCopiarLink=function(code, sub){
+    const BASE_DOMAIN="portal-bet-300.com"; // dominio final (cambiar acá si difiere)
+    const link = (sub && String(sub).trim())
+      ? ("https://"+String(sub).trim()+"."+BASE_DOMAIN)
+      : ("https://"+BASE_DOMAIN+"/?r="+code);
+    try{ navigator.clipboard.writeText(link).then(function(){ if(typeof toast==="function") toast("Link copiado: "+link,"okb"); }); }
     catch(_e){ try{ prompt("Copiá el link:", link); }catch(__e){} }
   };
   const _oldShowSectionOfi=window.showSection;
