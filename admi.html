@@ -1311,4 +1311,57 @@ testResolverAlias = async function(){
   setTimeout(ensureSectionOficina, 1500);
 })();
 </script>
+<script>
+/* ============================================================
+   NODO · ADMI · Paneles por oficina (actividad real de los paneles operativos)
+   Reemplaza el monitor de workers de cola: muestra qué oficina tiene su panel
+   abierto y logueado ahora (latido < 90s = online).
+   ============================================================ */
+(function(){
+  function $id(x){ return document.getElementById(x); }
+  function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c];}); }
+  function haceCuanto(ts){
+    if(!ts) return "—";
+    const d=Math.max(0,Math.floor((Date.now()-new Date(ts).getTime())/1000));
+    if(d<60) return d+"s"; if(d<3600) return Math.floor(d/60)+"m"; if(d<86400) return Math.floor(d/3600)+"h"; return Math.floor(d/86400)+"d";
+  }
+  function ensureSectionPaneles(){
+    if($id("section-paneles")) return;
+    const nav=document.querySelector(".nav");
+    if(nav && !document.querySelector('[data-section="paneles"]')){
+      nav.insertAdjacentHTML("beforeend",`<button class="navBtn" data-section="paneles" onclick="showSection('paneles')">Paneles activos <span class="badge" id="badgePaneles">·</span></button>`);
+    }
+    const html=`<section id="section-paneles" class="section"><div class="card"><div class="card-h"><h3>🖥️ Paneles por oficina</h3><button class="blue small" onclick="panelesCargar()">Actualizar</button></div><div class="card-b">
+      <div class="notice">Qué oficinas tienen su panel operativo abierto y logueado ahora. <b>Online</b> = latido en los últimos 90s.</div>
+      <div class="tableWrap"><table><thead><tr><th>Estado</th><th>Oficina / PC</th><th>Operador</th><th>Última vez</th></tr></thead><tbody id="panelesBody"></tbody></table></div>
+    </div></div></section>`;
+    const ref=$id("section-config")||$id("section-historial");
+    if(ref) ref.insertAdjacentHTML("beforebegin", html);
+    else document.querySelector("main")?.insertAdjacentHTML("beforeend", html);
+  }
+  window.panelesCargar=async function(){
+    const tb=$id("panelesBody"); if(tb) tb.innerHTML='<tr><td colspan="4">Cargando…</td></tr>';
+    const tok=(typeof requireAdminToken==="function")?requireAdminToken():null;
+    try{
+      const {data,error}=await supabaseClient.rpc("admin_listar_paneles",{p_session_token:tok});
+      if(error) throw error;
+      const rows=data||[];
+      const on=rows.filter(function(r){return r.online;}).length;
+      const b=$id("badgePaneles"); if(b) b.textContent=on+"🟢";
+      if(!rows.length){ if(tb) tb.innerHTML='<tr><td colspan="4">Sin paneles registrados todavía.</td></tr>'; return; }
+      if(tb) tb.innerHTML=rows.map(function(r){
+        const dot=r.online?'<span style="color:#22c55e;font-weight:800">🟢 ONLINE</span>':'<span style="color:#fca5a5">🔴 offline</span>';
+        return `<tr><td>${dot}</td><td><b>${esc(r.oficina_id||"")}</b> · ${esc(r.pc_codigo||"")}</td><td>${esc(r.operador||"—")}</td><td>${esc(haceCuanto(r.last_seen))}</td></tr>`;
+      }).join("");
+    }catch(e){ if(tb) tb.innerHTML='<tr><td colspan="4" style="color:#fca5a5">Error: '+esc(e.message||e)+'</td></tr>'; }
+  };
+  const _oldShowSectionP=window.showSection;
+  if(typeof _oldShowSectionP==="function"){
+    window.showSection=function(s){ _oldShowSectionP(s); if(s==="paneles"){ ensureSectionPaneles(); setTimeout(function(){ try{ panelesCargar(); }catch(_e){} },100); } };
+  }
+  document.addEventListener("DOMContentLoaded",function(){ setTimeout(ensureSectionPaneles,500); });
+  setTimeout(ensureSectionPaneles, 1600);
+  setInterval(function(){ const sec=$id("section-paneles"); if(sec && sec.offsetParent!==null){ try{ panelesCargar(); }catch(_e){} } }, 30000);
+})();
+</script>
 </body></html>
