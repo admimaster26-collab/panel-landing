@@ -1154,6 +1154,11 @@ testResolverAlias = async function(){
         <div class="row"><label>Link plataforma (opcional)</label><input id="ofi_link" placeholder="https://www.bet-300.pw/"></div>
       </div>
       <div class="row"><label>Nombres de puesto en Chunior (separados por coma o renglón)</label><textarea id="ofi_aliases" rows="3" placeholder="Ej: JUANCHO, JUANCHO EN USO, JGRAL"></textarea></div>
+      <div class="grid2">
+        <div class="row"><label>Usuario de agente (Casinodrex)</label><input id="ofi_agente_user" autocomplete="off" placeholder="usuario del agente"></div>
+        <div class="row"><label>Clave de agente</label><input id="ofi_agente_pass" type="password" autocomplete="new-password" placeholder="clave del agente (queda oculta)"></div>
+      </div>
+      <div class="notice" style="margin-top:6px">🔒 Las credenciales de agente quedan blindadas: el operador no las ve ni las escribe — solo se auto-loguea al backoffice.</div>
       <div class="actions"><button class="primary" id="ofi_btn" onclick="oficinaWizardCrear()">Crear oficina</button></div>
       <div id="ofi_resultado" style="margin-top:12px"></div>
     </div></div>
@@ -1195,6 +1200,9 @@ testResolverAlias = async function(){
           aok++;
         }catch(e){ aerr++; console.warn("alias",a,e.message||e); }
       }
+      // Credenciales de agente (blindadas) si se cargaron
+      const _au=gv("ofi_agente_user"), _ap=gv("ofi_agente_pass");
+      if(_au||_ap){ try{ await supabaseClient.rpc("admin_set_agente_credenciales",{p_session_token:tok,p_pc_codigo:pc,p_usuario:_au,p_clave:_ap}); }catch(_e){ console.warn("agente cred",_e); } }
       const portalUrl=(gv("ofi_link")||"https://www.bet-300.pw/")+"?r="+code;
       out.innerHTML=`<div class="item"><strong>✅ Oficina creada</strong><span>Oficina <b>${oficina_id}</b> · PC <b>${pc}</b> · ${aok} alias${aerr?(" ("+aerr+" con error)"):""}</span><span>Link del portal: <code>${portalUrl}</code></span><span>El operador entra por Chunior con su puesto y el panel resuelve solo a <b>${pc}</b>. Cargá las billeteras sincronizando desde el panel.</span></div>`;
       if(typeof toast==="function") toast("Oficina creada","okb");
@@ -1230,6 +1238,7 @@ testResolverAlias = async function(){
       return `<div class="item" style="display:block;margin-bottom:10px"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><strong>${esc(g.oficina_id)} · PC ${esc(g.pc)}</strong><button class="red small" onclick="oficinaEliminar('${esc(g.pc)}')">Eliminar oficina</button></div>
         <div style="margin:6px 0;font-size:12px;color:#9aa">Portal: ${ruta}${pcode?` <button class="small" onclick="oficinaCopiarLink('${pcode}')">📋 Copiar link</button>`:""}</div>
         <div class="row" style="display:flex;gap:6px;align-items:center;margin:6px 0"><input id="ofi_sub_${esc(g.pc)}" value="${sub}" placeholder="subdominio (ej: p6)" style="flex:1"><button class="blue small" onclick="oficinaGuardarSubdominio('${esc(g.pc)}')">Guardar subdom.</button></div>
+        <div class="row" style="display:flex;gap:6px;align-items:center;margin:6px 0"><input id="ofi_au_${esc(g.pc)}" autocomplete="off" placeholder="usuario agente" style="flex:1"><input id="ofi_ap_${esc(g.pc)}" type="password" autocomplete="new-password" placeholder="clave agente 🔒" style="flex:1"><button class="blue small" onclick="oficinaGuardarAgente('${esc(g.pc)}')">Guardar agente</button></div>
         <div style="margin:6px 0">Puestos: ${chips||'<span style="color:#fca5a5">ninguno</span>'}</div>
         <div class="row" style="display:flex;gap:6px"><input id="ofi_addp_${esc(g.pc)}" placeholder="Nuevo puesto Chunior" style="flex:1"><button class="blue small" onclick="oficinaAgregarPuesto('${esc(g.pc)}','${esc(g.oficina_id)}')">+ Puesto</button></div>
       </div>`;
@@ -1265,6 +1274,18 @@ testResolverAlias = async function(){
       if(error) throw error;
       if(typeof toast==="function") toast("Oficina eliminada","okb");
       await oficinaListaCargar();
+    }catch(e){ if(typeof toast==="function") toast("Error: "+(e.message||e),"err"); }
+  };
+  window.oficinaGuardarAgente=async function(pc){
+    const u=$id("ofi_au_"+pc), p=$id("ofi_ap_"+pc);
+    const usuario=((u&&u.value)||"").trim(), clave=((p&&p.value)||"");
+    if(!usuario && !clave){ if(typeof toast==="function") toast("Cargá usuario y/o clave del agente","warn"); return; }
+    const tok=(typeof requireAdminToken==="function")?requireAdminToken():null;
+    try{
+      const {error}=await supabaseClient.rpc("admin_set_agente_credenciales",{p_session_token:tok,p_pc_codigo:pc,p_usuario:usuario,p_clave:clave});
+      if(error) throw error;
+      if(typeof toast==="function") toast("Credenciales de agente guardadas 🔒","okb");
+      if(p) p.value=""; // no dejar la clave en el DOM
     }catch(e){ if(typeof toast==="function") toast("Error: "+(e.message||e),"err"); }
   };
   window.oficinaGuardarSubdominio=async function(pc){
