@@ -1219,13 +1219,19 @@ testResolverAlias = async function(){
 
   function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c];}); }
   window.oficinaListaCargar=async function(){
-    try{ if(typeof loadRutasPublicas==="function") await loadRutasPublicas(false); }catch(_e){}
     try{ if(typeof loadAliasesOficina==="function") await loadAliasesOficina(false); }catch(_e){}
+    // Rutas con TODAS las columnas (subdominio, host, promo_activa) — el loader normal usa columnas fijas.
+    try{
+      const tok=(typeof requireAdminToken==="function")?requireAdminToken():null;
+      const {data,error}=await supabaseClient.rpc("admin_get_rutas_full",{p_session_token:tok});
+      if(!error) window._rutasFull = data||[];
+      else { if(typeof loadRutasPublicas==="function") await loadRutasPublicas(false); }
+    }catch(_e){ try{ if(typeof loadRutasPublicas==="function") await loadRutasPublicas(false); }catch(__e){} }
     oficinaListaRender();
   };
   window.oficinaListaRender=function(){
     const cont=$id("ofi_lista"); if(!cont) return;
-    const rutas=(typeof rutasPublicas!=="undefined"&&rutasPublicas)?rutasPublicas:(window.rutasPublicas||[]);
+    const rutas=(window._rutasFull&&window._rutasFull.length)?window._rutasFull:((typeof rutasPublicas!=="undefined"&&rutasPublicas)?rutasPublicas:(window.rutasPublicas||[]));
     const aliases=(typeof aliasesOficina!=="undefined"&&aliasesOficina)?aliasesOficina:(window.aliasesOficina||[]);
     const grupos={};
     aliases.forEach(function(a){ const pc=String(a.pc_codigo_compat||"").toUpperCase(); if(!pc)return; if(!grupos[pc])grupos[pc]={pc:pc,oficina_id:a.oficina_id||pc,aliases:[]}; grupos[pc].aliases.push(a); });
