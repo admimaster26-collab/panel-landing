@@ -1160,6 +1160,16 @@ testResolverAlias = async function(){
       </div>
       <div class="notice" style="margin-top:6px">🔒 Las credenciales de agente quedan blindadas: el operador no las ve ni las escribe — solo se auto-loguea al backoffice.</div>
       <div class="row"><label>🎁 Promo de primer ingreso</label><select id="ofi_promo"><option value="0">Desactivada</option><option value="1">Activada (bono al primer ingreso)</option></select></div>
+      <div class="row"><label>🌐 Proxy de la oficina</label><select id="ofi_proxy_enabled"><option value="0">Sin proxy (salida directa)</option><option value="1">Usar proxy</option></select></div>
+      <div class="grid2">
+        <div class="row"><label>Proxy host</label><input id="ofi_proxy_host" autocomplete="off" placeholder="ej: 91.212.103.195"></div>
+        <div class="row"><label>Proxy puerto</label><input id="ofi_proxy_port" autocomplete="off" placeholder="ej: 1337"></div>
+        <div class="row"><label>Protocolo</label><select id="ofi_proxy_protocol"><option value="http">http</option><option value="socks5">socks5</option></select></div>
+        <div class="row"><label>Bypass</label><input id="ofi_proxy_bypass" autocomplete="off" placeholder="&lt;local&gt;"></div>
+        <div class="row"><label>Proxy usuario</label><input id="ofi_proxy_user" autocomplete="off" placeholder="usuario del proxy"></div>
+        <div class="row"><label>Proxy clave</label><input id="ofi_proxy_pass" type="password" autocomplete="new-password" placeholder="clave del proxy 🔒"></div>
+      </div>
+      <div class="notice" style="margin-top:6px">🌐 El proxy se aplica en la app del operador al loguearse en Chunior. La clave queda blindada (el operador no la ve).</div>
       <div class="actions"><button class="primary" id="ofi_btn" onclick="oficinaWizardCrear()">Crear oficina</button></div>
       <div id="ofi_resultado" style="margin-top:12px"></div>
     </div></div>
@@ -1204,6 +1214,8 @@ testResolverAlias = async function(){
       // Credenciales de agente (blindadas) si se cargaron
       const _au=gv("ofi_agente_user"), _ap=gv("ofi_agente_pass");
       if(_au||_ap){ try{ await supabaseClient.rpc("admin_set_agente_credenciales",{p_session_token:tok,p_pc_codigo:pc,p_usuario:_au,p_clave:_ap}); }catch(_e){ console.warn("agente cred",_e); } }
+      // Proxy de la oficina (opcional, blindado)
+      try{ await supabaseClient.rpc("admin_set_proxy",{p_session_token:tok,p_pc_codigo:pc,p_enabled:(gv("ofi_proxy_enabled")==="1"),p_protocol:gv("ofi_proxy_protocol")||"http",p_host:gv("ofi_proxy_host"),p_port:gv("ofi_proxy_port"),p_username:gv("ofi_proxy_user"),p_password:gv("ofi_proxy_pass"),p_bypass:gv("ofi_proxy_bypass")}); }catch(_e){ console.warn("proxy",_e); }
       // Promo de primer ingreso (on/off)
       try{ await supabaseClient.rpc("admin_general_set_promo",{p_session_token:tok,p_pc_codigo:pc,p_activa:(gv("ofi_promo")==="1")}); }catch(_e){ console.warn("promo",_e); }
       const portalUrl=(gv("ofi_link")||"https://www.bet-300.pw/")+"?r="+code;
@@ -1249,6 +1261,7 @@ testResolverAlias = async function(){
         <div style="margin:6px 0;font-size:12px;color:#9aa">Portal: ${ruta}${(pcode||sub)?` <button class="small" onclick="oficinaCopiarLink('${pcode}','${sub}')">📋 Copiar link</button>`:""}</div>
         <div class="row" style="display:flex;gap:6px;align-items:center;margin:6px 0"><input id="ofi_sub_${esc(g.pc)}" value="${sub}" placeholder="subdominio (ej: p6)" style="flex:1"><button class="blue small" onclick="oficinaGuardarSubdominio('${esc(g.pc)}')">Guardar subdom.</button></div>
         <div class="row" style="display:flex;gap:6px;align-items:center;margin:6px 0"><input id="ofi_au_${esc(g.pc)}" autocomplete="off" placeholder="usuario agente" style="flex:1"><input id="ofi_ap_${esc(g.pc)}" type="password" autocomplete="new-password" placeholder="clave agente 🔒" style="flex:1"><button class="blue small" onclick="oficinaGuardarAgente('${esc(g.pc)}')">Guardar agente</button></div>
+        <div class="row" style="display:flex;gap:6px;align-items:center;margin:6px 0;flex-wrap:wrap"><span style="font-size:12px;color:#9aa">🌐</span><select id="ofi_pxen_${esc(g.pc)}" style="width:100px"><option value="0">Proxy off</option><option value="1">Proxy on</option></select><input id="ofi_pxhost_${esc(g.pc)}" autocomplete="off" placeholder="host" style="flex:1;min-width:110px"><input id="ofi_pxport_${esc(g.pc)}" autocomplete="off" placeholder="puerto" style="width:75px"><select id="ofi_pxproto_${esc(g.pc)}" style="width:85px"><option value="http">http</option><option value="socks5">socks5</option></select><input id="ofi_pxuser_${esc(g.pc)}" autocomplete="off" placeholder="usuario" style="width:110px"><input id="ofi_pxpass_${esc(g.pc)}" type="password" autocomplete="new-password" placeholder="clave 🔒" style="width:110px"><button class="blue small" onclick="oficinaGuardarProxy('${esc(g.pc)}')">Guardar proxy</button></div>
         <div style="margin:6px 0;font-size:12px">🎁 Promo primer ingreso: <b style="color:${promoOn?'#22c55e':'#fca5a5'}">${promoOn?'ACTIVADA':'desactivada'}</b> <button class="small" onclick="oficinaTogglePromo('${esc(g.pc)}',${promoOn?0:1})">${promoOn?'Desactivar':'Activar'}</button></div>
         <div style="margin:6px 0">Puestos: ${chips||'<span style="color:#fca5a5">ninguno</span>'}</div>
         <div class="row" style="display:flex;gap:6px"><input id="ofi_addp_${esc(g.pc)}" placeholder="Nuevo puesto Chunior" style="flex:1"><button class="blue small" onclick="oficinaAgregarPuesto('${esc(g.pc)}','${esc(g.oficina_id)}')">+ Puesto</button></div>
@@ -1306,6 +1319,19 @@ testResolverAlias = async function(){
       if(error) throw error;
       if(typeof toast==="function") toast("Credenciales de agente guardadas 🔒","okb");
       if(p) p.value=""; // no dejar la clave en el DOM
+    }catch(e){ if(typeof toast==="function") toast("Error: "+(e.message||e),"err"); }
+  };
+  window.oficinaGuardarProxy=async function(pc){
+    const g=function(id){const e=$id(id+"_"+pc);return e?String(e.value||"").trim():"";};
+    const tok=(typeof requireAdminToken==="function")?requireAdminToken():null;
+    try{
+      const {error}=await supabaseClient.rpc("admin_set_proxy",{p_session_token:tok,p_pc_codigo:pc,
+        p_enabled:(g("ofi_pxen")==="1"),p_protocol:g("ofi_pxproto")||"http",
+        p_host:g("ofi_pxhost"),p_port:g("ofi_pxport"),
+        p_username:g("ofi_pxuser"),p_password:g("ofi_pxpass"),p_bypass:""});
+      if(error) throw error;
+      if(typeof toast==="function") toast("Proxy guardado 🌐","okb");
+      const pp=$id("ofi_pxpass_"+pc); if(pp) pp.value="";
     }catch(e){ if(typeof toast==="function") toast("Error: "+(e.message||e),"err"); }
   };
   window.oficinaGuardarSubdominio=async function(pc){
