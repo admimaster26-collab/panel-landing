@@ -1149,6 +1149,7 @@ testResolverAlias = async function(){
         <div class="row"><label>PC / puesto (pc_codigo)</label><input id="ofi_pc_codigo" placeholder="Ej: P6"></div>
         <div class="row"><label>Nombre público</label><input id="ofi_nombre" placeholder="Ej: Canal 6"></div>
         <div class="row"><label>Ruta pública (?r=)</label><input id="ofi_public_code" placeholder="rt-xxxxx (vacío = automática)"></div>
+        <div class="row"><label>Subdominio (producción, ej: p6)</label><input id="ofi_subdominio" placeholder="p6 → p6.tudominio.com"></div>
         <div class="row"><label>WhatsApp (opcional)</label><input id="ofi_whatsapp" placeholder="549..."></div>
         <div class="row"><label>Link plataforma (opcional)</label><input id="ofi_link" placeholder="https://www.bet-300.pw/"></div>
       </div>
@@ -1178,6 +1179,9 @@ testResolverAlias = async function(){
         const r=await supabaseClient.from("landing_rutas_publicas").insert([{pc_codigo:pc,public_code:code,nombre_publico:nombre,link_plataforma:gv("ofi_link"),whatsapp_numero:gv("ofi_whatsapp"),activo:true}]);
         if(r.error) throw r.error; return [];
       });
+      // 1b) Subdominio de producción (opcional)
+      const _sub=gv("ofi_subdominio");
+      if(_sub){ try{ await supabaseClient.rpc("admin_general_set_subdominio",{p_session_token:tok,p_pc_codigo:pc,p_subdominio:_sub,p_host:""}); }catch(_e){ console.warn("subdominio",_e); } }
       // 2) Aliases: pc_codigo + oficina_id + cada nombre de puesto de Chunior
       const nombres=gv("ofi_aliases").split(/[\n,]+/).map(s=>s.trim()).filter(Boolean);
       const aliasSet=[...new Set([pc, oficina_id, ...nombres].map(s=>s.toUpperCase()))];
@@ -1221,8 +1225,11 @@ testResolverAlias = async function(){
       const g=grupos[pc], r=g.ruta;
       const chips=g.aliases.map(function(a){ return `<span style="display:inline-flex;align-items:center;gap:4px;background:#222a3a;border-radius:6px;padding:3px 8px;margin:2px;font-size:12px">${esc(a.alias_codigo)} <a href="javascript:void 0" onclick="oficinaQuitarPuesto(${a.id})" title="Quitar puesto" style="color:#fca5a5;text-decoration:none">✕</a></span>`; }).join("");
       const ruta=r?`<code>${esc(r.public_code)}</code>${r.nombre_publico?(" · "+esc(r.nombre_publico)):""}`:'<span style="color:#fca5a5">sin ruta</span>';
+      const sub=r&&r.subdominio?esc(String(r.subdominio)):"";
+      const pcode=r?esc(r.public_code):"";
       return `<div class="item" style="display:block;margin-bottom:10px"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><strong>${esc(g.oficina_id)} · PC ${esc(g.pc)}</strong><button class="red small" onclick="oficinaEliminar('${esc(g.pc)}')">Eliminar oficina</button></div>
-        <div style="margin:6px 0;font-size:12px;color:#9aa">Portal: ${ruta}</div>
+        <div style="margin:6px 0;font-size:12px;color:#9aa">Portal: ${ruta}${pcode?` <button class="small" onclick="oficinaCopiarLink('${pcode}')">📋 Copiar link</button>`:""}</div>
+        <div class="row" style="display:flex;gap:6px;align-items:center;margin:6px 0"><input id="ofi_sub_${esc(g.pc)}" value="${sub}" placeholder="subdominio (ej: p6)" style="flex:1"><button class="blue small" onclick="oficinaGuardarSubdominio('${esc(g.pc)}')">Guardar subdom.</button></div>
         <div style="margin:6px 0">Puestos: ${chips||'<span style="color:#fca5a5">ninguno</span>'}</div>
         <div class="row" style="display:flex;gap:6px"><input id="ofi_addp_${esc(g.pc)}" placeholder="Nuevo puesto Chunior" style="flex:1"><button class="blue small" onclick="oficinaAgregarPuesto('${esc(g.pc)}','${esc(g.oficina_id)}')">+ Puesto</button></div>
       </div>`;
@@ -1259,6 +1266,21 @@ testResolverAlias = async function(){
       if(typeof toast==="function") toast("Oficina eliminada","okb");
       await oficinaListaCargar();
     }catch(e){ if(typeof toast==="function") toast("Error: "+(e.message||e),"err"); }
+  };
+  window.oficinaGuardarSubdominio=async function(pc){
+    const inp=$id("ofi_sub_"+pc); const sub=((inp&&inp.value)||"").trim().toLowerCase();
+    const tok=(typeof requireAdminToken==="function")?requireAdminToken():null;
+    try{
+      const {error}=await supabaseClient.rpc("admin_general_set_subdominio",{p_session_token:tok,p_pc_codigo:pc,p_subdominio:sub,p_host:""});
+      if(error) throw error;
+      if(typeof toast==="function") toast("Subdominio guardado","okb");
+      await oficinaListaCargar();
+    }catch(e){ if(typeof toast==="function") toast("Error: "+(e.message||e),"err"); }
+  };
+  window.oficinaCopiarLink=function(code){
+    const link="https://portal-bet300-a4xj.vercel.app/?r="+code;  // base del portal (ajustar al dominio final)
+    try{ navigator.clipboard.writeText(link).then(function(){ if(typeof toast==="function") toast("Link copiado","okb"); }); }
+    catch(_e){ try{ prompt("Copiá el link:", link); }catch(__e){} }
   };
   const _oldShowSectionOfi=window.showSection;
   if(typeof _oldShowSectionOfi==="function"){
