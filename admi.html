@@ -135,7 +135,7 @@
         <table>
           <thead>
             <tr>
-              <th>ID</th><th>PC</th><th>Nombre</th><th>Public code</th><th>WhatsApp</th><th>Link</th><th>Activo</th><th>Acciones</th>
+              <th>ID</th><th>PC</th><th>Nombre</th><th>Public code</th><th>Subdominio</th><th>WhatsApp</th><th>Link</th><th>Activo</th><th>Acciones</th>
             </tr>
           </thead>
           <tbody id="rutasBody"></tbody>
@@ -560,14 +560,21 @@ function renderMapaGeneral(){
 
 function renderRutasPublicas(){
   if(!$("rutasBody"))return;
+  // _rutasFull trae el subdominio (el loader normal usa columnas fijas). Se carga aparte.
+  if(!(window._rutasFull&&window._rutasFull.length) && !window.__rutasFullLoading){
+    window.__rutasFullLoading=true;
+    (async()=>{ try{ const tok=(typeof requireAdminToken==="function")?requireAdminToken():null; const r=await supabaseClient.rpc("admin_get_rutas_full",{p_session_token:tok}); if(!r.error) window._rutasFull=r.data||[]; }catch(_e){} finally{ window.__rutasFullLoading=false; try{renderRutasPublicas();}catch(_e){} } })();
+  }
+  const _sub=function(pc){ const f=(window._rutasFull||[]).find(x=>String(x.pc_codigo||"").toUpperCase()===String(pc||"").toUpperCase()); return (f&&f.subdominio)?String(f.subdominio):""; };
   const q=norm(val("ruta_search")),act=val("ruta_filter_activo");
   const rows=(rutasPublicas||[]).filter(r=>(!q||norm([r.id,r.pc_codigo,r.nombre_publico,r.public_code,r.whatsapp_numero,r.link_plataforma].join(" ")).includes(q))&&(act===""||String(!!r.activo)===act));
-  if(!rows.length)return empty("rutasBody",8,"No hay rutas públicas.");
+  if(!rows.length)return empty("rutasBody",9,"No hay rutas públicas.");
   $("rutasBody").innerHTML=rows.map(r=>`<tr>
     <td>${safe(r.id)}</td>
     <td><strong>${safe(r.pc_codigo)}</strong></td>
     <td>${safe(r.nombre_publico||"-")}</td>
     <td>${pill(r.public_code||"-","vio")}</td>
+    <td>${_sub(r.pc_codigo)?pill(_sub(r.pc_codigo),"ok"):'<span class="muted">-</span>'}</td>
     <td>${safe(r.whatsapp_numero||"-")}</td>
     <td>${safe(r.link_plataforma||"-")}</td>
     <td>${r.activo!==false?pill("Activa","ok"):pill("Inactiva","off")}</td>
