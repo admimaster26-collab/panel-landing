@@ -83,11 +83,11 @@
           <input type="hidden" id="ruta_id">
           <div class="g2">
             <div class="row">
-              <label>PC interna</label>
+              <label>PC compatible <span class="muted" style="font-weight:400">(interna, ej: P4)</span></label>
               <input id="ruta_pc_codigo" placeholder="P4">
             </div>
             <div class="row">
-              <label>Public code</label>
+              <label>Public code <span class="muted" style="font-weight:400">(?r= compatibilidad)</span></label>
               <input id="ruta_public_code" placeholder="rt-z9p42">
             </div>
           </div>
@@ -107,6 +107,16 @@
             <div class="row">
               <label>Activo</label>
               <select id="ruta_activo"><option value="true">Sí</option><option value="false">No</option></select>
+            </div>
+          </div>
+          <div class="g2">
+            <div class="row">
+              <label>Subdominio <span class="muted" style="font-weight:400">(producción)</span></label>
+              <input id="ruta_subdominio" placeholder="sanchez" oninput="rutaSyncHost()">
+            </div>
+            <div class="row">
+              <label>Host completo <span class="muted" style="font-weight:400">(se arma del subdominio)</span></label>
+              <input id="ruta_host" placeholder="sanchez.portal-bet-300.com" readonly>
             </div>
           </div>
           <div class="actions">
@@ -581,26 +591,43 @@ function renderRutasPublicas(){
     <td><div class="rowActions"><button class="small blue" onclick="editRuta('${safe(r.id)}')">Editar</button><button class="small violet" onclick="copiarTexto('${safe(adminPortalUrl(r.public_code))}')">Copiar link</button></div></td>
   </tr>`).join("");
 }
+function rutaSyncHost(){
+  const sub=(val("ruta_subdominio")||"").trim().toLowerCase().replace(/[^a-z0-9-]/g,"");
+  if($("ruta_host")) $("ruta_host").value = sub ? (sub+".portal-bet-300.com") : "";
+}
 function editRuta(id){
   const r=(rutasPublicas||[]).find(x=>String(x.id)===String(id));
   if(!r)return;
-  setVals({ruta_id:r.id,ruta_pc_codigo:r.pc_codigo,ruta_public_code:r.public_code,ruta_nombre_publico:r.nombre_publico,ruta_link_plataforma:r.link_plataforma,ruta_whatsapp_numero:r.whatsapp_numero,ruta_activo:String(r.activo!==false)});
+  const full=(window._rutasFull||[]).find(x=>String(x.pc_codigo||"").toUpperCase()===String(r.pc_codigo||"").toUpperCase());
+  const sub=(full&&full.subdominio)?String(full.subdominio):"";
+  setVals({ruta_id:r.id,ruta_pc_codigo:r.pc_codigo,ruta_public_code:r.public_code,ruta_nombre_publico:r.nombre_publico,ruta_link_plataforma:r.link_plataforma,ruta_whatsapp_numero:r.whatsapp_numero,ruta_activo:String(r.activo!==false),ruta_subdominio:sub});
+  rutaSyncHost();
   $("rutaFormTitle").textContent="Editar ruta pública";
   showSection("portal-rutas");
   scrollTo(0,0);
 }
 function resetRutaForm(){
   $("rutaForm")?.reset();
-  setVals({ruta_id:"",ruta_activo:"true"});
+  setVals({ruta_id:"",ruta_activo:"true",ruta_subdominio:"",ruta_host:""});
   if($("rutaFormTitle"))$("rutaFormTitle").textContent="Crear / editar ruta pública";
 }
 async function saveRuta(e){
   e.preventDefault();
   const id=val("ruta_id"), pc=normPc(val("ruta_pc_codigo")), public_code=val("ruta_public_code");
   if(!pc||!public_code)return toast("PC interna y public_code son obligatorios.","err");
-  const payload={pc_codigo:pc,public_code,nombre_publico:val("ruta_nombre_publico")||pc,link_plataforma:val("ruta_link_plataforma"),whatsapp_numero:val("ruta_whatsapp_numero"),activo:bool("ruta_activo"),updated_at:new Date().toISOString()};
-  const res=id?await supabaseClient.from("landing_rutas_publicas").update(payload).eq("id",id):await supabaseClient.from("landing_rutas_publicas").insert([payload]);
-  if(res.error)return toast("Error guardando ruta: "+res.error.message,"err");
+  const tok=(typeof requireAdminToken==="function")?requireAdminToken():null;
+  const nombre=val("ruta_nombre_publico")||pc, link=val("ruta_link_plataforma"), wpp=val("ruta_whatsapp_numero"), activo=bool("ruta_activo");
+  // Guardado por RPC (auditado); fallback directo SOLO si la RPC no está (como ya existía).
+  try{
+    await rpcRowsSafe("admin_general_guardar_ruta",{p_session_token:tok,p_id:id||null,p_pc_codigo:pc,p_public_code:public_code,p_nombre_publico:nombre,p_link_plataforma:link,p_whatsapp_numero:wpp,p_activo:activo},async()=>{
+      const payload={pc_codigo:pc,public_code,nombre_publico:nombre,link_plataforma:link,whatsapp_numero:wpp,activo,updated_at:new Date().toISOString()};
+      const res=id?await supabaseClient.from("landing_rutas_publicas").update(payload).eq("id",id):await supabaseClient.from("landing_rutas_publicas").insert([payload]);
+      if(res.error) throw res.error; return [];
+    });
+  }catch(err){ return toast("Error guardando ruta: "+(err.message||err),"err"); }
+  // Subdominio/host: RPC aparte (admin_general_guardar_ruta no acepta esos campos).
+  try{ await supabaseClient.rpc("admin_general_set_subdominio",{p_session_token:tok,p_pc_codigo:pc,p_subdominio:(val("ruta_subdominio")||"").trim().toLowerCase(),p_host:(val("ruta_host")||"").trim().toLowerCase()}); }catch(_e){ console.warn("subdominio",_e); }
+  window._rutasFull=null; window.__rutasFullLoading=false; // forzar recarga del subdominio en la tabla
   resetRutaForm();
   await loadRutasPublicas(false);
   fillPcSelects();
