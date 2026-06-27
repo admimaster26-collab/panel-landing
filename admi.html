@@ -23,7 +23,7 @@
 </head>
 <body>
 <div id="loginGate" class="login"><div class="loginBox"><h1>NODO ADMIN</h1><p>Panel maestro general multi-oficina.</p><label>Usuario</label><input id="loginUser" autocomplete="username"><label>Clave</label><input id="loginPass" type="password" autocomplete="current-password"><button class="primary" style="width:100%;margin-top:16px" onclick="adminLogin()">Ingresar</button><div id="loginMsg" class="loginMsg"></div></div></div>
-<div id="appView" class="app hidden"><aside><div class="brand"><h1>NODO ADMIN</h1><p>Administración general: oficinas, rutas públicas, aliases Chunior, workers, operadores, billeteras, solicitudes y métricas.</p></div><div id="adminInfo" class="adminInfo hidden"></div><div class="nav"><button class="navBtn active" data-section="dashboard" onclick="showSection('dashboard')">Dashboard <span class="badge" id="badgeDashboard">0</span></button><button class="navBtn" data-section="mapa" onclick="showSection('mapa')">Mapa Maestro <span class="badge" id="badgeMapa">Nuevo</span></button><button class="navBtn" data-section="portal-rutas" onclick="showSection('portal-rutas')">Portal / Rutas <span class="badge" id="badgeRutas">0</span></button><button class="navBtn" data-section="aliases" onclick="showSection('aliases')">Aliases Chunior <span class="badge" id="badgeAliases">0</span></button><button class="navBtn" data-section="solicitudes" onclick="showSection('solicitudes')">Solicitudes <span class="badge" id="badgeSolicitudes">0</span></button><button class="navBtn" data-section="worker" onclick="showSection('worker')">Worker <span class="badge" id="badgeWorker">0</span></button><button class="navBtn" data-section="operadores" onclick="showSection('operadores')">Operadores <span class="badge" id="badgeOperadores">0</span></button><button class="navBtn" data-section="billeteras" onclick="showSection('billeteras')">Billeteras <span class="badge" id="badgeBilleteras">0</span></button><button class="navBtn" data-section="pcs" onclick="showSection('pcs')">Oficinas <span class="badge" id="badgePcs">0</span></button><button class="navBtn" data-section="historial" onclick="showSection('historial')">Historial Agente <span class="badge" id="badgeHistorial">CSV</span></button><button class="navBtn" data-section="config" onclick="showSection('config')">Configuración <span class="badge" id="badgeConfig">0</span></button></div></aside><main><div class="top"><div><h2 id="pageTitle">Dashboard</h2><p id="pageSub">Resumen general actualizado por oficina.</p></div><div class="top-actions"><select id="globalPc" onchange="cambiarOficinaAdmin()"></select><button class="blue" onclick="reloadAll(true)">Actualizar todo</button><button class="danger" onclick="adminLogout()">Cerrar sesión</button></div></div>
+<div id="appView" class="app hidden"><aside><div class="brand"><h1>NODO ADMIN</h1><p>Administración general: oficinas, rutas públicas, aliases Chunior, workers, operadores, billeteras, solicitudes y métricas.</p></div><div id="adminInfo" class="adminInfo hidden"></div><div class="nav"><button class="navBtn active" data-section="dashboard" onclick="showSection('dashboard')">Dashboard <span class="badge" id="badgeDashboard">0</span></button><button class="navBtn" data-section="solicitudes" onclick="showSection('solicitudes')">Solicitudes <span class="badge" id="badgeSolicitudes">0</span></button><button class="navBtn" data-section="operadores" onclick="showSection('operadores')">Operadores <span class="badge" id="badgeOperadores">0</span></button><button class="navBtn" data-section="billeteras" onclick="showSection('billeteras')">Billeteras <span class="badge" id="badgeBilleteras">0</span></button><button class="navBtn" data-section="pcs" onclick="showSection('pcs')">PCs (base) <span class="badge" id="badgePcs">0</span></button><button class="navBtn" data-section="historial" onclick="showSection('historial')">Historial Agente <span class="badge" id="badgeHistorial">CSV</span></button><button class="navBtn" data-section="config" onclick="showSection('config')">Configuración <span class="badge" id="badgeConfig">0</span></button></div></aside><main><div class="top"><div><h2 id="pageTitle">Dashboard</h2><p id="pageSub">Resumen general actualizado por oficina.</p></div><div class="top-actions"><select id="globalPc" onchange="cambiarOficinaAdmin()"></select><button class="blue" onclick="reloadAll(true)">Actualizar todo</button><button class="danger" onclick="adminLogout()">Cerrar sesión</button></div></div>
 <section id="section-dashboard" class="section active">
   <div class="filters compact"><input id="dash_from" type="date" onchange="renderAll()"><input id="dash_to" type="date" onchange="renderAll()"><select id="dash_turno" onchange="renderAll()"><option value="">Todos los turnos</option><option>TM</option><option>TT</option><option>TN</option></select><select id="dash_operador" onchange="renderAll()"><option value="">Todos operadores</option></select><select id="dash_origen" onchange="renderAll()"><option value="">Todos orígenes</option><option value="LANDING">Landing</option><option value="PANEL">Panel operativo</option></select><input id="dash_search" oninput="renderAll()" placeholder="Usuario, estado, monto..."><button onclick="limpiarFiltrosDashboard()">Limpiar</button></div>
   <div class="stats" id="ofiCards"></div>
@@ -44,9 +44,7 @@
     <div class="card-h">
       <h3>Oficinas configuradas</h3>
       <div class="rowActions">
-        <button class="blue small" onclick="loadMapaMaestro(true)">Actualizar mapa</button>
-        <button class="violet small" onclick="showSection('portal-rutas')">Rutas portal</button>
-        <button class="cyan small" onclick="showSection('aliases')">Aliases</button>
+        <button class="violet small" onclick="showSection('altaofi')">🏢 Gestionar oficinas (rutas, aliases, dominios)</button>
       </div>
     </div>
     <div class="tableWrap">
@@ -1185,7 +1183,7 @@ testResolverAlias = async function(){
     if($id("section-altaofi")) return;
     const nav=document.querySelector(".nav");
     if(nav && !document.querySelector('[data-section="altaofi"]')){
-      nav.insertAdjacentHTML("beforeend",`<button class="navBtn" data-section="altaofi" onclick="showSection('altaofi')">Alta de oficina <span class="badge">NUEVA</span></button>`);
+      nav.insertAdjacentHTML("beforeend",`<button class="navBtn" data-section="altaofi" onclick="showSection('altaofi')">🏢 Oficinas <span class="badge">todo en uno</span></button>`);
     }
     const html=`<section id="section-altaofi" class="section"><div class="card"><div class="card-h"><h3>🏢 Alta de oficina nueva</h3></div><div class="card-b">
       <div class="notice">Crea una oficina nueva <b>sin SQL</b>: ruta del portal + alias de Chunior. Cuando el operador entra por Chunior con su puesto, el panel resuelve solo a esta oficina.</div>
@@ -1305,6 +1303,7 @@ testResolverAlias = async function(){
       return `<div class="item" style="display:block;margin-bottom:10px"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><strong>${esc(g.oficina_id)} · PC ${esc(g.pc)}</strong><button class="red small" onclick="oficinaEliminar('${esc(g.pc)}')">Eliminar oficina</button></div>
         <div style="margin:6px 0;font-size:12px;color:#9aa">Portal: ${ruta}${(pcode||sub)?` <button class="small" onclick="oficinaCopiarLink('${pcode}','${sub}')">📋 Copiar link</button>`:""}</div>
         <div class="row" style="display:flex;gap:6px;align-items:center;margin:6px 0"><input id="ofi_sub_${esc(g.pc)}" value="${sub}" placeholder="subdominio (ej: p6)" style="flex:1"><button class="blue small" onclick="oficinaGuardarSubdominio('${esc(g.pc)}')">Guardar subdom.</button></div>
+        <div class="row" style="display:flex;gap:6px;align-items:center;margin:6px 0;flex-wrap:wrap"><input id="ofi_wpp_${esc(g.pc)}" value="${esc((r&&r.whatsapp_numero)||'')}" placeholder="WhatsApp (549...)" style="flex:1;min-width:130px"><input id="ofi_link_${esc(g.pc)}" value="${esc((r&&r.link_plataforma)||'')}" placeholder="Link plataforma" style="flex:1;min-width:150px"><button class="blue small" onclick="oficinaGuardarRuta('${esc(g.pc)}')">Guardar ruta</button></div>
         <div class="row" style="display:flex;gap:6px;align-items:center;margin:6px 0"><input id="ofi_au_${esc(g.pc)}" autocomplete="off" placeholder="usuario agente" style="flex:1"><input id="ofi_ap_${esc(g.pc)}" type="password" autocomplete="new-password" placeholder="clave agente 🔒" style="flex:1"><button class="blue small" onclick="oficinaGuardarAgente('${esc(g.pc)}')">Guardar agente</button></div>
         <div class="row" style="display:flex;gap:6px;align-items:center;margin:6px 0;flex-wrap:wrap"><span style="font-size:12px;color:#9aa">🌐</span><select id="ofi_pxen_${esc(g.pc)}" style="width:100px"><option value="0">Proxy off</option><option value="1">Proxy on</option></select><input id="ofi_pxhost_${esc(g.pc)}" autocomplete="off" placeholder="host" style="flex:1;min-width:110px"><input id="ofi_pxport_${esc(g.pc)}" autocomplete="off" placeholder="puerto" style="width:75px"><select id="ofi_pxproto_${esc(g.pc)}" style="width:85px"><option value="http">http</option><option value="socks5">socks5</option></select><input id="ofi_pxuser_${esc(g.pc)}" autocomplete="off" placeholder="usuario" style="width:110px"><input id="ofi_pxpass_${esc(g.pc)}" type="password" autocomplete="new-password" placeholder="clave 🔒" style="width:110px"><button class="blue small" onclick="oficinaGuardarProxy('${esc(g.pc)}')">Guardar proxy</button></div>
         <div style="margin:6px 0;font-size:12px">🎁 Promo primer ingreso: <b style="color:${promoOn?'#22c55e':'#fca5a5'}">${promoOn?'ACTIVADA':'desactivada'}</b> <button class="small" onclick="oficinaTogglePromo('${esc(g.pc)}',${promoOn?0:1})">${promoOn?'Desactivar':'Activar'}</button></div>
@@ -1386,6 +1385,22 @@ testResolverAlias = async function(){
       const {error}=await supabaseClient.rpc("admin_general_set_subdominio",{p_session_token:tok,p_pc_codigo:pc,p_subdominio:sub,p_host:""});
       if(error) throw error;
       if(typeof toast==="function") toast("Subdominio guardado","okb");
+      await oficinaListaCargar();
+    }catch(e){ if(typeof toast==="function") toast("Error: "+(e.message||e),"err"); }
+  };
+  // Editar WhatsApp/link de la ruta DESDE la tarjeta de Oficinas (antes solo en la sección Rutas).
+  window.oficinaGuardarRuta=async function(pc){
+    const gv2=function(id){const e=$id(id+"_"+pc);return e?String(e.value||"").trim():"";};
+    const tok=(typeof requireAdminToken==="function")?requireAdminToken():null;
+    const full=(window._rutasFull||[]).find(x=>String(x.pc_codigo||"").toUpperCase()===String(pc||"").toUpperCase());
+    if(!full||!full.public_code){ if(typeof toast==="function") toast("Esta oficina no tiene ruta/public_code todavía. Creala desde el alta.","warn"); return; }
+    try{
+      await rpcRowsSafe("admin_general_guardar_ruta",{p_session_token:tok,p_id:full.id||null,p_pc_codigo:pc,p_public_code:full.public_code,p_nombre_publico:full.nombre_publico||pc,p_link_plataforma:gv2("ofi_link"),p_whatsapp_numero:gv2("ofi_wpp"),p_activo:(full.activo!==false)},async()=>{
+        const r=await supabaseClient.from("landing_rutas_publicas").update({link_plataforma:gv2("ofi_link"),whatsapp_numero:gv2("ofi_wpp"),updated_at:new Date().toISOString()}).eq("pc_codigo",pc);
+        if(r.error) throw r.error; return [];
+      });
+      if(typeof toast==="function") toast("Ruta guardada (WhatsApp/link) 📲","okb");
+      window._rutasFull=null; window.__rutasFullLoading=false;
       await oficinaListaCargar();
     }catch(e){ if(typeof toast==="function") toast("Error: "+(e.message||e),"err"); }
   };
