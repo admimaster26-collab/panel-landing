@@ -1073,7 +1073,7 @@ testResolverAlias = async function(){
       </div></div>
       <div class="card"><div class="card-h"><h3>Vínculos de la oficina</h3><button class="blue small" onclick="vincCargar()">Actualizar</button></div><div class="card-b">
         <div class="row"><input id="vincBuscar" placeholder="Buscar usuario o teléfono..." oninput="vincRender()"></div>
-        <div class="tableWrap"><table><thead><tr><th>Usuario</th><th>Teléfono</th><th>Titular</th><th>Estado</th><th>Fuente</th><th></th></tr></thead><tbody id="vincBody"></tbody></table></div>
+        <div class="tableWrap"><table><thead><tr><th>Usuario</th><th>Teléfono</th><th>Titular</th><th>Estado</th><th>Fuente</th><th>App / Push</th><th></th></tr></thead><tbody id="vincBody"></tbody></table></div>
       </div></div>
     </div></section>`;
     const ref=$("section-config")||$("section-historial");
@@ -1115,23 +1115,34 @@ testResolverAlias = async function(){
     const {data,error}=await supabaseClient.rpc('admin_vinculos_listar',{p_session_token:requireAdminToken(),p_pc_codigo:pc});
     _vinc = error? [] : (data||[]);
     if(error) toast("Error cargando vínculos: "+error.message,"err");
+    // Flags push/app por usuario (RPC admin). Si la RPC no existe todavía, queda vacío (no rompe).
+    try{
+      const fr=await supabaseClient.rpc('admin_crm_flags',{p_session_token:requireAdminToken(),p_pc_codigo:pc});
+      window._admiFlags={};
+      if(!fr.error && Array.isArray(fr.data)) fr.data.forEach(f=>{ window._admiFlags[String(f.usuario||'').toLowerCase()]={push:!!f.push,app:!!f.app}; });
+    }catch(_e){ window._admiFlags=window._admiFlags||{}; }
     vincRender();
   };
   window.vincRender=function(){
     if(!$("vincBody")) return;
     const q=norm(val("vincBuscar"));
     const rows=_vinc.filter(v=>!q||norm([v.usuario,v.telefono_canon,v.telefono_raw,v.titular].join(" ")).includes(q));
-    if(!rows.length) return empty("vincBody",6,"Sin vínculos para esta oficina.");
-    $("vincBody").innerHTML=rows.slice(0,600).map(v=>`<tr>
+    if(!rows.length) return empty("vincBody",7,"Sin vínculos para esta oficina.");
+    const _fl=window._admiFlags||{};
+    $("vincBody").innerHTML=rows.slice(0,600).map(v=>{
+      const f=_fl[String(v.usuario||'').toLowerCase()]||{};
+      const app=!!(f.app||v.app_instalada), push=!!f.push;
+      return `<tr>
       <td><strong>${safe(v.usuario)}</strong></td>
       <td>${safe(v.telefono_canon)}</td>
       <td>${safe(v.titular||'-')}</td>
       <td>${pill(v.estado_vinculo, v.estado_vinculo==='VINCULADO'?'ok':v.estado_vinculo==='BLOQUEADO'?'off':'warn')}</td>
       <td>${safe(v.fuente||'-')}</td>
+      <td><span title="App instalada: ${app?'sí':'no'}" style="opacity:${app?1:.28}">📱</span> <span title="Push: ${push?'sí':'no'}" style="opacity:${push?1:.28}">🔔</span></td>
       <td><div class="rowActions">
         <button class="small ${v.estado_vinculo==='BLOQUEADO'?'primary':'warning'}" onclick="vincToggleBloqueo('${safe(v.id)}',${v.estado_vinculo!=='BLOQUEADO'})">${v.estado_vinculo==='BLOQUEADO'?'Desbloquear':'Bloquear'}</button>
         <button class="small off" onclick="vincBorrar('${safe(v.id)}')">Borrar</button>
-      </div></td></tr>`).join("");
+      </div></td></tr>`;}).join("");
   };
   window.vincToggleBloqueo=async function(id,bloquear){
     const {error}=await supabaseClient.rpc('admin_vinculos_set_estado',{p_session_token:requireAdminToken(),p_id:Number(id),p_estado:bloquear?'BLOQUEADO':'VINCULADO'});
