@@ -624,13 +624,19 @@ async function saveRuta(e){
     });
   }catch(err){ return toast("Error guardando ruta: "+(err.message||err),"err"); }
   // Subdominio/host: RPC aparte (admin_general_guardar_ruta no acepta esos campos).
-  try{ await supabaseClient.rpc("admin_general_set_subdominio",{p_session_token:tok,p_pc_codigo:pc,p_subdominio:(val("ruta_subdominio")||"").trim().toLowerCase(),p_host:(val("ruta_host")||"").trim().toLowerCase()}); }catch(_e){ console.warn("subdominio",_e); }
+  // OJO: supabaseClient.rpc devuelve {error} SIN tirar excepción → hay que mirar .error, no solo el catch.
+  let _subErr=null;
+  try{
+    const _r=await supabaseClient.rpc("admin_general_set_subdominio",{p_session_token:tok,p_pc_codigo:pc,p_subdominio:(val("ruta_subdominio")||"").trim().toLowerCase(),p_host:(val("ruta_host")||"").trim().toLowerCase()});
+    if(_r&&_r.error) _subErr=_r.error;
+  }catch(_e){ _subErr=_e; }
   window._rutasFull=null; window.__rutasFullLoading=false; // forzar recarga del subdominio en la tabla
   resetRutaForm();
   await loadRutasPublicas(false);
   fillPcSelects();
   renderAll();
-  toast("Ruta pública guardada","okb");
+  if(_subErr){ console.warn("subdominio",_subErr); toast("⚠️ Ruta guardada, pero el SUBDOMINIO no se guardó: "+((_subErr&&_subErr.message)||_subErr),"err"); }
+  else toast("Ruta pública guardada","okb");
 }
 function clearRutaFilters(){setVals({ruta_search:"",ruta_filter_activo:""});renderRutasPublicas()}
 
@@ -1238,9 +1244,13 @@ testResolverAlias = async function(){
         const r=await supabaseClient.from("landing_rutas_publicas").insert([{pc_codigo:pc,public_code:code,nombre_publico:nombre,link_plataforma:gv("ofi_link"),whatsapp_numero:gv("ofi_whatsapp"),activo:true}]);
         if(r.error) throw r.error; return [];
       });
-      // 1b) Subdominio de producción (opcional)
+      // 1b) Subdominio de producción (opcional). Mirar .error (la RPC no tira excepción).
       const _sub=gv("ofi_subdominio");
-      if(_sub){ try{ await supabaseClient.rpc("admin_general_set_subdominio",{p_session_token:tok,p_pc_codigo:pc,p_subdominio:_sub,p_host:""}); }catch(_e){ console.warn("subdominio",_e); } }
+      if(_sub){
+        let _subErr=null;
+        try{ const _r=await supabaseClient.rpc("admin_general_set_subdominio",{p_session_token:tok,p_pc_codigo:pc,p_subdominio:_sub,p_host:""}); if(_r&&_r.error) _subErr=_r.error; }catch(_e){ _subErr=_e; }
+        if(_subErr){ console.warn("subdominio",_subErr); toast("⚠️ Oficina creada, pero el SUBDOMINIO no se guardó: "+((_subErr&&_subErr.message)||_subErr),"err"); }
+      }
       // 2) Aliases: pc_codigo + oficina_id + cada nombre de puesto de Chunior
       const nombres=gv("ofi_aliases").split(/[\n,]+/).map(s=>s.trim()).filter(Boolean);
       const aliasSet=[...new Set([pc, oficina_id, ...nombres].map(s=>s.toUpperCase()))];
