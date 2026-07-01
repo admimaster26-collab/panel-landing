@@ -1325,8 +1325,10 @@ testResolverAlias = async function(){
       const csvAgN=_bs?Number(_bs.csv_agentes_n||0):0;
       const csvAgOn=csvAgN>0;
       const csvAgFecha=(_bs&&_bs.csv_agentes_ultima)?String(_bs.csv_agentes_ultima).slice(0,10):"";
+      const csvWaN=_bs?Number(_bs.csv_whaticket_n||0):0;
+      const csvWaOn=csvWaN>0;
       const _bdg=function(on,txt){return '<span style="display:inline-block;font-size:11px;font-weight:700;border-radius:999px;padding:3px 9px;margin:2px 2px 0 0;'+(on?'background:rgba(34,197,94,.16);color:#4ade80;border:1px solid rgba(34,197,94,.4)':'background:rgba(148,163,184,.12);color:#94a3b8;border:1px solid rgba(148,163,184,.28)')+'">'+txt+'</span>';};
-      const badges = _bdg(pxOn,'🌐 Proxy '+(pxOn?'ON':'OFF')) + _bdg(!!sub,'🔗 Subdom '+(sub||'—')) + _bdg(promoOn,'🎁 Promo '+(promoOn?'ON':'OFF')) + _bdg(nPuestos>0,'👥 Puestos '+nPuestos) + _bdg(!!(r&&r.public_code),'🔓 Ruta '+((r&&r.public_code)?'OK':'—')) + _bdg(agenteOk,'🔑 Agente '+(agenteOk?'✓':'✗')) + _bdg(csvAgOn,'📋 CSV agentes '+(csvAgOn?('✓ '+csvAgN.toLocaleString()+(csvAgFecha?(' · '+csvAgFecha):'')):'✗'));
+      const badges = _bdg(pxOn,'🌐 Proxy '+(pxOn?'ON':'OFF')) + _bdg(!!sub,'🔗 Subdom '+(sub||'—')) + _bdg(promoOn,'🎁 Promo '+(promoOn?'ON':'OFF')) + _bdg(nPuestos>0,'👥 Puestos '+nPuestos) + _bdg(!!(r&&r.public_code),'🔓 Ruta '+((r&&r.public_code)?'OK':'—')) + _bdg(agenteOk,'🔑 Agente '+(agenteOk?'✓':'✗')) + _bdg(csvAgOn,'📋 CSV agentes '+(csvAgOn?('✓ '+csvAgN.toLocaleString()+(csvAgFecha?(' · '+csvAgFecha):'')):'✗')) + _bdg(csvWaOn,'💬 CSV whaticket '+(csvWaOn?('✓ '+csvWaN.toLocaleString()):'✗'));
       return `<div class="item" style="display:block;margin-bottom:10px"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><strong>${esc(g.oficina_id)} · PC ${esc(g.pc)}</strong><button class="red small" onclick="oficinaEliminar('${esc(g.pc)}')">Eliminar oficina</button></div>
         <div style="margin:6px 0">${badges}</div>
         <div style="margin:6px 0;font-size:12px;color:#9aa">Portal: ${ruta}${(pcode||sub)?` <button class="small" onclick="oficinaCopiarLink('${pcode}','${sub}')">📋 Copiar link</button>`:""}</div>
