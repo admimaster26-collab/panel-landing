@@ -1286,12 +1286,14 @@ testResolverAlias = async function(){
   window.oficinaListaCargar=async function(){
     try{ if(typeof loadAliasesOficina==="function") await loadAliasesOficina(false); }catch(_e){}
     // Rutas con TODAS las columnas (subdominio, host, promo_activa) — el loader normal usa columnas fijas.
+    const tok=(typeof requireAdminToken==="function")?requireAdminToken():null;
     try{
-      const tok=(typeof requireAdminToken==="function")?requireAdminToken():null;
       const {data,error}=await supabaseClient.rpc("admin_get_rutas_full",{p_session_token:tok});
       if(!error) window._rutasFull = data||[];
       else { if(typeof loadRutasPublicas==="function") await loadRutasPublicas(false); }
     }catch(_e){ try{ if(typeof loadRutasPublicas==="function") await loadRutasPublicas(false); }catch(__e){} }
+    // Estado real de proxy por oficina (para mostrarlo/pre-cargarlo, sin ir a Supabase a mano).
+    try{ const pr=await supabaseClient.rpc("admin_get_proxies",{p_session_token:tok}); window._proxiesFull=(!pr.error && Array.isArray(pr.data))?pr.data:[]; }catch(_e){ window._proxiesFull=window._proxiesFull||[]; }
     oficinaListaRender();
   };
   window.oficinaListaRender=function(){
@@ -1310,12 +1312,20 @@ testResolverAlias = async function(){
       const sub=r&&r.subdominio?esc(String(r.subdominio)):"";
       const pcode=r?esc(r.public_code):"";
       const promoOn = !!(r && r.promo_activa);
+      // Estado real del proxy (de admin_get_proxies) para pre-cargar y mostrar.
+      const _px=(window._proxiesFull||[]).find(function(x){return String(x.pc_codigo||"").toUpperCase()===String(pc).toUpperCase();});
+      const pxOn=!!(_px && _px.enabled && _px.host);
+      const pxHost=_px?esc(String(_px.host||"")):"", pxPort=_px?esc(String(_px.port||"")):"", pxUser=_px?esc(String(_px.username||"")):"", pxProto=(_px&&_px.protocol)?String(_px.protocol):"http";
+      const nPuestos=g.aliases.length;
+      const _bdg=function(on,txt){return '<span style="display:inline-block;font-size:11px;font-weight:700;border-radius:999px;padding:3px 9px;margin:2px 2px 0 0;'+(on?'background:rgba(34,197,94,.16);color:#4ade80;border:1px solid rgba(34,197,94,.4)':'background:rgba(148,163,184,.12);color:#94a3b8;border:1px solid rgba(148,163,184,.28)')+'">'+txt+'</span>';};
+      const badges = _bdg(pxOn,'🌐 Proxy '+(pxOn?'ON':'OFF')) + _bdg(!!sub,'🔗 Subdom '+(sub||'—')) + _bdg(promoOn,'🎁 Promo '+(promoOn?'ON':'OFF')) + _bdg(nPuestos>0,'👥 Puestos '+nPuestos) + _bdg(!!(r&&r.public_code),'🔓 Ruta '+((r&&r.public_code)?'OK':'—'));
       return `<div class="item" style="display:block;margin-bottom:10px"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><strong>${esc(g.oficina_id)} · PC ${esc(g.pc)}</strong><button class="red small" onclick="oficinaEliminar('${esc(g.pc)}')">Eliminar oficina</button></div>
+        <div style="margin:6px 0">${badges}</div>
         <div style="margin:6px 0;font-size:12px;color:#9aa">Portal: ${ruta}${(pcode||sub)?` <button class="small" onclick="oficinaCopiarLink('${pcode}','${sub}')">📋 Copiar link</button>`:""}</div>
         <div class="row" style="display:flex;gap:6px;align-items:center;margin:6px 0"><input id="ofi_sub_${esc(g.pc)}" value="${sub}" placeholder="subdominio (ej: p6)" style="flex:1"><button class="blue small" onclick="oficinaGuardarSubdominio('${esc(g.pc)}')">Guardar subdom.</button></div>
         <div class="row" style="display:flex;gap:6px;align-items:center;margin:6px 0;flex-wrap:wrap"><input id="ofi_wpp_${esc(g.pc)}" value="${esc((r&&r.whatsapp_numero)||'')}" placeholder="WhatsApp (549...)" style="flex:1;min-width:130px"><input id="ofi_link_${esc(g.pc)}" value="${esc((r&&r.link_plataforma)||'')}" placeholder="Link plataforma" style="flex:1;min-width:150px"><button class="blue small" onclick="oficinaGuardarRuta('${esc(g.pc)}')">Guardar ruta</button></div>
         <div class="row" style="display:flex;gap:6px;align-items:center;margin:6px 0"><input id="ofi_au_${esc(g.pc)}" autocomplete="off" placeholder="usuario agente" style="flex:1"><input id="ofi_ap_${esc(g.pc)}" type="password" autocomplete="new-password" placeholder="clave agente 🔒" style="flex:1"><button class="blue small" onclick="oficinaGuardarAgente('${esc(g.pc)}')">Guardar agente</button></div>
-        <div class="row" style="display:flex;gap:6px;align-items:center;margin:6px 0;flex-wrap:wrap"><span style="font-size:12px;color:#9aa">🌐</span><select id="ofi_pxen_${esc(g.pc)}" style="width:100px"><option value="0">Proxy off</option><option value="1">Proxy on</option></select><input id="ofi_pxhost_${esc(g.pc)}" autocomplete="off" placeholder="host" style="flex:1;min-width:110px"><input id="ofi_pxport_${esc(g.pc)}" autocomplete="off" placeholder="puerto" style="width:75px"><select id="ofi_pxproto_${esc(g.pc)}" style="width:85px"><option value="http">http</option><option value="socks5">socks5</option></select><input id="ofi_pxuser_${esc(g.pc)}" autocomplete="off" placeholder="usuario" style="width:110px"><input id="ofi_pxpass_${esc(g.pc)}" type="password" autocomplete="new-password" placeholder="clave 🔒" style="width:110px"><button class="blue small" onclick="oficinaGuardarProxy('${esc(g.pc)}')">Guardar proxy</button></div>
+        <div class="row" style="display:flex;gap:6px;align-items:center;margin:6px 0;flex-wrap:wrap"><span style="font-size:12px;color:#9aa">🌐</span><select id="ofi_pxen_${esc(g.pc)}" style="width:100px"><option value="0" ${pxOn?'':'selected'}>Proxy off</option><option value="1" ${pxOn?'selected':''}>Proxy on</option></select><input id="ofi_pxhost_${esc(g.pc)}" value="${pxHost}" autocomplete="off" placeholder="host" style="flex:1;min-width:110px"><input id="ofi_pxport_${esc(g.pc)}" value="${pxPort}" autocomplete="off" placeholder="puerto" style="width:75px"><select id="ofi_pxproto_${esc(g.pc)}" style="width:85px"><option value="http" ${pxProto==='socks5'?'':'selected'}>http</option><option value="socks5" ${pxProto==='socks5'?'selected':''}>socks5</option></select><input id="ofi_pxuser_${esc(g.pc)}" value="${pxUser}" autocomplete="off" placeholder="usuario" style="width:110px"><input id="ofi_pxpass_${esc(g.pc)}" type="password" autocomplete="new-password" placeholder="${_px?'clave guardada 🔒 (dejá vacío para no cambiar)':'clave 🔒'}" style="width:110px"><button class="blue small" onclick="oficinaGuardarProxy('${esc(g.pc)}')">Guardar proxy</button></div>
         <div style="margin:6px 0;font-size:12px">🎁 Promo primer ingreso: <b style="color:${promoOn?'#22c55e':'#fca5a5'}">${promoOn?'ACTIVADA':'desactivada'}</b> <button class="small" onclick="oficinaTogglePromo('${esc(g.pc)}',${promoOn?0:1})">${promoOn?'Desactivar':'Activar'}</button></div>
         <div style="margin:6px 0">Puestos: ${chips||'<span style="color:#fca5a5">ninguno</span>'}</div>
         <div class="row" style="display:flex;gap:6px"><input id="ofi_addp_${esc(g.pc)}" placeholder="Nuevo puesto Chunior" style="flex:1"><button class="blue small" onclick="oficinaAgregarPuesto('${esc(g.pc)}','${esc(g.oficina_id)}')">+ Puesto</button></div>
